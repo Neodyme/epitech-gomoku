@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Wed Nov 28 17:56:33 2012 dorian schaegis
+** Last update Sat Dec  1 00:56:00 2012 Prost P.
 */
 
 #define		 _BSD_SOURCE
@@ -17,7 +17,7 @@
 
 void		init_board(t_board *board)
 {
-  memset(board, 0, 91);
+  memset(board, 0x33, 91);
 }
 
 void		set_board(t_board *board, char x, char y, char val)
@@ -36,16 +36,16 @@ char		get_board(t_board *board, char x, char y)
   unsigned char	*data;
   
   data = (unsigned char*)board;
-  byte = (19 * (x * 2) + (y * 2) / 8);
-  bit = (19 * (x * 2) + (y * 2) % 8);
-  printf("\tbyte[%i] bits[%i-%i]\n", byte, bit, bit + 1);
+  byte = ((19 * (x * 2) + (y * 2)) / 8);
+  bit = ((19 * (x * 2) + (y * 2)) % 8);
+  printf("\tbyte[%i] bits[%i-%i] >> %i(%X)\n", byte, bit, bit + 1, (data[byte] & (0x00000003 << bit)) >> bit, (0x00000003 << bit));
 /* data[(19 * (x * 2) + (y * 2) / 8)] & ((((19 * (x * 2) + (y * 2)) % 8) + 1) | ((((19 * (x * 2) + (y * 2)) % 8) + 1) << 1)) */
 /* & data[(19 * (x * 2) + (y * 2) % 8) | ((19 * (x * 2) + (y * 2) % 8) >> 1)]); */
 /* largeur des lignes * ligne voulue * 2 + colonne voulue * 2  */
 /* / 8 */
 /* AND % 4 * 2  */
   (void)data;
-  return (0);
+  return ((data[byte] & (0x00000003 << bit)) >> bit);
 }
 
 void		dump_board(t_board *board)
@@ -110,7 +110,8 @@ int		main()
       pos.x = 1;
       pos.y = 1;
       SDL_BlitSurface(background, NULL, screen, &pos);
-      SDL_WaitEvent(&event);
+      /*      SDL_WaitEvent(&event); */
+      SDL_PollEvent(&event);  
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);
