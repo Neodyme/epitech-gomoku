@@ -1,0 +1,14 @@
+Progress since v2.3
+-------------------
+
+Fixed a small hashtable bug that affected first ply stores
+Fixed bugs with extensions, easy move reduction and futility pruning
+Improved King Safety, and moved it into the LazyEval() for accuracy
+Fixed LazyEval() to agree much more closely with full eval
+Added in Knight Fork extensions
+Drastically altered quiescence search
+: Added in proper check support
+: Modified check extend depth for quiescence search
+: Removed delta cuts
+Slightly altered handling of connected passed pawns
+Several bugfixes spotted by Yu-Tsai Fan
