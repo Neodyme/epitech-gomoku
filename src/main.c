@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sat Dec  1 00:56:00 2012 Prost P.
+** Last update Sat Dec  1 01:01:01 2012 Prost P.
 */
 
 #define		 _BSD_SOURCE
@@ -22,10 +22,16 @@ void		init_board(t_board *board)
 
 void		set_board(t_board *board, char x, char y, char val)
 {
-  unsigned char	*data;
+  unsigned int  byte;
+  unsigned int  bit;
+  unsigned char *data;
 
   data = (unsigned char*)board;
-  data[(19 * (x * 2) + (y * 2) / 8)] = 0xCC;
+  byte = ((19 * (x * 2) + (y * 2)) / 8);
+  bit = ((19 * (x * 2) + (y * 2)) % 8);
+
+  data[byte] &= ~(0x00000003 << bit);
+  data[byte] |= val << bit;
   (void)val;
 }
 
@@ -142,6 +148,7 @@ int		main()
 		current = WHITE;
 	      else
 		current = BLACK;
+	      set_board(&board, cor.x, cor.y, current);
 	    }
 	}
       SDL_Flip(screen);
