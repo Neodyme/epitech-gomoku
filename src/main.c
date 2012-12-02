@@ -14,61 +14,6 @@
 
 #include	"board.h"
 
-void		init_board(t_board *board)
-{
-  //		0b00100010
-  memset(board, 0xAA, sizeof (t_board));
-}
-
-
-void		set_board(t_board *board, char x, char y, char val)
-{
-  unsigned int  byte;
-  unsigned int  bit;
-  unsigned char *data;
-
-  data = (unsigned char*)board;
-  byte = ((19 * (x * 2) + (y * 2)) / 8);
-  bit = ((19 * (x * 2) + (y * 2)) % 8);
-
-  data[byte] &= ~(0x00000003 << bit);
-  data[byte] |= val << bit;
-  (void)val;
-}
-
-char		get_board(t_board *board, register char x, register char y)
-{
-  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char)));
-}
-
-void		dump_board2(char *board)
-{
-  unsigned int	i;
-
-  for (i = 0; i < 19 * 19; i++)
-    {
-      printf("%i ", get_board(board, i / 19, i % 19));
-      if ((i % 19) == 18)
-	printf("\n");
-    }
-}
-
-void		dump_board(t_board *board)
-{
-  int		x = 0, y = 0;
-  
-  while (x < 19)
-    {
-      y = 0;
-      while (y < 19)
-	{
-	  get_board(board, x, y);
-	  y++;
-	}
-      x++;
-    }
-}
-
 void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
 {
   SDL_Rect	pos;
