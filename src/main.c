@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sat Dec  1 00:56:00 2012 Prost P.
+** Last update Sun Dec  2 00:12:12 2012 dorian schaegis
 */
 
 #define		 _BSD_SOURCE
@@ -38,13 +38,14 @@ char		get_board(t_board *board, char x, char y)
   data = (unsigned char*)board;
   byte = ((19 * (x * 2) + (y * 2)) / 8);
   bit = ((19 * (x * 2) + (y * 2)) % 8);
-  printf("\tbyte[%i] bits[%i-%i] >> %i(%X)\n", byte, bit, bit + 1, (data[byte] & (0x00000003 << bit)) >> bit, (0x00000003 << bit));
+  /* printf("\tbyte[%i] bits[%i-%i] >> %i(%X)\n", byte, bit, bit + 1, (data[byte] & (0x00000003 << bit)) >> bit, (0x00000003 << bit)); */
+
 /* data[(19 * (x * 2) + (y * 2) / 8)] & ((((19 * (x * 2) + (y * 2)) % 8) + 1) | ((((19 * (x * 2) + (y * 2)) % 8) + 1) << 1)) */
 /* & data[(19 * (x * 2) + (y * 2) % 8) | ((19 * (x * 2) + (y * 2) % 8) >> 1)]); */
 /* largeur des lignes * ligne voulue * 2 + colonne voulue * 2  */
 /* / 8 */
 /* AND % 4 * 2  */
-  (void)data;
+
   return ((data[byte] & (0x00000003 << bit)) >> bit);
 }
 
@@ -64,6 +65,33 @@ void		dump_board(t_board *board)
       x++;
     }
 }
+
+void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
+{
+  SDL_Rect	pos;
+  int		x, y;
+
+  for (x = 0; x < 19; ++x)
+    {
+      for (y = 0; y < 19; ++y)
+	{
+	  pos.w = 32;
+	  pos.h = 32;
+	  pos.x = x * 32 + 16;
+	  pos.y = y * 32 + 16;
+	  switch (get_board(board, x, y))
+	    {
+	    case BLACK:
+	      SDL_BlitSurface(blackstone, NULL, screen, &pos);		  
+	      break;
+	    case WHITE:
+	      SDL_BlitSurface(whitestone, NULL, screen, &pos);
+	      break;
+	    }
+	}
+    }
+}
+
 
 int		main()
 {
@@ -100,21 +128,24 @@ int		main()
   /* set_board(&board, 2, 2, BLACK); */
   /* get_board(&board, 2, 2); */
 
-  dump_board(&board);
-
+  /* dump_board(&board); */
+  /* (void)background; */
   while (1)
     {
-      SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 128, 128, 128));  
+      SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 128, 128, 128));
       pos.w = 640;
       pos.h = 640;
       pos.x = 1;
       pos.y = 1;
       SDL_BlitSurface(background, NULL, screen, &pos);
-      /*      SDL_WaitEvent(&event); */
-      SDL_PollEvent(&event);  
+      display_board(&board, screen, blackstone, whitestone);
+      SDL_WaitEvent(&event);
+
+
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);
+
       if (event.type == SDL_MOUSEMOTION)
 	{
 	  pos.w = 32;
@@ -132,18 +163,40 @@ int		main()
 		SDL_BlitSurface(whitestone, NULL, screen, &pos);
 	    }
 	}
+
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
-	      printf("At %i-%i: ", cor.x, cor.y);
-	      get_board(&board, cor.x, cor.y);
-	      if (current == BLACK)
-		current = WHITE;
+	      /* printf("At %i-%i: ", cor.x, cor.y); */
+	      if (get_board(&board, cor.x, cor.y) == EMPTY)
+		{
+		  set_board(&board, cor.x, cor.y, current);
+		  printf("Placed a ");
+		  if (current == BLACK)
+		    {
+		      printf("Black");
+		      current = WHITE;
+		    }
+		  else
+		    {
+		      printf("White");
+		      current = BLACK;
+		    }
+		  printf(" Stone at %i:%i\n", cor.x, cor.y);		    
+		}
 	      else
-		current = BLACK;
+		{
+		  printf("There's a ");
+		  if (get_board(&board, cor.x, cor.y) == BLACK)
+		    printf("Black");
+		  else
+		    printf("White");
+		  printf(" Stone here\n");
+		}
 	    }
 	}
+      usleep(500);
       SDL_Flip(screen);
     }
   return (0);
