@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 16:07:24 2012 Prost P.
+** Last update Sun Dec  2 16:34:07 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -13,6 +13,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+
+#include <inttypes.h>
 
 #include "board.h"
 
@@ -73,23 +75,27 @@ typedef unsigned __int128 sint;
 /* 00000000 */
 #define RULE3_X2   (sint)(10000000000000000000100000000000000000010000000000000000001000000000000000000000000000000000000000000000000000000000000000000000)
 
-#define TEST (sint)0b01111111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000
+typedef __uint128_t uint128_t;
 
-void	showint128(unsigned __int128 v)
-{
-  int	i;
-  sint	e = 1;
+#define TEST (uint128_t)(0b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
 
-  for (i = 0; i < 128; i++)
-    {
-      printf("%d", v & e);
-      v >>= 1;
-    }
-  printf("\n");
-  return ;
+int print_uint128(uint128_t n) {
+  if (n == 0)  return printf("0\n");
+
+  char str[40] = {0}; // log10(1 << 128) + '\0'
+  char *s = str + sizeof(str) - 1; // start at the end
+  while (n != 0) {
+    if (s == str) return -1; // never happens
+
+    *--s = "0123456789"[n % 10]; // save last digit
+    n /= 10;                     // drop it
+  }
+  return printf("%s\n", s);
 }
+
 
 int	prise(t_board *board, int x, int y)
 {
-  showint128(TEST);
+
+  print_uint128(TEST);
 }
