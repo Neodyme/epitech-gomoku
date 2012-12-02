@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 16:34:07 2012 Prost P.
+** Last update Sun Dec  2 17:54:01 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -73,11 +73,13 @@ typedef unsigned __int128 sint;
 /* 0000000000000000000 */
 /* 0000000000000000000 */
 /* 00000000 */
-#define RULE3_X2   (sint)(10000000000000000000100000000000000000010000000000000000001000000000000000000000000000000000000000000000000000000000000000000000)
+#define RULE3_X2   (uint128_t)(10000000000000000000100000000000000000010000000000000000001000000000000000000000000000000000000000000000000000000000000000000000)
 
 typedef __uint128_t uint128_t;
 
-#define TEST (uint128_t)(0b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
+#define TEST (uint128_t)(0xFFFFFFFFFFFFFFFFF)
+
+
 
 int print_uint128(uint128_t n) {
   if (n == 0)  return printf("0\n");
@@ -87,15 +89,49 @@ int print_uint128(uint128_t n) {
   while (n != 0) {
     if (s == str) return -1; // never happens
 
-    *--s = "0123456789"[n % 10]; // save last digit
-    n /= 10;                     // drop it
+    *--s = "01"[n % 2]; // save last digit
+    n /= 2 ;                     // drop it
   }
   return printf("%s\n", s);
 }
 
+#define OPPOSITE(COLOR) (~(COLOR))
+#define CHCKPOS(X) ((X > 19) ? (19) : (X))
+#define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
 
-int	prise(t_board *board, int x, int y)
+int	prise(t_board *board, unsigned int x, unsigned int y)
 {
+  if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x + 3, y) == get_board(board, x, y))))
+    {
+      TAKE(board, x, y);
+      TAKE(board, x + 2, y);
+    }
+  if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x, y + 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x, y + 3) == get_board(board, x, y))))
+    {
+      TAKE(board, x, y + 1);
+      TAKE(board, x, y + 2);
+    }
+  if ((get_board(board, x + 1, y + 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x + 2, y + 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x + 3, y + 3) == get_board(board, x, y))))
+    {
+      TAKE(board, x + 1, y + 1);
+      TAKE(board, x + 2, y + 2);
+    }
+}
 
-  print_uint128(TEST);
+#define HAZHAMBURGER(BOARD, X, Y) (!!!!get_board(BOARD, X, Y)) /* ZOMG EXCLAMATION MARKR */
+
+#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, COLOR)
+
+int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
+{
+  set_board(board, x, y, color);
+  
+  if COUNTHAMBURGER(board, x - 3, y, x - 2, x - 1, x, get_board)  == 3
+
 }
