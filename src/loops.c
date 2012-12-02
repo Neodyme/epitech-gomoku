@@ -5,11 +5,12 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Sun Dec  2 23:43:44 2012 dorian schaegis
+** Last update Mon Dec  3 00:04:44 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
 #include	"board.h"
+#include	"rule.h"
 #include	"display.h"
 #include	"manip_boards.h"
 
@@ -38,7 +39,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
 
       if (event.type == SDL_MOUSEMOTION)
 	{
-	  pos.w = 32;
+     	  pos.w = 32;
 	  pos.h = 32;
 	  pos.x = (event.motion.x / 32) * 32 - 16;
 	  pos.y = (event.motion.y / 32) * 32 - 16;
@@ -47,7 +48,8 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	  /* printf("x:%i y:%i\n", pos.x / 32, pos.y / 32); */
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
-	      if (get_board(board, cor.x, cor.y) != EMPTY)
+	      if ((get_board(board, cor.x, cor.y) != EMPTY) ||
+		  (!rule3(board, cor.x, cor.y, current)))
 		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
 	      else if (current == BLACK)
 		SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
@@ -63,8 +65,6 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
 	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
-		  if (!rule3(board, cor.x, cor.y, current))
-		    printf("ZOMG PONYS\n");
 		  set_board(board, cor.x, cor.y, current);
 		  printf("Placed a ");
 		  if (current == BLACK)
