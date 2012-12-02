@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 21:45:03 2012 Prost P.
+** Last update Sun Dec  2 22:03:18 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -96,23 +96,28 @@ int print_uint128(uint128_t n) {
   return printf("%s\n", s);
 }
 
-#define OPPOSITE(COLOR) (~(COLOR))
+#define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
 #define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
 
 int	prise(t_board *board, unsigned int x, unsigned int y)
 {
+  /* printf("%i %i\n", WHITE, OPPOSITE(WHITE)); */
+  /* printf("%i %i\n", BLACK, OPPOSITE(BLACK)); */
+
   if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y) == get_board(board, x, y))))
     {
-      TAKE(board, x + 1, y);
-      TAKE(board, x + 2, y);
+      printf("prend Hori\n");
+     TAKE(board, x + 1, y);
+     TAKE(board, x + 2, y);
     }
   if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x, y + 2) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x, y + 3) == get_board(board, x, y))))
     {
+      printf("prend V\n");
       TAKE(board, x, y + 1);
       TAKE(board, x, y + 2);
     }
@@ -120,6 +125,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
        && (get_board(board, x + 2, y + 2) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y + 3) == get_board(board, x, y))))
     {
+      printf("prend D\n");
       TAKE(board, x + 1, y + 1);
       TAKE(board, x + 2, y + 2);
     }
@@ -139,8 +145,12 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
   set_board(board, x, y, color);
- 
+
+  printf("%d\n", COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y)));
   if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y))  == 3)
-    return (0);
-  return 
+    {
+      printf("ZOMG RULE 3 BREAKED!!!\n");
+      return (0);
+    }
+  return (1);
 }

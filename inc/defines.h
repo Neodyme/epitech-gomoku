@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 28 17:21:11 2012 dorian schaegis
-** Last update Wed Nov 28 17:33:52 2012 dorian schaegis
+** Last update Sun Dec  2 21:53:12 2012 Prost P.
 */
 
 #ifnidef	__GOMO_DEFINES_H_

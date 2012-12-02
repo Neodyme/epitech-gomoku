@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 22:44:52 2012 dorian schaegis
+** Last update Sun Dec  2 21:59:35 2012 Prost P.
 */
 
 #define		_BSD_SOURCE
@@ -126,6 +126,8 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
 	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
+		  if (!rule3(board, cor.x, cor.y, current))
+		    "ZOMG PONYS\n";
 		  set_board(board, cor.x, cor.y, current);
 		  printf("Placed a ");
 		  if (current == BLACK)
