@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:17:00 2012 dorian schaegis
-** Last update Sun Dec  2 23:30:40 2012 dorian schaegis
+** Last update Sun Dec  2 23:47:14 2012 dorian schaegis
 */
 
 #ifndef		GOMO_DISPLAY_HHHH__
@@ -15,6 +15,7 @@
 #include	"board.h"
 
 char            init_sdl(t_surfaces *surf);
+void		free_sdl(t_surfaces *surf);
 void		show_background(SDL_Surface *background, SDL_Surface *screen);
 void		place_pawns(t_board *board, t_surfaces *surf);
 

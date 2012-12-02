@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 23:42:15 2012 dorian schaegis
+** Last update Sun Dec  2 23:48:51 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -70,6 +70,16 @@ char		init_sdl(t_surfaces *surf)
   SDL_WM_SetCaption("Gomoku", NULL);
 
   return (0);
+}
+
+void		free_sdl(t_surfaces *surf)
+{
+  SDL_FreeSurface(surf->screen);
+  SDL_FreeSurface(surf->background);
+  SDL_FreeSurface(surf->title);
+  SDL_FreeSurface(surf->blackstone);
+  SDL_FreeSurface(surf->whitestone);
+  SDL_FreeSurface(surf->nopestone);
 }
 
 void		show_background(SDL_Surface *background, SDL_Surface *screen)
