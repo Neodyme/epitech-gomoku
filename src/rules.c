@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 23:08:22 2012 Prost P.
+** Last update Sun Dec  2 23:36:24 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -138,19 +138,32 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
   (HAZCHEEZBURGER(BOARD, X0, Y0, COLOR)					\
    + (HAZCHEEZBURGER(BOARD, X1, Y1, COLOR))				\
    + (HAZCHEEZBURGER(BOARD, X2, Y2, COLOR))				\
-   + (HAZCHEEZBURGER(BOARD, X3, Y3, COLOR))				\
+   + 1									\
    - (12	* ((((get_board(BOARD, XX, YX) == OPPOSITE(COLOR)) | (XX == -1))) \
 		   | ((get_board(BOARD, XX2, YX2) == OPPOSITE(COLOR)) | (XX2 == 19))) ))
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
-  if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  get_board(board, x, y))  == 4)
+  printf("%d\n", COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color));
+
+  if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  get_board(board, x, y))  == 4)
+  if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  get_board(board, x, y))  == 4)
+  if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  get_board(board, x, y))  == 4)
+  if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  color)  == 4)
     return (0);
+
+  if (COUNTHAMBURGER(board, x, y - 3, x, y - 2,  x - 1, y, x, y, x, y - 4,  x, y + 1,  color)  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x, y + 3, x, y + 2,  x + 1, y, x, y, x, y - 1,  x, y + 4,  color)  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x, y - 1, x, y + 1,  x + 2, y, x, y, x, y - 2,  x, y + 3,  color)  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x, y - 2, x, y - 1,  x + 1, y, x, y, x, y - 3,  x, y + 2,  color)  == 4)
+    return (0);
+
+
   return (1);
 }
