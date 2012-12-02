@@ -5,7 +5,6 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sun Dec  2 02:12:23 2012 Prost P.
 */
 
 #define		 _BSD_SOURCE
@@ -70,6 +69,33 @@ void		dump_board(t_board *board)
     }
 }
 
+void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
+{
+  SDL_Rect	pos;
+  int		x, y;
+
+  for (x = 0; x < 19; ++x)
+    {
+      for (y = 0; y < 19; ++y)
+	{
+	  pos.w = 32;
+	  pos.h = 32;
+	  pos.x = x * 32 + 16;
+	  pos.y = y * 32 + 16;
+	  switch (get_board(board, x, y))
+	    {
+	    case BLACK:
+	      SDL_BlitSurface(blackstone, NULL, screen, &pos);		  
+	      break;
+	    case WHITE:
+	      SDL_BlitSurface(whitestone, NULL, screen, &pos);
+	      break;
+	    }
+	}
+    }
+}
+
+
 int		main()
 {
   SDL_Surface	*screen;
@@ -109,20 +135,22 @@ int		main()
   /* set_board(&board, 2, 2, BLACK); */
   /* get_board(&board, 2, 2); */
 
-
   while (1)
     {
-      SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 128, 128, 128));  
+      SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 128, 128, 128));
       pos.w = 640;
       pos.h = 640;
       pos.x = 1;
       pos.y = 1;
       SDL_BlitSurface(background, NULL, screen, &pos);
-      /*      SDL_WaitEvent(&event); */
-      SDL_PollEvent(&event);  
+      display_board(&board, screen, blackstone, whitestone);
+      SDL_WaitEvent(&event);
+
+
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);
+
       if (event.type == SDL_MOUSEMOTION)
 	{
 	  pos.w = 32;
@@ -140,19 +168,40 @@ int		main()
 		SDL_BlitSurface(whitestone, NULL, screen, &pos);
 	    }
 	}
+
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
-	      printf("At %i-%i: ", cor.x, cor.y);
-	      get_board(&board, cor.x, cor.y);
-	      if (current == BLACK)
-		current = WHITE;
+	      /* printf("At %i-%i: ", cor.x, cor.y); */
+	      if (get_board(&board, cor.x, cor.y) == EMPTY)
+		{
+		  set_board(&board, cor.x, cor.y, current);
+		  printf("Placed a ");
+		  if (current == BLACK)
+		    {
+		      printf("Black");
+		      current = WHITE;
+		    }
+		  else
+		    {
+		      printf("White");
+		      current = BLACK;
+		    }
+		  printf(" Stone at %i:%i\n", cor.x, cor.y);		    
+		}
 	      else
-		current = BLACK;
-	      set_board(&board, cor.x, cor.y, current);
+		{
+		  printf("There's a ");
+		  if (get_board(&board, cor.x, cor.y) == BLACK)
+		    printf("Black");
+		  else
+		    printf("White");
+		  printf(" Stone here\n");
+		}
 	    }
 	}
+      usleep(500);
       SDL_Flip(screen);
     }
   return (0);
