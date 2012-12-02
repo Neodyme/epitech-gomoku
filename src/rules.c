@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 22:49:31 2012 Prost P.
+** Last update Sun Dec  2 23:08:22 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -144,8 +144,6 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
-  set_board(board, x, y, color);
-
   if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  get_board(board, x, y))  == 4)
     return (0);
   if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  get_board(board, x, y))  == 4)
