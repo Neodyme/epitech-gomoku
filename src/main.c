@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sun Dec  2 22:51:23 2012 dorian schaegis
+** Last update Sun Dec  2 23:38:06 2012 dorian schaegis
 */
 
 #define		 _BSD_SOURCE
@@ -15,17 +15,19 @@
 
 #include	"board.h"
 #include	"display.h"
-#include	"manip_boards.h"
+#include	"loops.h"
 
-int		main()
+int		main(int ac, char **av)
 {
   t_surfaces	surf;
   t_board	board;
 
   if (init_sdl(&surf))
     return (1);
-
-  game_loop(&board, &surf);
-
+  if ((ac > 1) && (!strcmp(av[1], "-immed")))
+    game_loop(&board, &surf);
+  else
+    menu_loop(&board, &surf);
+  printf("Exiting\n");
   return (0);
 }
