@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 22:44:52 2012 dorian schaegis
+** Last update Sun Dec  2 22:57:39 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -88,6 +88,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
 
   current = BLACK;
   SDL_ShowCursor(0);
+  init_board(board);
   while (current)
     {
       show_background(surf->background, surf->screen);
@@ -167,11 +168,10 @@ char		menu_loop(t_board *board, t_surfaces *surf)
   char		loop;
 
   loop = 1;
-  SDL_ShowCursor(1);
   while (loop)
     {
       show_background(surf->title, surf->screen);
-
+      SDL_ShowCursor(1);
       SDL_WaitEvent(&event);
 
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
@@ -179,15 +179,15 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	loop = 0;
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
-	  printf("%i:%i\n", event.motion.x, event.motion.y);
+	  /* printf("%i:%i\n", event.motion.x, event.motion.y); */
 	  if ((event.motion.x > 180) && (event.motion.x < 480))
 	    {
 	      if ((event.motion.y > 400) && (event.motion.y < 450))
-		printf("IA Mode is currently unavailable");
+		printf("IA Mode is currently unavailable\n");
 	      if ((event.motion.y > 480) && (event.motion.y < 520))
-		printf("2 Players");
+		game_loop(board, surf);
 	      if ((event.motion.y > 560) && (event.motion.y < 600))
-		printf("Exiting");
+		loop = 0;
 	    }
 	}
       SDL_Flip(surf->screen);
