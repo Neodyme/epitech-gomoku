@@ -16,8 +16,8 @@
 
 void		init_board(t_board *board)
 {
-  //		0b00100010
-  memset(board, 0xAA, sizeof (t_board));
+  memset(board, 0xAA, sizeof (board->b));
+  memset(board->w, 0x55, sizeof (board->w));
 }
 
 
@@ -38,7 +38,8 @@ void		set_board(t_board *board, char x, char y, char val)
 
 char		get_board(t_board *board, register char x, register char y)
 {
-  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char)));
+  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
+	  | (board->w[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> ((BIT(x, y, char) - 1)));
 }
 
 void		dump_board2(char *board)
@@ -111,11 +112,16 @@ int		main()
 
   t_board	board;
 
+  __int128	v;
+  __int128	v2;
+
+  v = 0;
+  v2 = 0;
+  v%v2;
 
   init_board(&board);
 
   dump_board2(board.b);
-  return (0);
 
   SDL_Init(SDL_INIT_VIDEO);
 
