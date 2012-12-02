@@ -13,30 +13,29 @@
 #include	<string.h>
 
 #include	"board.h"
-
+#include	"manip_boards.h"
 
 void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
 {
   SDL_Rect	pos;
   int		i;
 
+  /* dump_board2(board); */
+  /* printf("\n---\n\n"); */
+
   pos.w = 32;
-  pos.h = 32;
+  pos.h = 32; 
 
   for (i = 0; i < 19 * 19; i++)
     {
       pos.x = (i / 19) * 32 + 16;
       pos.y = (i % 19) * 32 + 16;
-      printf("%i:%i\n", i/19, i%19);
-      printf("caca %x\n", get_board(board, (i / 19), (i % 19)));
       switch (get_board(board, (i / 19), (i % 19)))
 	    {
 	    case BLACK:
-	      printf("BLACK");
 	      SDL_BlitSurface(blackstone, NULL, screen, &pos);		  
 	      break;
 	    case WHITE:
-	      printf("WHITE");
 	      SDL_BlitSurface(whitestone, NULL, screen, &pos);
 	      break;
 	    }
@@ -59,17 +58,10 @@ int		main()
 
   t_board	board;
 
-  __int128	v;
-  __int128	v2;
-
-  v = 0;
-  v2 = 0;
-  v%v2;
 
   init_board(&board);
 
-  dump_board2(&board);
-
+  /* return(1); */
   SDL_Init(SDL_INIT_VIDEO);
 
   screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE);

@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Sun Dec  2 14:34:11 2012 Prost P.
+** Last update Sun Dec  2 16:30:41 2012 dorian schaegis
 */
 
 #include	<unistd.h>
@@ -18,29 +18,22 @@
 void		init_board(t_board *board)
 {
   //		0b00100010
-  memset(board, 0xAA, sizeof (t_board));
+  memset(board->b, 0x00, sizeof(board->b));
+  memset(board->w, 0x00, sizeof(board->w));
 }
 
 
 void		set_board(t_board *board, char x, char y, char val)
 {
-  unsigned int  byte;
-  unsigned int  bit;
-  unsigned char *data;
 
-  data = (unsigned char*)board;
-  byte = ((19 * (x * 2) + (y * 2)) / 8);
-  bit = ((19 * (x * 2) + (y * 2)) % 8);
-
-  data[byte] &= ~(0x00000003 << bit);
-  data[byte] |= val << bit;
-  (void)val;
 }
 
 char		get_board(t_board *board, register char x, register char y)
 {
+
   return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
-	  | (board->w[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> ((BIT(x, y, char) - 1)));
+	  | ((board->w[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
+	     << 1));
 }
 
 void		dump_board2(t_board *board)
