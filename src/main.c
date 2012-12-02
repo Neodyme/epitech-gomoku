@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sun Dec  2 18:03:18 2012 Prost P.
+** Last update Sun Dec  2 22:51:23 2012 dorian schaegis
 */
 
 #define		 _BSD_SOURCE
@@ -22,9 +22,6 @@ int		main()
   t_surfaces	surf;
   t_board	board;
 
-
-  init_board(&board);
-  
   if (init_sdl(&surf))
     return (1);
 

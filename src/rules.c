@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 22:03:18 2012 Prost P.
+** Last update Sun Dec  2 22:05:47 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -147,7 +147,7 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
   set_board(board, x, y, color);
 
   printf("%d\n", COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y)));
-  if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y))  == 3)
+  if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 1, y, get_board(board, x, y))  == 3)
     {
       printf("ZOMG RULE 3 BREAKED!!!\n");
       return (0);

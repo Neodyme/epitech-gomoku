@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Sun Dec  2 18:40:47 2012 dorian schaegis
+** Last update Sun Dec  2 22:56:53 2012 dorian schaegis
 */
 
 #include	<unistd.h>
@@ -33,6 +33,10 @@ void		set_board(t_board *board, char x, char y, char val)
       break;
     case WHITE:
       board->w[BYTE(x, y, char)] |= (1 << (BIT(x, y, char)));
+      break;
+    case EMPTY:
+      board->w[BYTE(x, y, char)] |= (0 << (BIT(x, y, char)));
+      board->b[BYTE(x, y, char)] |= (0 << (BIT(x, y, char)));
       break;
     }
 }
