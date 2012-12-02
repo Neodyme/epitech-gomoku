@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Sun Dec  2 15:27:55 2012 dorian schaegis
+** Last update Sun Dec  2 14:34:11 2012 Prost P.
 */
 
 #include	<unistd.h>
@@ -39,7 +39,8 @@ void		set_board(t_board *board, char x, char y, char val)
 
 char		get_board(t_board *board, register char x, register char y)
 {
-  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char)));
+  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
+	  | (board->w[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> ((BIT(x, y, char) - 1)));
 }
 
 void		dump_board2(t_board *board)

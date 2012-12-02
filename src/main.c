@@ -13,7 +13,7 @@
 #include	<string.h>
 
 #include	"board.h"
-#include	"manip_boards.h"
+
 
 void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
 {
@@ -59,6 +59,12 @@ int		main()
 
   t_board	board;
 
+  __int128	v;
+  __int128	v2;
+
+  v = 0;
+  v2 = 0;
+  v%v2;
 
   init_board(&board);
 
