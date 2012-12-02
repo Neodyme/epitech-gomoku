@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 00:04:44 2012 dorian schaegis
+** Last update Mon Dec  3 00:38:24 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -50,7 +50,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    {
 	      if ((get_board(board, cor.x, cor.y) != EMPTY) ||
 		  (!rule3(board, cor.x, cor.y, current)))
-		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
+		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);	  		
 	      else if (current == BLACK)
 		SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
 	      else
@@ -63,7 +63,8 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
-	      if (get_board(board, cor.x, cor.y) == EMPTY)
+	      if ((get_board(board, cor.x, cor.y) == EMPTY) && 
+		  (rule3(board, cor.x, cor.y, current)))
 		{
 		  set_board(board, cor.x, cor.y, current);
 		  printf("Placed a ");
@@ -81,12 +82,20 @@ char		game_loop(t_board *board, t_surfaces *surf)
 		}
 	      else
 		{
-		  printf("There's a ");
-		  if (get_board(board, cor.x, cor.y) == BLACK)
-		    printf("Black");
-		  else
-		    printf("White");
-		  printf(" Stone here\n");
+		  printf("There's ");
+		  switch (get_board(board, cor.x, cor.y))
+		    {
+		    case BLACK:
+		      printf("a Black Stone");
+		      break;
+		    case WHITE:
+		      printf("a White Stone");
+		      break;
+		    case EMPTY:
+		      printf("nothing");
+		      break;
+		    }
+		  printf(" here\n");
 		}
 	    }
 	}
