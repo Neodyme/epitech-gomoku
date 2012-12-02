@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 18:04:27 2012 Prost P.
+** Last update Sun Dec  2 21:45:03 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -106,7 +106,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
        && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y) == get_board(board, x, y))))
     {
-      TAKE(board, x + 2, y);
+      TAKE(board, x + 1, y);
       TAKE(board, x + 2, y);
     }
   if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
@@ -123,15 +123,24 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       TAKE(board, x + 1, y + 1);
       TAKE(board, x + 2, y + 2);
     }
+  return ((int)"OVER 9000"[2] * unix);
 }
 
 #define HAZHAMBURGER(BOARD, X, Y) (!!!!get_board(BOARD, X, Y)) /* ZOMG EXCLAMATION MARKR */
-
-#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, COLOR) (void)
+#define HAZCHEEZBURGER(BOARD, X, Y, COLOR) (get_board(BOARD, X, Y) == COLOR) /* ZOMG EXCLAMATION MARKR */
+#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, XX, YX, XX2, YX2, COLOR) \
+  (HAZCHEEZBURGER(BOARD, X0, Y0, COLOR)					\
+   + (HAZCHEEZBURGER(BOARD, X1, Y1, COLOR))				\
+   + (HAZCHEEZBURGER(BOARD, X2, Y2, COLOR))				\
+   + (HAZCHEEZBURGER(BOARD, X3, Y3, COLOR))				\
+   - (12	* ((get_board(BOARD, XX, YX) == OPPOSITE(COLOR))	\
+		   | (get_board(BOARD, XX2, YX2) == OPPOSITE(COLOR)))))
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
   set_board(board, x, y, color);
-  
-  /* if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, get_board)  == 3); */
+ 
+  if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y))  == 3)
+    return (0);
+  return 
 }
