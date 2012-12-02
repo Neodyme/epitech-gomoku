@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 19:25:37 2012 dorian schaegis
+** Last update Sun Dec  2 22:44:52 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -56,14 +56,12 @@ char		init_sdl(t_surfaces *surf)
   surf->whitestone = SDL_LoadBMP("./res/whitestone.bmp");
   surf->nopestone = SDL_LoadBMP("./res/nope.bmp");
 
-
   SDL_SetColorKey(surf->blackstone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->blackstone->format, 255, 0, 255));
   SDL_SetColorKey(surf->whitestone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->whitestone->format, 255, 0, 255));
   SDL_SetColorKey(surf->nopestone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->nopestone->format, 255, 0, 255));
 
   SDL_WM_SetCaption("Gomoku", NULL);
 
-  SDL_ShowCursor(0);
   return (0);
 }
 
@@ -81,6 +79,7 @@ void		show_background(SDL_Surface *background, SDL_Surface *screen)
 
 char		game_loop(t_board *board, t_surfaces *surf)
 {
+  int		i;
   SDL_Rect	pos;
   SDL_Rect	cor;
 
@@ -88,7 +87,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
   char		current;
 
   current = BLACK;
-
+  SDL_ShowCursor(0);
   while (current)
     {
       show_background(surf->background, surf->screen);
@@ -153,6 +152,44 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    }
 	}
       usleep(500);
+      for (i = 0; i < 19 * 19; i++)
+      	{
+      	  prise(board, i/19, i%19);
+      	}
+      SDL_Flip(surf->screen);
+    }
+  return (0);
+}
+
+char		menu_loop(t_board *board, t_surfaces *surf)
+{
+  SDL_Event     event;
+  char		loop;
+
+  loop = 1;
+  SDL_ShowCursor(1);
+  while (loop)
+    {
+      show_background(surf->title, surf->screen);
+
+      SDL_WaitEvent(&event);
+
+      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
+	  (event.type == SDL_QUIT))
+	loop = 0;
+      if (event.type == SDL_MOUSEBUTTONUP)
+	{
+	  printf("%i:%i\n", event.motion.x, event.motion.y);
+	  if ((event.motion.x > 180) && (event.motion.x < 480))
+	    {
+	      if ((event.motion.y > 400) && (event.motion.y < 450))
+		printf("IA Mode is currently unavailable");
+	      if ((event.motion.y > 480) && (event.motion.y < 520))
+		printf("2 Players");
+	      if ((event.motion.y > 560) && (event.motion.y < 600))
+		printf("Exiting");
+	    }
+	}
       SDL_Flip(surf->screen);
     }
   return (0);
