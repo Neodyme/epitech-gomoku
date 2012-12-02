@@ -91,6 +91,7 @@ int		main()
 
       display_board(&board, screen, blackstone, whitestone);
       SDL_WaitEvent(&event);
+
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);
