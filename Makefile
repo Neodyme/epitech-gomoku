@@ -5,7 +5,6 @@
 ## Login   <schaeg_d@epitech.net>
 ## 
 ## Started on  Thu Jan  1 00:00:00 1970 dorian schaegis
-## Last update Tue Nov 27 19:06:26 2012 dorian schaegis
 ##
 
 NAME=			gomoku
@@ -20,9 +19,8 @@ OBJ=			$(addprefix obj/, $(patsubst %.c, %.o, $(SRC)))
 
 INC=			-Iinc
 
-CFLAGS=			-W -Werror -Wall -Wextra\
+CFLAGS=			-W -Wall -Wextra\
 			-lSDL\
-			-ansi -pedantic\
 			-O0 -g3
 #			-O3
 

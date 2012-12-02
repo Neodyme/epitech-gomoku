@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sat Dec  1 01:01:01 2012 Prost P.
+** Last update Sun Dec  2 02:12:23 2012 Prost P.
 */
 
 #define		 _BSD_SOURCE
@@ -17,8 +17,10 @@
 
 void		init_board(t_board *board)
 {
-  memset(board, 0x33, 91);
+  //		0b00100010
+  memset(board, 0xAA, sizeof (t_board));
 }
+
 
 void		set_board(t_board *board, char x, char y, char val)
 {
@@ -35,23 +37,21 @@ void		set_board(t_board *board, char x, char y, char val)
   (void)val;
 }
 
-char		get_board(t_board *board, char x, char y)
+char		get_board(t_board *board, register char x, register char y)
 {
-  unsigned int	byte;
-  unsigned int	bit;
-  unsigned char	*data;
-  
-  data = (unsigned char*)board;
-  byte = ((19 * (x * 2) + (y * 2)) / 8);
-  bit = ((19 * (x * 2) + (y * 2)) % 8);
-  printf("\tbyte[%i] bits[%i-%i] >> %i(%X)\n", byte, bit, bit + 1, (data[byte] & (0x00000003 << bit)) >> bit, (0x00000003 << bit));
-/* data[(19 * (x * 2) + (y * 2) / 8)] & ((((19 * (x * 2) + (y * 2)) % 8) + 1) | ((((19 * (x * 2) + (y * 2)) % 8) + 1) << 1)) */
-/* & data[(19 * (x * 2) + (y * 2) % 8) | ((19 * (x * 2) + (y * 2) % 8) >> 1)]); */
-/* largeur des lignes * ligne voulue * 2 + colonne voulue * 2  */
-/* / 8 */
-/* AND % 4 * 2  */
-  (void)data;
-  return ((data[byte] & (0x00000003 << bit)) >> bit);
+  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char)));
+}
+
+void		dump_board2(char *board)
+{
+  unsigned int	i;
+
+  for (i = 0; i < 19 * 19; i++)
+    {
+      printf("%i ", get_board(board, i / 19, i % 19));
+      if ((i % 19) == 18)
+	printf("\n");
+    }
 }
 
 void		dump_board(t_board *board)
@@ -63,7 +63,6 @@ void		dump_board(t_board *board)
       y = 0;
       while (y < 19)
 	{
-	  printf("At %i-%i: ", x, y);
 	  get_board(board, x, y);
 	  y++;
 	}
@@ -86,7 +85,11 @@ int		main()
 
   t_board	board;
 
+
   init_board(&board);
+
+  dump_board2(board.b);
+  return (0);
 
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -106,7 +109,6 @@ int		main()
   /* set_board(&board, 2, 2, BLACK); */
   /* get_board(&board, 2, 2); */
 
-  dump_board(&board);
 
   while (1)
     {

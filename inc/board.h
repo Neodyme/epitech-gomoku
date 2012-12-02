@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Wed Nov 28 17:21:01 2012 dorian schaegis
+** Last update Sun Dec  2 02:11:45 2012 Prost P.
 */
 
 #ifndef		GOMO_BOARD
@@ -15,7 +15,19 @@
 #define		BLACK	0x02 /* 10 */
 #define		WHITE	0x03 /* 11 */
 
+#define		OMFGBUG	0x01 /* ZZOMG TIHS IS IMPOSSSIBRRUUUUUUU */
 
-typedef unsigned char t_board[91];
+struct		s_board
+{
+  unsigned char	b[46];
+  unsigned char	w[46];
+};
+
+typedef struct s_board t_board;
+
+//typedef unsigned char t_board[91];
+
+#define BYTE(X, Y, TYPE) ((19 * X + Y) / 8)
+#define BIT(X, Y, TYPE)  ((19 * X + Y) % 8)
 
 #endif
