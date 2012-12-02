@@ -5,13 +5,16 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 14:45:53 2012 Prost P.
+** Last update Sun Dec  2 16:07:24 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdio.h>
+
+#include "board.h"
 
 typedef unsigned __int128 sint;
 
@@ -58,4 +61,35 @@ typedef unsigned __int128 sint;
 /* 0000000000000000000 */
 /* 0000000000000000000 */
 /* 00000000 */
-#define RULE3_X
+#define RULE3_X1 (sint)(0b11110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
+
+//              128bits LE
+/* 1000000000000000001 */
+/* 1000000000000000000 */
+/* 1000000000000000000 */
+/* 1000000000000000000 */
+/* 0000000000000000000 */
+/* 0000000000000000000 */
+/* 00000000 */
+#define RULE3_X2   (sint)(10000000000000000000100000000000000000010000000000000000001000000000000000000000000000000000000000000000000000000000000000000000)
+
+#define TEST (sint)0b01111111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000
+
+void	showint128(unsigned __int128 v)
+{
+  int	i;
+  sint	e = 1;
+
+  for (i = 0; i < 128; i++)
+    {
+      printf("%d", v & e);
+      v >>= 1;
+    }
+  printf("\n");
+  return ;
+}
+
+int	prise(t_board *board, int x, int y)
+{
+  showint128(TEST);
+}

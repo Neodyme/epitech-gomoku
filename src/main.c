@@ -68,6 +68,9 @@ int		main()
 
   dump_board2(&board);
 
+  prise(NULL, 0, 0);
+  return 0;
+
   SDL_Init(SDL_INIT_VIDEO);
 
   screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE);
