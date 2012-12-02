@@ -13,22 +13,24 @@
 #include	<string.h>
 
 #include	"board.h"
-
+#include	"manip_boards.h"
 
 void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
 {
   SDL_Rect	pos;
-  int		x, y;
+  int		i;
 
-  for (x = 0; x < 19; ++x)
+  /* dump_board2(board); */
+  /* printf("\n---\n\n"); */
+
+  pos.w = 32;
+  pos.h = 32; 
+
+  for (i = 0; i < 19 * 19; i++)
     {
-      for (y = 0; y < 19; ++y)
-	{
-	  pos.w = 32;
-	  pos.h = 32;
-	  pos.x = x * 32 + 16;
-	  pos.y = y * 32 + 16;
-	  switch (get_board(board, x, y))
+      pos.x = (i / 19) * 32 + 16;
+      pos.y = (i % 19) * 32 + 16;
+      switch (get_board(board, (i / 19), (i % 19)))
 	    {
 	    case BLACK:
 	      SDL_BlitSurface(blackstone, NULL, screen, &pos);		  
@@ -37,7 +39,6 @@ void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone
 	      SDL_BlitSurface(whitestone, NULL, screen, &pos);
 	      break;
 	    }
-	}
     }
 }
 
@@ -57,20 +58,10 @@ int		main()
 
   t_board	board;
 
-  __int128	v;
-  __int128	v2;
-
-  v = 0;
-  v2 = 0;
-  v%v2;
 
   init_board(&board);
 
-  dump_board2(&board);
-
-  prise(NULL, 0, 0);
-  return 0;
-
+  /* return(1); */
   SDL_Init(SDL_INIT_VIDEO);
 
   screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE);
@@ -97,8 +88,10 @@ int		main()
       pos.x = 1;
       pos.y = 1;
       SDL_BlitSurface(background, NULL, screen, &pos);
+
       display_board(&board, screen, blackstone, whitestone);
       SDL_WaitEvent(&event);
+
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);
@@ -158,4 +151,3 @@ int		main()
     }
   return (0);
 }
-
