@@ -5,11 +5,16 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Sun Dec  2 18:07:08 2012 dorian schaegis
+** Last update Sun Dec  2 18:03:08 2012 Prost P.
 */
+
 
 #ifndef		GOMO_BOARD
 # define		GOMO_BOARD
+
+# include	<unistd.h>
+# include	<SDL/SDL.h>
+# include	<string.h>
 
 # define		EMPTY	0x00 /* 00 */
 # define		BLACK	0x01 /* 01 */

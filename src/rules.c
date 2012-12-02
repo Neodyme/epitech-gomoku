@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 17:54:01 2012 Prost P.
+** Last update Sun Dec  2 18:04:27 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -15,8 +15,9 @@
 #include <stdio.h>
 
 #include <inttypes.h>
-
+ 
 #include "board.h"
+#include "manip_boards.h"
 
 typedef unsigned __int128 sint;
 
@@ -105,7 +106,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
        && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y) == get_board(board, x, y))))
     {
-      TAKE(board, x, y);
+      TAKE(board, x + 2, y);
       TAKE(board, x + 2, y);
     }
   if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
@@ -126,12 +127,11 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
 
 #define HAZHAMBURGER(BOARD, X, Y) (!!!!get_board(BOARD, X, Y)) /* ZOMG EXCLAMATION MARKR */
 
-#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, COLOR)
+#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, COLOR) (void)
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
   set_board(board, x, y, color);
   
-  if COUNTHAMBURGER(board, x - 3, y, x - 2, x - 1, x, get_board)  == 3
-
+  /* if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, get_board)  == 3); */
 }
