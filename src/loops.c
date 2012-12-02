@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Sun Dec  2 23:31:57 2012 dorian schaegis
+** Last update Sun Dec  2 23:43:44 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -63,6 +63,8 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
 	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
+		  if (!rule3(board, cor.x, cor.y, current))
+		    printf("ZOMG PONYS\n");
 		  set_board(board, cor.x, cor.y, current);
 		  printf("Placed a ");
 		  if (current == BLACK)
