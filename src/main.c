@@ -13,6 +13,7 @@
 #include	<string.h>
 
 #include	"board.h"
+#include	"manip_boards.h"
 
 void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
 {
@@ -59,8 +60,7 @@ int		main()
 
   init_board(&board);
 
-  dump_board2(board.b);
-  return (0);
+  dump_board2(&board);
 
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -90,8 +90,6 @@ int		main()
       SDL_BlitSurface(background, NULL, screen, &pos);
       display_board(&board, screen, blackstone, whitestone);
       SDL_WaitEvent(&event);
-
-
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
 	  return (0);

@@ -5,13 +5,15 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Sun Dec  2 15:15:00 2012 dorian schaegis
+** Last update Sun Dec  2 15:27:55 2012 dorian schaegis
 */
 
 #include	<unistd.h>
 #include	<string.h>
 
 #include	<SDL/SDL.h>
+
+#include	"board.h"
 
 void		init_board(t_board *board)
 {
@@ -40,7 +42,7 @@ char		get_board(t_board *board, register char x, register char y)
   return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char)));
 }
 
-void		dump_board2(char *board)
+void		dump_board2(t_board *board)
 {
   unsigned int	i;
 
