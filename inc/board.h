@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Sun Dec  2 15:16:08 2012 Prost P.
+** Last update Sun Dec  2 18:07:08 2012 dorian schaegis
 */
 
 #ifndef		GOMO_BOARD
@@ -24,6 +24,21 @@ struct		s_board
 };
 
 typedef struct s_board t_board;
+
+struct		s_dl
+{
+  SDL_Surface	*screen;
+
+  SDL_Surface	*background;
+  SDL_Surface	*title;
+
+  SDL_Surface	*blackstone;
+  SDL_Surface	*whitestone;
+  SDL_Surface	*nopestone;
+};
+
+typedef struct s_dl t_surfaces;
+
 
 //typedef unsigned char t_board[91];
 
