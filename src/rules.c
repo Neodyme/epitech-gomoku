@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Sun Dec  2 22:05:47 2012 Prost P.
+** Last update Sun Dec  2 22:47:08 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -139,18 +139,20 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
    + (HAZCHEEZBURGER(BOARD, X1, Y1, COLOR))				\
    + (HAZCHEEZBURGER(BOARD, X2, Y2, COLOR))				\
    + (HAZCHEEZBURGER(BOARD, X3, Y3, COLOR))				\
-   - (12	* ((get_board(BOARD, XX, YX) == OPPOSITE(COLOR))	\
-		   | (get_board(BOARD, XX2, YX2) == OPPOSITE(COLOR)))))
+   - (12	* ((((get_board(BOARD, XX, YX) == OPPOSITE(COLOR)) | (XX == -1))) \
+		   | ((get_board(BOARD, XX2, YX2) == OPPOSITE(COLOR)) | (XX2 == 19))) ))
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
   set_board(board, x, y, color);
 
-  printf("%d\n", COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 4, y, get_board(board, x, y)));
-  if (COUNTHAMBURGER(board, x - 3, y, x - 2, y, x - 1, y, x, y, x - 4, y, x + 1, y, get_board(board, x, y))  == 3)
-    {
-      printf("ZOMG RULE 3 BREAKED!!!\n");
-      return (0);
-    }
+  if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  get_board(board, x, y))  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  get_board(board, x, y))  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  get_board(board, x, y))  == 4)
+    return (0);
+  if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  get_board(board, x, y))  == 4)
+    return (0);
   return (1);
 }
