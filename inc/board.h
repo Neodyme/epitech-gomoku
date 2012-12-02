@@ -5,11 +5,11 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Sun Dec  2 18:03:08 2012 Prost P.
+** Last update Sun Dec  2 19:24:35 2012 dorian schaegis
 */
 
 
-#ifndef		GOMO_BOARD
+#ifndef			GOMO_BOARD
 # define		GOMO_BOARD
 
 # include	<unistd.h>

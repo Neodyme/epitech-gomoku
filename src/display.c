@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 18:52:13 2012 dorian schaegis
+** Last update Sun Dec  2 19:25:37 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -15,7 +15,7 @@
 #include	"board.h"
 #include	"manip_boards.h"
 
-void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone, SDL_Surface *whitestone)
+void		place_pawns(t_board *board, t_surfaces *surf)
 {
   SDL_Rect	pos;
   int		i;
@@ -31,14 +31,14 @@ void		display_board(t_board *board, SDL_Surface *screen, SDL_Surface *blackstone
       pos.x = (i / 19) * 32 + 16;
       pos.y = (i % 19) * 32 + 16;
       switch (get_board(board, (i / 19), (i % 19)))
-	    {
-	    case BLACK:
-	      SDL_BlitSurface(blackstone, NULL, screen, &pos);		  
-	      break;
-	    case WHITE:
-	      SDL_BlitSurface(whitestone, NULL, screen, &pos);
-	      break;
-	    }
+	{
+	case BLACK:
+	  SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);		  
+	  break;
+	case WHITE:
+	  SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
+	  break;
+	}
     }
 }
 
@@ -49,12 +49,13 @@ char		init_sdl(t_surfaces *surf)
 
   surf->screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE);
 
+  surf->title = SDL_LoadBMP("./res/title.bmp");
+  surf->background = SDL_LoadBMP("./res/board.bmp");
+
   surf->blackstone = SDL_LoadBMP("./res/blackstone.bmp");
   surf->whitestone = SDL_LoadBMP("./res/whitestone.bmp");
   surf->nopestone = SDL_LoadBMP("./res/nope.bmp");
 
-  surf->title = SDL_LoadBMP("./res/title.bmp");
-  surf->background = SDL_LoadBMP("./res/board.bmp");
 
   SDL_SetColorKey(surf->blackstone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->blackstone->format, 255, 0, 255));
   SDL_SetColorKey(surf->whitestone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->whitestone->format, 255, 0, 255));
@@ -76,7 +77,6 @@ void		show_background(SDL_Surface *background, SDL_Surface *screen)
   pos.x = 1;
   pos.y = 1;
   SDL_BlitSurface(background, NULL, screen, &pos);
-
 }
 
 char		game_loop(t_board *board, t_surfaces *surf)
@@ -92,7 +92,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
   while (current)
     {
       show_background(surf->background, surf->screen);
-      display_board(board, surf->screen, surf->blackstone, surf->whitestone);
+      place_pawns(board, surf);
 
       SDL_WaitEvent(&event);
 
