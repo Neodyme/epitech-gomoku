@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Dec  2 23:48:51 2012 dorian schaegis
+** Last update Mon Dec  3 04:48:03 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -18,7 +18,7 @@
 void		place_pawns(t_board *board, t_surfaces *surf)
 {
   SDL_Rect	pos;
-  int		i;
+  unsigned int	i;
 
   /* dump_board2(board); */
   /* printf("\n---\n\n"); */
@@ -40,6 +40,21 @@ void		place_pawns(t_board *board, t_surfaces *surf)
 	  break;
 	}
     }
+
+  for (i = 0; i < (board->blacks*2); i++)
+    {
+      pos.x = -16; /* WTF */
+      pos.y = i * 32;
+      SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
+    }
+
+  pos.x = 640 - 16;
+  for (i = 0; i < (board->whites*2); i++)
+    {
+      pos.y = (640 - 32) - (i * 32);
+      SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
+    }
+
 }
 
 
@@ -51,10 +66,17 @@ char		init_sdl(t_surfaces *surf)
 
   if ((surf->screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE)) == NULL)
     return (printf("Set Video Mode failed\n"));
-  if ((surf->title = SDL_LoadBMP("./res/title.bmp")) == NULL)
-    return (printf("Texture couldn't be loaded\n"));
+
   if ((surf->background = SDL_LoadBMP("./res/board.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
+
+  if ((surf->title = SDL_LoadBMP("./res/title.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+  if ((surf->blackwin = SDL_LoadBMP("./res/blackwin.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+  if ((surf->whitewin = SDL_LoadBMP("./res/whitewin.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+
 
   if ((surf->blackstone = SDL_LoadBMP("./res/blackstone.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
@@ -75,8 +97,13 @@ char		init_sdl(t_surfaces *surf)
 void		free_sdl(t_surfaces *surf)
 {
   SDL_FreeSurface(surf->screen);
+
   SDL_FreeSurface(surf->background);
+
   SDL_FreeSurface(surf->title);
+  SDL_FreeSurface(surf->blackwin);
+  SDL_FreeSurface(surf->whitewin);
+
   SDL_FreeSurface(surf->blackstone);
   SDL_FreeSurface(surf->whitestone);
   SDL_FreeSurface(surf->nopestone);

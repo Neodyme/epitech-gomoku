@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 03:52:36 2012 dorian schaegis
+** Last update Mon Dec  3 05:00:16 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -114,22 +114,28 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    }
 	}
       usleep(500);
-      /* for (i = 0; i < 19 * 19; i++) */
-      /* 	prise(board, i/19, i%19); */
+      for (i = 0; i < 19 * 19; i++)
+      	if (rule5(board, i/19, i%19, get_board(board, i/19, i%19)))
+	  {
+	    printf("prout\n");
+	    return (get_board(board, i/19, i%19));
+	  }
       SDL_Flip(surf->screen);
     }
-  return (0);
+  return (42);
 }
 
 char		menu_loop(t_board *board, t_surfaces *surf)
 {
   SDL_Event     event;
+  SDL_Surface	*current;
   char		loop;
 
   loop = 1;
+  current = surf->title;
   while (loop)
     {
-      show_background(surf->title, surf->screen);
+      show_background(current, surf->screen);
       SDL_ShowCursor(1);
       SDL_WaitEvent(&event);
 
@@ -138,16 +144,25 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	loop = 0;
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
-	  /* printf("%i:%i\n", event.motion.x, event.motion.y); */
-	  if ((event.motion.x > 180) && (event.motion.x < 480))
+	  if (current == surf->title)
 	    {
-	      if ((event.motion.y > 400) && (event.motion.y < 450))
-		printf("IA Mode is currently unavailable\n");
-	      if ((event.motion.y > 480) && (event.motion.y < 520))
-		game_loop(board, surf);
-	      if ((event.motion.y > 560) && (event.motion.y < 600))
-		loop = 0;
+	      /* printf("%i:%i\n", event.motion.x, event.motion.y); */
+	      if ((event.motion.x > 180) && (event.motion.x < 480))
+		{
+		  if ((event.motion.y > 400) && (event.motion.y < 450))
+		    printf("IA Mode is currently unavailable\n");
+		  if ((event.motion.y > 480) && (event.motion.y < 520))
+		    loop = game_loop(board, surf);
+		  if ((event.motion.y > 560) && (event.motion.y < 600))
+		    loop = 0;
+		}
+	      if (loop == BLACK)
+		current = surf->blackwin;
+	      if (loop == WHITE)
+		current = surf->whitewin;
 	    }
+	  else 
+	    current = surf->title;
 	}
       SDL_Flip(surf->screen);
     }

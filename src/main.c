@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Sun Dec  2 23:38:06 2012 dorian schaegis
+** Last update Mon Dec  3 04:55:52 2012 dorian schaegis
 */
 
 #define		 _BSD_SOURCE
@@ -29,5 +29,6 @@ int		main(int ac, char **av)
   else
     menu_loop(&board, &surf);
   printf("Exiting\n");
+  free_sdl(&surf);
   return (0);
 }
