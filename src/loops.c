@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 00:38:24 2012 dorian schaegis
+** Last update Mon Dec  3 02:16:30 2012 Prost P.
 */
 
 #include	<SDL/SDL.h>
@@ -48,6 +48,7 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	  /* printf("x:%i y:%i\n", pos.x / 32, pos.y / 32); */
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
+	      rule5(board, cor.x, cor.y, current);
 	      if ((get_board(board, cor.x, cor.y) != EMPTY) ||
 		  (!rule3(board, cor.x, cor.y, current)))
 		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);	  		

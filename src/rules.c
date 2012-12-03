@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Mon Dec  3 00:38:59 2012 Prost P.
+** Last update Mon Dec  3 02:15:50 2012 Prost P.
 */
 
 #define          _BSD_SOURCE
@@ -139,8 +139,8 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
    + (HAZCHEEZBURGER(BOARD, X1, Y1, COLOR))				\
    + (HAZCHEEZBURGER(BOARD, X2, Y2, COLOR))				\
    + 1									\
-   - (12	* ((((get_board(BOARD, XX, YX) == OPPOSITE(COLOR)) | (XX == -1))) \
-		   | ((get_board(BOARD, XX2, YX2) == OPPOSITE(COLOR)) | (XX2 == 19))) ))
+   - (12	* ((((get_board(BOARD, XX, YX)) | (XX == -1))) \
+		   | ((get_board(BOARD, XX2, YX2)) | (XX2 == 19))) ))
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
@@ -183,4 +183,30 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
     return (0);
 
   return (1);
+}
+
+
+#define VERIFIELECHAT(BOARD, X, Y, COLOR)				\
+  ((HAZCHEEZBURGER(BOARD, X - 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y))) \
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y))) \
+									\
+   || (HAZCHEEZBURGER(BOARD, X, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y + 1))) \
+   || (HAZCHEEZBURGER(BOARD, X, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y - 1))) \
+									\
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1))) \
+   || (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y + 1))) \
+									\
+   || (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y - 1))) \
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1))))
+
+int	rule5(t_board *board, unsigned int x, unsigned int y, char color)
+{
+  if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
+      && (!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
+      && (!VERIFIELECHAT(board, x + 1, y, color) && HAZCHEEZBURGER(board, x + 1, y, color))
+      && (!VERIFIELECHAT(board, x + 2, y, color) && HAZCHEEZBURGER(board, x + 2, y, color))
+      && (!VERIFIELECHAT(board, x + 3, y, color) && HAZCHEEZBURGER(board, x + 3, y, color))
+      && (!VERIFIELECHAT(board, x + 4, y, color) && HAZCHEEZBURGER(board, x + 4, y, color)))
+    printf("WOWOOWOWOWOOW\n");
+
 }
