@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Sun Dec  2 22:56:53 2012 dorian schaegis
+** Last update Mon Dec  3 02:39:46 2012 dorian schaegis
 */
 
 #include	<unistd.h>
@@ -19,6 +19,8 @@
 void		init_board(t_board *board)
 {
   //		0b00100010
+  board->whites = 0;
+  board->blacks = 0;
   memset(board->b, 0, sizeof(board->b));
   memset(board->w, 0, sizeof(board->w));
 }
@@ -35,8 +37,8 @@ void		set_board(t_board *board, char x, char y, char val)
       board->w[BYTE(x, y, char)] |= (1 << (BIT(x, y, char)));
       break;
     case EMPTY:
-      board->w[BYTE(x, y, char)] |= (0 << (BIT(x, y, char)));
-      board->b[BYTE(x, y, char)] |= (0 << (BIT(x, y, char)));
+      board->w[BYTE(x, y, char)] &= ~(1 << (BIT(x, y, char)));
+      board->b[BYTE(x, y, char)] &= ~(1 << (BIT(x, y, char)));
       break;
     }
 }
