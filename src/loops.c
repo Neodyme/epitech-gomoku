@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 05:00:16 2012 dorian schaegis
+** Last update Mon Dec  3 05:27:00 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -32,6 +32,17 @@ char		game_loop(t_board *board, t_surfaces *surf)
       place_pawns(board, surf);
 
       SDL_WaitEvent(&event);
+
+      if (board->whites >= 5)
+	{
+	  printf("Blacks wins with captures!\n");
+	  return (BLACK);
+	}
+      if (board->blacks >= 5)
+	{
+	  printf("Blacks wins with captures!\n");
+	  return (WHITE);
+	}
 
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
 	  (event.type == SDL_QUIT))
@@ -79,6 +90,16 @@ char		game_loop(t_board *board, t_surfaces *surf)
 		      current = BLACK;
 		    }
 		  printf(" Stone at %i:%i\n", cor.x, cor.y);
+		  for (i = 0; i < 19 * 19; i++)
+		    if (rule5(board, i/19, i%19, current))
+		      {
+			if (get_board(board, i/19, i%19) == BLACK)
+			  printf("Blacks wins with a row!\n");
+			if (get_board(board, i/19, i%19) == WHITE)
+			  printf("Whites wins with a row!\n");
+			return (get_board(board, i/19, i%19));
+		      }
+		  
 		  if (prise(board, cor.x, cor.y))
 		    {
 		      printf("Taken two ");
@@ -114,12 +135,6 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    }
 	}
       usleep(500);
-      for (i = 0; i < 19 * 19; i++)
-      	if (rule5(board, i/19, i%19, get_board(board, i/19, i%19)))
-	  {
-	    printf("prout\n");
-	    return (get_board(board, i/19, i%19));
-	  }
       SDL_Flip(surf->screen);
     }
   return (42);
@@ -131,7 +146,7 @@ char		menu_loop(t_board *board, t_surfaces *surf)
   SDL_Surface	*current;
   char		loop;
 
-  loop = 1;
+  loop = 42;
   current = surf->title;
   while (loop)
     {
@@ -139,9 +154,17 @@ char		menu_loop(t_board *board, t_surfaces *surf)
       SDL_ShowCursor(1);
       SDL_WaitEvent(&event);
 
-      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
-	  (event.type == SDL_QUIT))
+      if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
+	   (event.type == SDL_QUIT)) && (current == surf->title))
 	loop = 0;
+
+      if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
+	   (event.type == SDL_QUIT)) && (current != surf->title))
+	{
+	  loop = 42;
+	  current = surf->title;
+	}
+
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
 	  if (current == surf->title)
@@ -162,7 +185,10 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 		current = surf->whitewin;
 	    }
 	  else 
-	    current = surf->title;
+	    {
+	      loop = 42;
+	      current = surf->title;
+	    }
 	}
       SDL_Flip(surf->screen);
     }
