@@ -190,7 +190,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
    - (12	* ((((get_board(BOARD, XX, YX)) || (XX == -1) || YX == -1)) \
 		   || ((get_board(BOARD, XX2, YX2)) || (XX2 == 19) || YX2 == 19))))
 
-int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
+int	rule3(t_board *board,  int x,  int y, char color)
 {
   /* printf("%d\n", COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)); */
 
@@ -227,8 +227,6 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
     return (0);
   if (COUNTHAMBURGER(board, x + 3, y - 3, x + 2, y - 2,  x + 1, y - 1, x, y, x + 4, y - 4,  x - 1, y + 1,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x + 1, y - 1 , x - 1, y + 1,  x - 2, y - 2, x, y, x - 3, y + 3,  x + 2, y - 2,  color)  == 4)
-    return (0);
 
   return (1);
 }
@@ -244,44 +242,46 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
    || (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y + 1))) \
    									\
    || (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y - 1))) \
-   || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1))))
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1)))\
+									\
+   || (HAZCHEEZBURGER(BOARD, X - 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y))) \
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y))) \
+									\
+   || (HAZCHEEZBURGER(BOARD, X, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y - 2))) \
+   || (HAZCHEEZBURGER(BOARD, X, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y + 2))) \
+   									\
+   || (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y + 2))) \
+   || (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y - 2))) \
+   									\
+   || (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y + 2))) \
+    || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y - 2))))
 
-int	rule5(t_board *board, unsigned int x, unsigned int y, char color)
+int	rule5(t_board *board,  int x,  int y, char color)
 {
   if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
       && (!VERIFIELECHAT(board, x + 1, y, color) && HAZCHEEZBURGER(board, x + 1, y, color))
       && (!VERIFIELECHAT(board, x + 2, y, color) && HAZCHEEZBURGER(board, x + 2, y, color))
       && (!VERIFIELECHAT(board, x + 3, y, color) && HAZCHEEZBURGER(board, x + 3, y, color))
       && (!VERIFIELECHAT(board, x + 4, y, color) && HAZCHEEZBURGER(board, x + 4, y, color)))
-
-    {
-      printf("S\n");
-    }
+    return (1);
   if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
       && (!VERIFIELECHAT(board, x, y + 1, color) && HAZCHEEZBURGER(board, x, y + 1, color))
       && (!VERIFIELECHAT(board, x, y + 2, color) && HAZCHEEZBURGER(board, x, y + 2, color))
       && (!VERIFIELECHAT(board, x, y + 3, color) && HAZCHEEZBURGER(board, x, y + 3, color))
       && (!VERIFIELECHAT(board, x, y + 4, color) && HAZCHEEZBURGER(board, x, y + 4, color)))
-
-    {
-      printf("S\n");
-    }
+    return (1);
 
   if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
       && (!VERIFIELECHAT(board, x + 1, y + 1, color) && HAZCHEEZBURGER(board, x + 1, y + 1, color))
       && (!VERIFIELECHAT(board, x + 2, y + 2, color) && HAZCHEEZBURGER(board, x + 2, y + 2, color))
       && (!VERIFIELECHAT(board, x + 3, y + 3, color) && HAZCHEEZBURGER(board, x + 3, y + 3, color))
       && (!VERIFIELECHAT(board, x + 4, y + 4, color) && HAZCHEEZBURGER(board, x + 4, y + 4, color)))
-    {
-      printf("S\n");
-    }
+    return (1);
   if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
       && (!VERIFIELECHAT(board, x + 1, y - 1, color + 1) && HAZCHEEZBURGER(board, x + 1, y - 1, color))
       && (!VERIFIELECHAT(board, x + 2, y - 2, color + 2) && HAZCHEEZBURGER(board, x + 2, y - 2, color))
       && (!VERIFIELECHAT(board, x + 3, y - 3, color + 3) && HAZCHEEZBURGER(board, x + 3, y - 3, color))
       && (!VERIFIELECHAT(board, x + 4, y - 4, color + 4) && HAZCHEEZBURGER(board, x + 4, y - 4, color)))
-    {
-      printf("S\n");
-    }
+    return (1);
   return (0);
 }

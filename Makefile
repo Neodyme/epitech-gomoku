@@ -21,7 +21,7 @@ INC=			-Iinc
 
 CFLAGS=			-W -Wall -Wextra\
 			-lSDL\
-			-O0 -g3 -Wsign-compare
+			-O0 -g3
 #			-O3
 
 $(NAME):		$(OBJ)
