@@ -273,6 +273,5 @@ int	rule5(t_board *board, unsigned int x, unsigned int y, char color)
       && (!VERIFIELECHAT(board, x + 3, y - 3, color + 3) && HAZCHEEZBURGER(board, x + 3, y - 3, color))
       && (!VERIFIELECHAT(board, x + 4, y - 4, color + 4) && HAZCHEEZBURGER(board, x + 4, y - 4, color)))
     return (1);
-
-
+  return (0);
 }
