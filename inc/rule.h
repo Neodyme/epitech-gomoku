@@ -10,6 +10,7 @@
 #define __RULE_H__
 
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color);
+int	rule5(t_board *board, unsigned int x, unsigned int y, char color);
 int	prise(t_board *board, unsigned int x, unsigned int y);
 
 #endif
