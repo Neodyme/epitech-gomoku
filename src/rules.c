@@ -221,13 +221,11 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
   if (COUNTHAMBURGER(board, x - 2, y - 2, x - 1, y - 1,  x + 1, y + 1, x, y, x - 3, y - 3,  x + 2, y + 2,  color)  == 4)
     return (0);
 
-  if (COUNTHAMBURGER(board, x + 3, y + 3, x + 2, y + 2,  x + 1, y + 1, x, y, x + 4, y + 4,  x + 1, y + 1,  color)  == 4)
+  if (COUNTHAMBURGER(board, x - 3, y + 3, x - 2, y - 2,  x - 1, y - 1, x, y, x - 4, y - 4,  x + 1, y + 1,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x + 3, y + 3, x + 2, y + 2,  x + 1, y + 1, x, y, x + 1, y + 1,  x + 4, y + 4,  color)  == 4)
+  if (COUNTHAMBURGER(board, x + 3, y - 3, x + 2, y + 2,  x + 1, y + 1, x, y, x - 1, y - 1,  x + 4, y + 4,  color)  == 4)
     return (0);
-  if (COUNTHAMBURGER(board, x + 1, y + 1, x + 1, y + 1,  x + 2, y + 2, x, y, x + 2, y + 2,  x + 3, y + 3,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x + 2, y + 2, x + 1, y + 1,  x + 1, y + 1, x, y, x + 3, y + 3,  x + 2, y + 2,  color)  == 4)
+  if (COUNTHAMBURGER(board, x - 1, y - 1, x + 1, y + 1,  x + 2, y + 2, x, y, x - 2, y - 2,  x + 3, y + 3,  color)  == 4)
     return (0);
 
   return (1);
@@ -275,6 +273,5 @@ int	rule5(t_board *board, unsigned int x, unsigned int y, char color)
       && (!VERIFIELECHAT(board, x + 3, y - 3, color + 3) && HAZCHEEZBURGER(board, x + 3, y - 3, color))
       && (!VERIFIELECHAT(board, x + 4, y - 4, color + 4) && HAZCHEEZBURGER(board, x + 4, y - 4, color)))
     return (1);
-
-
+  return (0);
 }
