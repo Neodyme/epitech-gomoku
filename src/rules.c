@@ -5,7 +5,7 @@
 ** Login   <pprost@epitech.net>
 ** 
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
-** Last update Mon Dec  3 00:38:59 2012 Prost P.
+** Last update Mon Dec  3 02:32:17 2012 dorian schaegis
 */
 
 #define          _BSD_SOURCE
@@ -104,32 +104,81 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
 {
   /* printf("%i %i\n", WHITE, OPPOSITE(WHITE)); */
   /* printf("%i %i\n", BLACK, OPPOSITE(BLACK)); */
-
   if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y) == get_board(board, x, y))))
     {
-      printf("prend Hori\n");
-     TAKE(board, x + 1, y);
-     TAKE(board, x + 2, y);
-    }
+      /* printf("prend - 1\n"); */
+      TAKE(board, x + 1, y);
+      TAKE(board, x + 2, y);
+      return (1); 
+   }
   if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x, y + 2) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x, y + 3) == get_board(board, x, y))))
     {
-      printf("prend V\n");
+      /* printf("prend | 1\n"); */
       TAKE(board, x, y + 1);
       TAKE(board, x, y + 2);
+      return (1);
     }
   if ((get_board(board, x + 1, y + 1) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x + 2, y + 2) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x + 3, y + 3) == get_board(board, x, y))))
     {
-      printf("prend D\n");
+      /* printf("prend \ 1\n"); */
       TAKE(board, x + 1, y + 1);
       TAKE(board, x + 2, y + 2);
+      return (1);
     }
-  return ((int)"OVER 9000"[2] * unix);
+  if ((get_board(board, x + 1, y - 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x + 2, y - 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x + 3, y - 3) == get_board(board, x, y))))
+    {
+      /* printf("prend / 1\n"); */
+      TAKE(board, x + 1, y - 1);
+      TAKE(board, x + 2, y - 2);
+      return (1);
+    }
+
+
+  if ((get_board(board, x - 1, y) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x - 2, y) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x - 3, y) == get_board(board, x, y))))
+    {
+      /* printf("prend - 2\n"); */
+      TAKE(board, x - 1, y);
+      TAKE(board, x - 2, y);
+      return (1);
+    }
+  if ((get_board(board, x, y - 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x, y - 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x, y - 3) == get_board(board, x, y))))
+    {
+      /* printf("prend | 2\n"); */
+      TAKE(board, x, y - 1);
+      TAKE(board, x, y - 2);
+      return (1);
+    }
+  if ((get_board(board, x - 1, y - 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x - 2, y - 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x - 3, y - 3) == get_board(board, x, y))))
+    {
+      /* printf("prend \ 2\n"); */
+      TAKE(board, x - 1, y - 1);
+      TAKE(board, x - 2, y - 2);
+      return (1);
+    }
+  if ((get_board(board, x - 1, y + 1) == OPPOSITE(get_board(board, x, y))
+       && (get_board(board, x - 2, y + 2) == OPPOSITE(get_board(board, x, y)))
+       && (get_board(board, x - 3, y + 3) == get_board(board, x, y))))
+    {
+      /* printf("prend / 2\n"); */
+      TAKE(board, x - 1, y + 1);
+      TAKE(board, x - 2, y + 2);
+      return (1);
+    }
+  return (0);
 }
 
 #define HAZHAMBURGER(BOARD, X, Y) (!!!!get_board(BOARD, X, Y)) /* ZOMG EXCLAMATION MARKR */

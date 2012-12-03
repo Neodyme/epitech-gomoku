@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 00:38:24 2012 dorian schaegis
+** Last update Mon Dec  3 02:41:26 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -78,7 +78,21 @@ char		game_loop(t_board *board, t_surfaces *surf)
 		      printf("White");
 		      current = BLACK;
 		    }
-		  printf(" Stone at %i:%i\n", cor.x, cor.y);		    
+		  printf(" Stone at %i:%i\n", cor.x, cor.y);
+		  if (prise(board, cor.x, cor.y))
+		    {
+		      printf("Taken two ");
+		      if (current == BLACK)
+			{
+			  board->blacks++;
+			  printf("Black Stones (%i total)\n", board->blacks*2);
+			}
+		      else
+			{
+			  board->whites++;
+			  printf("Whites Stones (%i total)\n", board->whites*2);
+			}
+		    }
 		}
 	      else
 		{
@@ -100,10 +114,8 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    }
 	}
       usleep(500);
-      for (i = 0; i < 19 * 19; i++)
-      	{
-      	  prise(board, i/19, i%19);
-      	}
+      /* for (i = 0; i < 19 * 19; i++) */
+      /* 	prise(board, i/19, i%19); */
       SDL_Flip(surf->screen);
     }
   return (0);

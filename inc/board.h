@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Sun Dec  2 19:24:35 2012 dorian schaegis
+** Last update Mon Dec  3 02:38:44 2012 dorian schaegis
 */
 
 
@@ -26,6 +26,8 @@ struct		s_board
 {
   unsigned char	b[46];
   unsigned char	w[46];
+  unsigned int	blacks;
+  unsigned int	whites;
 };
 
 typedef struct s_board t_board;
