@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Tue Jan 15 17:39:14 2013 dorian schaegis
+** Last update Tue Jan 15 20:29:40 2013 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -14,6 +14,7 @@
 #include	"display.h"
 #include	"IA.h"
 #include	"manip_boards.h"
+#include	"getms.h"
 
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 
@@ -133,21 +134,29 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  cor.x = event.motion.x / 32 - 1;
 	  cor.y = event.motion.y / 32 - 1;
 	  /* printf("x:%i y:%i\n", pos.x / 32, pos.y / 32); */
+	  
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
-	      if ((get_board(board, cor.x, cor.y) != EMPTY) ||
-		  (!rule3(board, cor.x, cor.y, current)))
-		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
-	      else if (current == BLACK)
+	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
-		  SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
-		  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+		  if (!rule3(board, cor.x, cor.y, current))
+		    SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
+		  else if (current == BLACK)
+		    {
+		  getms("blit");
+		      SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
+		      SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+		  getms(NULL);
+		    }
+		  else
+		    {
+		      SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
+		      SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+		    }
+
 		}
 	      else
-		{
-		  SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
-		  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-		}
+		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);		
 	    }
 	}
 
@@ -156,8 +165,11 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
+	      
 	      current = pose(board, cor.x, cor.y, current);
+	      
 	    }
+
 	  for (i = 0; i < 19 * 19; i++)
 	    {
 	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
@@ -171,7 +183,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    }
 	}
       SDL_Flip(surf->screen);
-
+     
       ticks = SDL_GetTicks();
       if (twait <= ticks)
 	{
