@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Wed Dec 12 18:43:59 2012 dorian schaegis
+** Last update Tue Jan 15 16:51:14 2013 dorian schaegis
 */
 
 
@@ -54,6 +54,13 @@ typedef struct s_dl t_surfaces;
 
 //typedef unsigned char t_board[91];
 
+struct		s_pos
+{
+  int		x;
+  int		y;
+};
+
+typedef	struct s_pos	t_pos
 # define BYTE(X, Y, TYPE) ((19 * X + Y) / 8)
 # define BIT(X, Y, TYPE)  ((19 * X + Y) % 8)
 

@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Tue Jan 15 15:52:17 2013 dorian schaegis
+** Last update Tue Jan 15 17:13:42 2013 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -20,6 +20,8 @@
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   int		i;
+  t_pos		moveIA;
+
   SDL_Rect	pos;
   SDL_Rect	cor;
 
@@ -38,7 +40,9 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       show_background(surf->background, surf->screen);
       if (mode && current == WHITE)
 	{
-	  callIA(board);
+	  moveIA = callIA(board);
+	  /* prise à partir de moveIA */
+	  free(moveIA);
 	  current = BLACK;
 	}
       place_pawns(board, surf);
