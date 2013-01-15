@@ -5,32 +5,42 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Wed Dec 12 18:48:29 2012 dorian schaegis
+** Last update Tue Jan 15 15:52:17 2013 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
 #include	"board.h"
 #include	"rule.h"
 #include	"display.h"
+#include	"IA.h"
 #include	"manip_boards.h"
 
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 
-char		game_loop(t_board *board, t_surfaces *surf)
+char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   int		i;
   SDL_Rect	pos;
   SDL_Rect	cor;
 
+  Uint32	ticks;
+  Uint32	twait;
+
   SDL_Event     event;
   char		current;
 
+  twait = 0;
   current = BLACK;
   SDL_ShowCursor(0);
   init_board(board);
   while (current)
     {
       show_background(surf->background, surf->screen);
+      if (mode && current == WHITE)
+	{
+	  callIA(board);
+	  current = BLACK;
+	}
       place_pawns(board, surf);
 
       SDL_WaitEvent(&event);
@@ -147,63 +157,66 @@ char		game_loop(t_board *board, t_surfaces *surf)
 		}
 	    }
 	}
-      usleep(500);
       SDL_Flip(surf->screen);
+
+      ticks = SDL_GetTicks();
+      if (twait <= ticks)
+	{
+	  twait = ticks + 20;
+	  SDL_Delay(0);
+	}
+      else
+	SDL_Delay(twait - ticks);
     }
   return (42);
 }
 
-  char		menu_loop(t_board *board, t_surfaces *surf)
-  {
-    SDL_Event     event;
-    SDL_Surface	*current;
-    char		loop;
+char		menu_loop(t_board *board, t_surfaces *surf)
+{
+  SDL_Event     event;
+  char		loop;
+  SDL_Surface	*current;
 
-    loop = 42;
-    current = surf->title;
-    while (loop)
-      {
-	show_background(current, surf->screen);
-	SDL_ShowCursor(1);
-	SDL_WaitEvent(&event);
+  loop = 42;
+  current = surf->title;
+  while (loop)
+    {
+      show_background(current, surf->screen);
+      SDL_ShowCursor(1);
+      SDL_WaitEvent(&event);
 
-	if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
-	     (event.type == SDL_QUIT)) && (current == surf->title))
-	  loop = 0;
+      if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
+	   (event.type == SDL_QUIT)) && (current == surf->title))
+	loop = 0;
 
-	if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
-	     (event.type == SDL_QUIT)) && (current != surf->title))
-	  {
-	    loop = 42;
-	    current = surf->title;
-	  }
+      if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) || 
+	   (event.type == SDL_QUIT)) && (current != surf->title))
+	{
+	  loop = 42;
+	  current = surf->title;
+	}
 
-	if (event.type == SDL_MOUSEBUTTONUP)
-	  {
-	    if (current == surf->title)
-	      {
-		/* printf("%i:%i\n", event.motion.x, event.motion.y); */
-		if ((event.motion.x > 180) && (event.motion.x < 480))
-		  {
-		    if ((event.motion.y > 400) && (event.motion.y < 450))
-		      printf("IA Mode is currently unavailable\n");
-		    if ((event.motion.y > 480) && (event.motion.y < 520))
-		      loop = game_loop(board, surf);
-		    if ((event.motion.y > 560) && (event.motion.y < 600))
-		      loop = 0;
-		  }
-		if (loop == BLACK)
-		  current = surf->blackwin;
-		if (loop == WHITE)
-		  current = surf->whitewin;
-	      }
-	    else 
-	      {
-		loop = 42;
-		current = surf->title;
-	      }
-	  }
-	SDL_Flip(surf->screen);
-      }
-    return (0);
-  }
+      if (event.type == SDL_MOUSEBUTTONUP)
+	{
+	  if (current == surf->title)
+	    {
+	      if ((event.motion.x > 180) && (event.motion.x < 480))
+		{
+		  if ((event.motion.y > 400) && (event.motion.y < 450))
+		    loop = game_loop(board, surf, 1);
+		  if ((event.motion.y > 480) && (event.motion.y < 520))
+		    loop = game_loop(board, surf, 0);
+		  if ((event.motion.y > 560) && (event.motion.y < 600))
+		    loop = 0;
+		}
+	    }
+	  else 
+	    {
+	      loop = 42;
+	      current = surf->title;
+	    }
+	}
+      SDL_Flip(surf->screen);
+    }
+  return (0);
+}
