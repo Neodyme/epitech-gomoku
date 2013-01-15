@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Mon Dec  3 04:48:03 2012 dorian schaegis
+** Last update Wed Dec 12 18:45:52 2012 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -77,6 +77,9 @@ char		init_sdl(t_surfaces *surf)
   if ((surf->whitewin = SDL_LoadBMP("./res/whitewin.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
 
+  if ((surf->cursor = SDL_LoadBMP("./res/cursor.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+
 
   if ((surf->blackstone = SDL_LoadBMP("./res/blackstone.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
@@ -84,6 +87,9 @@ char		init_sdl(t_surfaces *surf)
     return (printf("Texture couldn't be loaded\n"));
   if ((surf->nopestone = SDL_LoadBMP("./res/nope.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
+
+
+  SDL_SetColorKey(surf->cursor, SDL_SRCCOLORKEY, SDL_MapRGB(surf->cursor->format, 255, 0, 255));
 
   SDL_SetColorKey(surf->blackstone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->blackstone->format, 255, 0, 255));
   SDL_SetColorKey(surf->whitestone, SDL_SRCCOLORKEY, SDL_MapRGB(surf->whitestone->format, 255, 0, 255));
@@ -103,6 +109,8 @@ void		free_sdl(t_surfaces *surf)
   SDL_FreeSurface(surf->title);
   SDL_FreeSurface(surf->blackwin);
   SDL_FreeSurface(surf->whitewin);
+
+  SDL_FreeSurface(surf->cursor);
 
   SDL_FreeSurface(surf->blackstone);
   SDL_FreeSurface(surf->whitestone);

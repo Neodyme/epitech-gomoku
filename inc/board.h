@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Mon Dec  3 04:46:12 2012 dorian schaegis
+** Last update Wed Dec 12 18:43:59 2012 dorian schaegis
 */
 
 
@@ -41,6 +41,8 @@ struct		s_dl
   SDL_Surface	*title;
   SDL_Surface	*blackwin;
   SDL_Surface	*whitewin;
+
+  SDL_Surface	*cursor;
 
   SDL_Surface	*blackstone;
   SDL_Surface	*whitestone;

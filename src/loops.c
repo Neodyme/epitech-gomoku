@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Mon Dec  3 13:21:47 2012 Prost P.
+** Last update Wed Dec 12 18:48:29 2012 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -63,11 +63,17 @@ char		game_loop(t_board *board, t_surfaces *surf)
 	    {
 	      if ((get_board(board, cor.x, cor.y) != EMPTY) ||
 		  (!rule3(board, cor.x, cor.y, current)))
-		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);	  		
+		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
 	      else if (current == BLACK)
-		SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
+		{
+		  SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
+		  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+		}
 	      else
-		SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
+		{
+		  SDL_BlitSurface(surf->whitestone, NULL, surf->screen, &pos);
+		  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+		}
 	    }
 	}
 
