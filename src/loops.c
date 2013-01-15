@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Tue Jan 15 17:13:42 2013 dorian schaegis
+** Last update Tue Jan 15 17:39:14 2013 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -17,10 +17,69 @@
 
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 
+char		pose(t_board *board, int x, int y, char current)
+{
+  int		i;
+
+  if ((get_board(board, x, y) == EMPTY) && 
+      (rule3(board, x, y, current)))
+    {
+      set_board(board, x, y, current);
+      printf("Placed a ");
+      if (current == BLACK)
+	{
+	  printf("Black");
+	  current = WHITE;
+	}
+      else
+	{
+	  printf("White");
+	  current = BLACK;
+	}
+      printf(" Stone at %i:%i\n", x, y);
+      for (i = 0; i < 19 * 19; i++)
+	{
+	  if (prise(board, x, y))
+	    {
+	      printf("Taken two ");
+	      if (current == BLACK)
+		{
+		  board->blacks++;
+		  printf("Black Stones (%i total)\n", board->blacks*2);
+		}
+	      else
+		{
+		  board->whites++;
+		  printf("Whites Stones (%i total)\n", board->whites*2);
+		}
+	    }
+	}
+    }
+  else
+    {
+      printf("There's ");
+      switch (get_board(board, x, y))
+	{
+	case BLACK:
+	  printf("a Black Stone");
+	  break;
+	case WHITE:
+	  printf("a White Stone");
+	  break;
+	case EMPTY:
+	  printf("nothing");
+	  break;
+	}
+      printf(" here\n");
+    }
+  return (current);
+}
+
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   int		i;
-  t_pos		moveIA;
+  t_pos		*moveIA;
+  char		rules;
 
   SDL_Rect	pos;
   SDL_Rect	cor;
@@ -35,12 +94,13 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   current = BLACK;
   SDL_ShowCursor(0);
   init_board(board);
+  rules = 3;
   while (current)
     {
       show_background(surf->background, surf->screen);
       if (mode && current == WHITE)
 	{
-	  moveIA = callIA(board);
+	  moveIA = callIA(board, rules);
 	  /* prise à partir de moveIA */
 	  free(moveIA);
 	  current = BLACK;
@@ -96,58 +156,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
 	      /* printf("At %i-%i: ", cor.x, cor.y); */
-	      if ((get_board(board, cor.x, cor.y) == EMPTY) && 
-		  (rule3(board, cor.x, cor.y, current)))
-		{
-		  set_board(board, cor.x, cor.y, current);
-		  printf("Placed a ");
-		  if (current == BLACK)
-		    {
-		      printf("Black");
-		      current = WHITE;
-		    }
-		  else
-		    {
-		      printf("White");
-		      current = BLACK;
-		    }
-		  printf(" Stone at %i:%i\n", cor.x, cor.y);
-		  for (i = 0; i < 19 * 19; i++)
-		    {
-		      if (prise(board, cor.x, cor.y))
-			{
-			  printf("Taken two ");
-			  if (current == BLACK)
-			    {
-			      board->blacks++;
-			      printf("Black Stones (%i total)\n", board->blacks*2);
-			    }
-			  else
-			    {
-			      board->whites++;
-			      printf("Whites Stones (%i total)\n", board->whites*2);
-			    }
-			}
-		    }		   
-		}
-	      else
-		{
-		  printf("There's ");
-		  switch (get_board(board, cor.x, cor.y))
-		    {
-		    case BLACK:
-		      printf("a Black Stone");
-		      break;
-		    case WHITE:
-		      printf("a White Stone");
-		      break;
-		    case EMPTY:
-		      printf("nothing");
-		      break;
-		    }
-		  printf(" here\n");
-		}
-
+	      current = pose(board, cor.x, cor.y, current);
 	    }
 	  for (i = 0; i < 19 * 19; i++)
 	    {

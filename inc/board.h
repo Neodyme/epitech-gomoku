@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Tue Jan 15 16:51:14 2013 dorian schaegis
+** Last update Tue Jan 15 17:19:17 2013 dorian schaegis
 */
 
 
@@ -60,7 +60,8 @@ struct		s_pos
   int		y;
 };
 
-typedef	struct s_pos	t_pos
+typedef	struct s_pos	t_pos;
+
 # define BYTE(X, Y, TYPE) ((19 * X + Y) / 8)
 # define BIT(X, Y, TYPE)  ((19 * X + Y) % 8)
 
