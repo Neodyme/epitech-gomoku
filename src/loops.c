@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Tue Jan 15 20:29:40 2013 dorian schaegis
+** Last update Wed Jan 16 19:34:49 2013 dorian schaegis
 */
 
 #include	<SDL/SDL.h>
@@ -16,12 +16,15 @@
 #include	"manip_boards.h"
 #include	"getms.h"
 
-#define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
+#define		OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 
 char		pose(t_board *board, int x, int y, char current)
 {
   int		i;
 
+  getms("get");
+  get_board(board, x, y);
+  getms(NULL);
   if ((get_board(board, x, y) == EMPTY) && 
       (rule3(board, x, y, current)))
     {
@@ -85,17 +88,17 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   SDL_Rect	pos;
   SDL_Rect	cor;
 
-  Uint32	ticks;
-  Uint32	twait;
-
   SDL_Event     event;
   char		current;
 
-  twait = 0;
   current = BLACK;
   SDL_ShowCursor(0);
   init_board(board);
   rules = 3;
+
+  cor.x = 0;
+  cor.y = 0;
+
   while (current)
     {
       show_background(surf->background, surf->screen);
@@ -106,7 +109,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  free(moveIA);
 	  current = BLACK;
 	}
-      place_pawns(board, surf);
 
       SDL_WaitEvent(&event);
 
@@ -125,6 +127,28 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  (event.type == SDL_QUIT))
 	current = 0;
 
+      // Click
+      if (event.type == SDL_MOUSEBUTTONUP)
+	{
+	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
+	    {
+	      /* printf("At %i-%i: ", cor.x, cor.y); */
+	      current = pose(board, cor.x, cor.y, current);
+	    }
+
+	  for (i = 0; i < 19 * 19; i++)
+	    {
+	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
+		{
+		  if (get_board(board, i/19, i%19) == BLACK)
+		    printf("Blacks wins with a row!\n");
+		  if (get_board(board, i/19, i%19) == WHITE)
+		    printf("Whites wins with a row!\n");
+		  return (get_board(board, i/19, i%19));
+		}
+	    }
+	}
+      place_pawns(board, surf);
       if (event.type == SDL_MOUSEMOTION)
 	{
      	  pos.w = 32;
@@ -143,10 +167,8 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		    SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
 		  else if (current == BLACK)
 		    {
-		  getms("blit");
 		      SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
 		      SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-		  getms(NULL);
 		    }
 		  else
 		    {
@@ -160,38 +182,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    }
 	}
 
-      if (event.type == SDL_MOUSEBUTTONUP)
-	{
-	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
-	    {
-	      /* printf("At %i-%i: ", cor.x, cor.y); */
-	      
-	      current = pose(board, cor.x, cor.y, current);
-	      
-	    }
-
-	  for (i = 0; i < 19 * 19; i++)
-	    {
-	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
-		{
-		  if (get_board(board, i/19, i%19) == BLACK)
-		    printf("Blacks wins with a row!\n");
-		  if (get_board(board, i/19, i%19) == WHITE)
-		    printf("Whites wins with a row!\n");
-		  return (get_board(board, i/19, i%19));
-		}
-	    }
-	}
       SDL_Flip(surf->screen);
-     
-      ticks = SDL_GetTicks();
-      if (twait <= ticks)
-	{
-	  twait = ticks + 20;
-	  SDL_Delay(0);
-	}
-      else
-	SDL_Delay(twait - ticks);
     }
   return (42);
 }
