@@ -19,9 +19,15 @@ OBJ=			$(addprefix obj/, $(patsubst %.c, %.o, $(SRC)))
 
 INC=			-Iinc
 
-CFLAGS=			-W -Wall -Wextra\
+CFLAGS=			-W -Wall -Wextra -Werror\
 			-lSDL\
+<<<<<<< HEAD
 			-O0 -O1 -O2 -O3
+=======
+			-O0 -g3\
+			-lrt
+#			-O3
+>>>>>>> a522871da23541a60060110cddff32f043456f07
 
 $(NAME):		$(OBJ)
 			@echo -en "[BIN] $(NAME) -> \E[33;31m"

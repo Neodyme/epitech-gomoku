@@ -5,7 +5,11 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Wed Jan 16 15:40:08 2013 Prost P.
+<<<<<<< HEAD
+** Last update Wed Jan 16 16:34:20 2013 Prost P.
+=======
+** Last update Tue Jan 15 17:19:17 2013 dorian schaegis
+>>>>>>> a522871da23541a60060110cddff32f043456f07
 */
 
 
@@ -41,6 +45,8 @@ struct		s_dl
   SDL_Surface	*blackwin;
   SDL_Surface	*whitewin;
 
+  SDL_Surface	*cursor;
+
   SDL_Surface	*blackstone;
   SDL_Surface	*whitestone;
   SDL_Surface	*nopestone;
@@ -53,5 +59,13 @@ typedef struct s_dl t_surfaces;
 
 # define BYTE(X, Y, TYPE) ((38 * X + Y * 2) / 8)
 # define BIT(X, Y, TYPE)  ((38 * X + Y * 2) % 8)
+
+struct		s_pos
+{
+  int		x;
+  int		y;
+};
+
+typedef	struct s_pos	t_pos;
 
 #endif
