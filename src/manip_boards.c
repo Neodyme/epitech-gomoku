@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Mon Dec  3 02:39:46 2012 dorian schaegis
+** Last update Wed Jan 16 16:28:28 2013 Prost P.
 */
 
 #include	<unistd.h>
@@ -21,33 +21,21 @@ void		init_board(t_board *board)
   //		0b00100010
   board->whites = 0;
   board->blacks = 0;
-  memset(board->b, 0, sizeof(board->b));
-  memset(board->w, 0, sizeof(board->w));
+  memset(board->board, 0x00, sizeof(board->board) );
+  memset(board->board + 38, 0x99, 1 );
+  memset(board->board, 0x99, 1 );
+  /* memset(board->board, 0xffffffff, sizeof(int)); */
 }
 
 
-void		set_board(t_board *board, char x, char y, char val)
+inline void	set_board(t_board *board, register int x, register int y, int val)
 {
-  switch (val)
-    {
-    case BLACK:
-      board->b[BYTE(x, y, char)] |= (1 << (BIT(x, y, char)));
-      break;
-    case WHITE:
-      board->w[BYTE(x, y, char)] |= (1 << (BIT(x, y, char)));
-      break;
-    case EMPTY:
-      board->w[BYTE(x, y, char)] &= ~(1 << (BIT(x, y, char)));
-      board->b[BYTE(x, y, char)] &= ~(1 << (BIT(x, y, char)));
-      break;
-    }
+  board->board[BYTE(x, y, char)] = (board->board[BYTE(x, y, char)] & ~(3 << BIT(x, y, char))) | (val << BIT(x, y, char));
 }
 
-char		get_board(t_board *board, register char x, register char y)
+inline char    	get_board(t_board *board, register int x, register int y)
 {
-  return ((board->b[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
-	  | ((board->w[BYTE(x, y, char)] & (0x00000001 << BIT(x, y, char))) >> (BIT(x, y, char))
-	     << 1));
+  return ((board->board[BYTE(x, y, char)] & (3 << BIT(x, y, char))) >> BIT(x, y, char));
 }
 
 void		dump_board(t_board *board)

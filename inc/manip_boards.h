@@ -5,15 +5,15 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Sun Dec  2 16:38:50 2012 dorian schaegis
+** Last update Wed Jan 16 11:44:43 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
 #define		__GOMO_MANIP_H
 
 void		init_board(t_board *board);
-void		set_board(t_board *board, char x, char y, char val);
-char		get_board(t_board *board, register char x, register char y);
+inline void	set_board(t_board *board, register int x, register int y, int val);
+inline char    	get_board(t_board *board, register int x, register int y);
 void		dump_board(t_board *board);
 
 

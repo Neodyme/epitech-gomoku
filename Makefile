@@ -21,8 +21,7 @@ INC=			-Iinc
 
 CFLAGS=			-W -Wall -Wextra\
 			-lSDL\
-			-O0 -g3
-#			-O3
+			-O0 -O1 -O2 -O3
 
 $(NAME):		$(OBJ)
 			@echo -en "[BIN] $(NAME) -> \E[33;31m"

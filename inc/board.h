@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
-** Last update Mon Dec  3 04:46:12 2012 dorian schaegis
+** Last update Wed Jan 16 15:40:08 2013 Prost P.
 */
 
 
@@ -24,8 +24,7 @@
 
 struct		s_board
 {
-  unsigned char	b[46];
-  unsigned char	w[46];
+  unsigned char	board[92];
   unsigned int	blacks;
   unsigned int	whites;
 };
@@ -52,7 +51,7 @@ typedef struct s_dl t_surfaces;
 
 //typedef unsigned char t_board[91];
 
-# define BYTE(X, Y, TYPE) ((19 * X + Y) / 8)
-# define BIT(X, Y, TYPE)  ((19 * X + Y) % 8)
+# define BYTE(X, Y, TYPE) ((38 * X + Y * 2) / 8)
+# define BIT(X, Y, TYPE)  ((38 * X + Y * 2) % 8)
 
 #endif
