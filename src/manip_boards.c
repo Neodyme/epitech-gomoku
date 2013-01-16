@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Wed Jan 16 16:28:28 2013 Prost P.
+** Last update Wed Jan 16 16:33:19 2013 Prost P.
 */
 
 #include	<unistd.h>
@@ -22,8 +22,6 @@ void		init_board(t_board *board)
   board->whites = 0;
   board->blacks = 0;
   memset(board->board, 0x00, sizeof(board->board) );
-  memset(board->board + 38, 0x99, 1 );
-  memset(board->board, 0x99, 1 );
   /* memset(board->board, 0xffffffff, sizeof(int)); */
 }
 
