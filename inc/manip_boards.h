@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Thu Jan 17 19:14:18 2013 Prost P.
+** Last update Thu Jan 17 19:26:13 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
@@ -20,7 +20,7 @@
 #define DO_C		1
 #define DO_R		0
 
-long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
+long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
 void		init_board(t_board *board);
 inline void	set_board(t_board *board, register int x, register int y, int val);

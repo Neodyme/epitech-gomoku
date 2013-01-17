@@ -100,12 +100,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
   cor.x = 0;
   cor.y = 0;
-<<<<<<< HEAD
-	  
-=======
-
   moveIA= malloc(sizeof(t_pos));
->>>>>>> f4016b8bb45aefa7d78cf6273dad4136b13d918a
 
   while (current)
     {
