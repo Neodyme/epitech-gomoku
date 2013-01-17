@@ -1,28 +1,142 @@
 /*
 ** IA.c for rtype in /a/galaxy/far/far/away
-** 
+**
 ** Made by dorian schaegis
 ** Login   <schaeg_d@epitech.net>
-** 
+**
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Tue Jan 15 17:28:09 2013 dorian schaegis
+** Last update Thu Jan 17 17:16:11 2013 jonathan martins
 */
 
 
 #include	"IA.h"
 #include	"board.h"
+#include	"rule.h"
+#include	"manip_boards.h"
 
-t_pos		*callIA(t_board *board, char rules)
+#define		OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
+#define		INFINITY 2000000
+#define		DEPTH 2
+
+int		heuristic_eval(t_board *board)
 {
-  t_pos		*ret;
-
+  return 0;
   (void)board;
-  (void)rules;
+}
 
-  ret = malloc(sizeof(t_pos));
+int		leaf(t_board *board)
+{
+  int		i;
+  char		current;
+
+  if (board->whites >= 5 || board->blacks >=5)
+    return 1;
+  current = BLACK;
+  for (i = 0; i < 19 * 19; i++)
+    {
+      if (rule5(board, i/19, i%19, OPPOSITE(current)))
+	return 1;
+    }
+  current = WHITE;
+  for (i = 0; i < 19 * 19; i++)
+    {
+      if (rule5(board, i/19, i%19, OPPOSITE(current)))
+	return 1;
+    }
+  return 0;
+}
+
+int		minimax(t_board *node, int depth, char current)
+{
+  int		val;
+  int		val2;
+  int		x;
+  int		y;
+
+  if (depth == 0 || leaf(node) == 1)
+    return heuristic_eval(node);
+  if (current == WHITE)
+    {
+      val = -INFINITY;
+      for (x = 0; x < 19; x++)
+	{
+	  for (y = 0; y < 19; y++)
+	    {
+	      if ((get_board(node, x, y) == EMPTY) &&
+		  (rule3(node, x, y, current)))
+		{
+		  set_board(node, x, y, current);
+		  val2 = minimax(node, depth - 1, BLACK);
+		  set_board(node, x, y, EMPTY);
+		  if (val2 > val)
+		    val = val2;
+		}
+	    }
+	}
+      return val;
+    }
+  if (current == BLACK)
+    {
+      val = INFINITY;
+      for (x = 0; x < 19; x++)
+	{
+	  for (y = 0; y < 19; y++)
+	    {
+	      if ((get_board(node, x, y) == EMPTY) &&
+		  (rule3(node, x, y, current)))
+		{
+		  set_board(node, x, y, current);
+		  val2 = minimax(node, depth - 1, WHITE);
+		  set_board(node, x, y, EMPTY);
+		  if (val2 < val)
+		    val = val2;
+		}
+	    }
+	}
+      return val;
+    }
+  return 0;
+}
+
+void		minmax(t_board *node, t_pos *bestMove)
+{
+  int		val;
+  int		val2;
+  int		x;
+  int		y;
+
+  val = -INFINITY;
+  bestMove->x = 0;
+  bestMove->y = 0;
+  for (x = 0; x < 19; x++)
+    {
+      for (y = 0; y < 19; y++)
+	{
+	  if ((get_board(node, x, y) == EMPTY) &&
+	      (rule3(node, x, y, WHITE)))
+	    {
+	      set_board(node, x, y, WHITE);
+	      val2 = minimax(node, DEPTH - 1, BLACK);
+	      set_board(node, x, y, EMPTY);
+	      if (val2 > val)
+		{
+		  val = val2;
+		  bestMove->x = x;
+		  bestMove->y = y;
+		}
+	    }
+	}
+    }
+}
+
+#include <stdio.h>
+
+void		callIA(t_board *board, char rules, t_pos *ret)
+{
   if (ret != NULL)
     {
-      /* call to minmax */
+      minmax(board, ret);
+      printf("IA move : %d | %d\n", ret->x, ret->y);
     }
-  return (ret);
+  (void)rules;
 }
