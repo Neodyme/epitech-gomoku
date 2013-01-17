@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Thu Jan 17 16:50:45 2013 jonathan martins
+** Last update Thu Jan 17 17:16:11 2013 jonathan martins
 */
 
 
@@ -112,13 +112,18 @@ void		minmax(t_board *node, t_pos *bestMove)
     {
       for (y = 0; y < 19; y++)
 	{
-	  /* poser un pion a chaque position possible */
-	  val2 = minimax(node, DEPTH - 1, BLACK);
-	  if (val2 > val)
+	  if ((get_board(node, x, y) == EMPTY) &&
+	      (rule3(node, x, y, WHITE)))
 	    {
-	      val = val2;
-	      bestMove->x = x;
-	      bestMove->y = y;
+	      set_board(node, x, y, WHITE);
+	      val2 = minimax(node, DEPTH - 1, BLACK);
+	      set_board(node, x, y, EMPTY);
+	      if (val2 > val)
+		{
+		  val = val2;
+		  bestMove->x = x;
+		  bestMove->y = y;
+		}
 	    }
 	}
     }
@@ -126,19 +131,12 @@ void		minmax(t_board *node, t_pos *bestMove)
 
 #include <stdio.h>
 
-t_pos		*callIA(t_board *board, char rules)
+void		callIA(t_board *board, char rules, t_pos *ret)
 {
-  t_pos		*ret;
-
-  (void)board;
-  (void)rules;
-
-  ret = malloc(sizeof(t_pos));
   if (ret != NULL)
     {
       minmax(board, ret);
       printf("IA move : %d | %d\n", ret->x, ret->y);
-      /* call to minmax */
     }
-  return (ret);
+  (void)rules;
 }
