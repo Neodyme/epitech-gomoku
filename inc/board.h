@@ -6,7 +6,7 @@
 ** 
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
 <<<<<<< HEAD
-** Last update Wed Jan 16 16:34:20 2013 Prost P.
+** Last update Thu Jan 17 17:35:50 2013 Prost P.
 =======
 ** Last update Tue Jan 15 17:19:17 2013 dorian schaegis
 >>>>>>> a522871da23541a60060110cddff32f043456f07
@@ -29,6 +29,7 @@
 struct		s_board
 {
   unsigned char	board[92];
+  unsigned char	r3board[92];
   unsigned int	blacks;
   unsigned int	whites;
 };

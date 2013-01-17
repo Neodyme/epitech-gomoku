@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 23:30:56 2012 dorian schaegis
-** Last update Tue Jan 15 20:29:40 2013 dorian schaegis
+** Last update Thu Jan 17 19:02:12 2013 Prost P.
 */
 
 #include	<SDL/SDL.h>
@@ -17,6 +17,8 @@
 #include	"getms.h"
 
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
+
+long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
 char		pose(t_board *board, int x, int y, char current)
 {
@@ -96,6 +98,11 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   SDL_ShowCursor(0);
   init_board(board);
   rules = 3;
+
+  cor.x = 0;
+  cor.y = 0;
+	  
+
   while (current)
     {
       show_background(surf->background, surf->screen);
@@ -143,10 +150,10 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		    SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
 		  else if (current == BLACK)
 		    {
-		  getms("blit");
+		  /* getms("blit"); */
 		      SDL_BlitSurface(surf->blackstone, NULL, surf->screen, &pos);
 		      SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-		  getms(NULL);
+		  /* getms(NULL); */
 		    }
 		  else
 		    {
@@ -162,6 +169,17 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
+	  long l = getlines(board, current, cor.x, cor.y);
+	    printf("<%d %d %d %d %d %d %d %d>\n",
+	    	   ((char*)&l)[0],
+	    	   ((char*)&l)[1],
+	    	   ((char*)&l)[2],
+	    	   ((char*)&l)[3],
+	    	   ((char*)&l)[4],
+	    	   ((char*)&l)[5],
+	    	   ((char*)&l)[6],
+	    	   ((char*)&l)[7]);
+	  (void)l;
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
 	      /* printf("At %i-%i: ", cor.x, cor.y); */

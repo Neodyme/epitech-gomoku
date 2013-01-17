@@ -12,95 +12,64 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 
 #include <inttypes.h>
  
 #include "board.h"
 #include "manip_boards.h"
 
-typedef unsigned __int128 sint;
-
-//		32bits LE
-//		0b11101011
-#define TAKE_X	(sint)(0b11000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
-
-//		128bits LE
-/* 1000000000000000000 */
-/* 1000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 00000000 */
-#define TAKE_Y (sint)(0b10000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
-
-//		128bits LE
-/* 1000000000000000000 */
-/* 0100000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 00000000 */
-#define TAKE_XY1 (sint)(0b10000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
-
-//		128bits LE
-/* 1000000000000000001 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 00000000 */
-#define TAKE_XY2 (sint)(0b10000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
-
-
-//              128bits LE
-/* 1000000000000000001 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 00000000 */
-#define RULE3_X1 (sint)(0b11110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
-
-//              128bits LE
-/* 1000000000000000001 */
-/* 1000000000000000000 */
-/* 1000000000000000000 */
-/* 1000000000000000000 */
-/* 0000000000000000000 */
-/* 0000000000000000000 */
-/* 00000000 */
-#define RULE3_X2   (uint128_t)(10000000000000000000100000000000000000010000000000000000001000000000000000000000000000000000000000000000000000000000000000000000)
-
-typedef __uint128_t uint128_t;
-
-#define TEST (uint128_t)(0xFFFFFFFFFFFFFFFFF)
-
-
-
-int print_uint128(uint128_t n) {
-  if (n == 0)  return printf("0\n");
-
-  char str[40] = {0}; // log10(1 << 128) + '\0'
-  char *s = str + sizeof(str) - 1; // start at the end
-  while (n != 0) {
-    if (s == str) return -1; // never happens
-
-    *--s = "01"[n % 2]; // save last digit
-    n /= 2 ;                     // drop it
-  }
-  return printf("%s\n", s);
-}
-
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
 #define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
 
+
+long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
+{
+  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) != color)
+    return (d);
+  ((char*)&d)[sen]++;
+
+  if (sen == UP_L)
+    return (drec(board, color, d, sen, x - 1, y - 1));
+  if (sen == UP_C)
+    return (drec(board, color, d, sen, x - 1, y));
+  if (sen == UP_R)
+    return (drec(board, color, d, sen, x - 1, y + 1));
+
+  if (sen == MI_L)
+    return (drec(board, color, d, sen, x, y - 1));
+  if (sen == MI_R)
+    return (drec(board, color, d, sen, x, y + 1));
+
+  if (sen == DO_R)
+    return (drec(board, color, d, sen, x + 1, y - 1));
+  if (sen == DO_R)
+    return (drec(board, color, d, sen, x + 1, y));
+  if (sen == DO_R)
+    return (drec(board, color, d, sen, x + 1, y + 1));
+  return (d);
+}
+
+long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
+{
+  long d = 0;
+
+  d = drec(board, color, d, UP_L, x - 1, y - 1);
+  d = drec(board, color, d, UP_C, x - 1, y);
+  d = drec(board, color, d, UP_R, x - 1, y + 1);
+  d = drec(board, color, d, MI_L, x, y - 1);
+  d = drec(board, color, d, MI_R, x, y + 1);
+  d = drec(board, color, d, DO_L, x + 1, y - 1);
+  d = drec(board, color, d, DO_C, x + 1, y);
+  d = drec(board, color, d, DO_R, x + 1, y + 1);
+  return (d);
+}
+
+
 int	prise(t_board *board, unsigned int x, unsigned int y)
 {
+
   /* printf("%i %i\n", WHITE, OPPOSITE(WHITE)); */
   /* printf("%i %i\n", BLACK, OPPOSITE(BLACK)); */
   if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
@@ -140,7 +109,6 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       return (1);
     }
 
-
   if ((get_board(board, x - 1, y) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x - 2, y) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x - 3, y) == get_board(board, x, y))))
@@ -177,6 +145,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       TAKE(board, x - 2, y + 2);
       return (1);
     }
+/* here, do your time-consuming job */
   return (0);
 }
 
