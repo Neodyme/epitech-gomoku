@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Fri Jan 18 16:47:46 2013 jonathan martins
+** Last update Fri Jan 18 16:52:46 2013 jonathan martins
 */
 
 
@@ -71,7 +71,6 @@ int		minimax(t_board *node, int depth, char current)
   int		val2;
   int		x;
   int		y;
-  int		i;
   unsigned int	saveEaten;
 
   if (depth == 0 || leaf(node) == 1)
@@ -88,11 +87,8 @@ int		minimax(t_board *node, int depth, char current)
 		{
 		  set_board(node, x, y, current);
 		  saveEaten = node->whites;
-		  for (i = 0; i < 19 * 19; i++)
-		    {
-		      if (prise(node, x, y))
-			node->whites++;
-		    }
+		  if (prise(node, x, y))
+		    node->whites++;
 		  val2 = minimax(node, depth - 1, BLACK);
 		  set_board(node, x, y, EMPTY);
 		  while (saveEaten < node->whites--)
@@ -122,11 +118,8 @@ int		minimax(t_board *node, int depth, char current)
 		{
 		  set_board(node, x, y, current);
 		  saveEaten = node->blacks;
-		  for (i = 0; i < 19 * 19; i++)
-		    {
-		      if (prise(node, x, y))
-			node->blacks++;
-		    }
+		  if (prise(node, x, y))
+		    node->blacks++;
 		  val2 = minimax(node, depth - 1, WHITE);
 		  set_board(node, x, y, EMPTY);
 		  while (saveEaten < node->blacks--)
@@ -153,7 +146,6 @@ void		minmax(t_board *node, t_pos *bestMove)
   int		val2;
   int		x;
   int		y;
-  int		i;
   unsigned int	saveEaten;
 
   val = -INFINITY;
@@ -168,11 +160,8 @@ void		minmax(t_board *node, t_pos *bestMove)
 	    {
 	      set_board(node, x, y, WHITE);
 	      saveEaten = node->whites;
-	      for (i = 0; i < 19 * 19; i++)
-		{
-		  if (prise(node, x, y))
-		    node->whites++;
-		}
+	      if (prise(node, x, y))
+		node->whites++;
 	      val2 = minimax(node, DEPTH - 1, BLACK);
 	      set_board(node, x, y, EMPTY);
 	      while (saveEaten < node->whites--)
