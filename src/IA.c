@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Thu Jan 17 18:44:21 2013 jonathan martins
+** Last update Fri Jan 18 16:13:13 2013 jonathan martins
 */
 
 
@@ -18,14 +18,14 @@
 #define		INFINITY 2000000
 #define		DEPTH 2
 
-#define		FIVE_IN_ROW INFINITY
-#define		STRAIGHT_FOUR 1000000
-#define		FOUR_IN_ROW 1000000
-#define		THREE_IN_ROW 500000
-#define		BROKEN_THREE 250000
-#define		TWO_IN_ROW 100
-#define		SINGLE_MARK 1
-
+#define		FIVE_IN_ROW	INFINITY
+#define		STRAIGHT_FOUR	1500000
+#define		FOUR_IN_ROW	1500000
+#define		THREE_IN_ROW	250000
+#define		BROKEN_THREE	100000
+#define		CAPTURE		50000
+#define		TWO_IN_ROW	100
+#define		SINGLE_MARK	1
 
 
 /* Eval = w1 × # five-in-row +w2 × # straight-four */
@@ -71,6 +71,8 @@ int		minimax(t_board *node, int depth, char current)
   int		val2;
   int		x;
   int		y;
+  int		i;
+  unsigned int	saveEaten;
 
   if (depth == 0 || leaf(node) == 1)
     return heuristic_eval(node);
@@ -85,8 +87,21 @@ int		minimax(t_board *node, int depth, char current)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  saveEaten = node->whites;
+		  for (i = 0; i < 19 * 19; i++)
+		    {
+		      if (prise(node, x, y))
+			node->whites++;
+		    }
 		  val2 = minimax(node, depth - 1, BLACK);
 		  set_board(node, x, y, EMPTY);
+		  while (saveEaten < node->whites--)
+		    {
+		      set_board(node, node->eaten[node->blacks + node->whites + 0],
+				node->eaten[node->blacks + node->whites + 1], BLACK);
+		      set_board(node, node->eaten[node->blacks + node->whites + 2],
+				node->eaten[node->blacks + node->whites + 3], BLACK);
+		    }
 		  if (val2 > val)
 		    val = val2;
 		}
@@ -105,8 +120,21 @@ int		minimax(t_board *node, int depth, char current)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  saveEaten = node->blacks;
+		  for (i = 0; i < 19 * 19; i++)
+		    {
+		      if (prise(node, x, y))
+			node->blacks++;
+		    }
 		  val2 = minimax(node, depth - 1, WHITE);
 		  set_board(node, x, y, EMPTY);
+		  while (saveEaten < node->blacks--)
+		    {
+		      set_board(node, node->eaten[node->blacks + node->whites + 0],
+				node->eaten[node->blacks + node->whites + 1], BLACK);
+		      set_board(node, node->eaten[node->blacks + node->whites + 2],
+				node->eaten[node->blacks + node->whites + 3], BLACK);
+		    }
 		  if (val2 < val)
 		    val = val2;
 		}
@@ -123,6 +151,8 @@ void		minmax(t_board *node, t_pos *bestMove)
   int		val2;
   int		x;
   int		y;
+  int		i;
+  unsigned int	saveEaten;
 
   val = -INFINITY;
   bestMove->x = 0;
@@ -135,8 +165,21 @@ void		minmax(t_board *node, t_pos *bestMove)
 	      (rule3(node, x, y, WHITE)))
 	    {
 	      set_board(node, x, y, WHITE);
-	      val2 = minimax(node, DEPTH - 1, BLACK);
+	      saveEaten = node->whites;
+	      for (i = 0; i < 19 * 19; i++)
+		{
+		  if (prise(node, x, y))
+		    node->whites++;
+		}
+	      val2 = minimax(node, DEPTH, BLACK);
 	      set_board(node, x, y, EMPTY);
+	      while (saveEaten < node->whites--)
+		{
+		  set_board(node, node->eaten[node->blacks + node->whites + 0],
+			    node->eaten[node->blacks + node->whites + 1], BLACK);
+		  set_board(node, node->eaten[node->blacks + node->whites + 2],
+			    node->eaten[node->blacks + node->whites + 3], BLACK);
+		}
 	      if (val2 > val)
 		{
 		  val = val2;
