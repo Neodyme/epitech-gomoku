@@ -1,12 +1,12 @@
 /*
 ** board.h<2> for gomoku in /a/galaxy/far/far/away
-** 
+**
 ** Made by dorian schaegis
 ** Login   <schaeg_d@epitech.net>
-** 
+**
 ** Started on  Tue Nov 27 18:59:18 2012 dorian schaegis
 <<<<<<< HEAD
-** Last update Thu Jan 17 17:35:50 2013 Prost P.
+** Last update Fri Jan 18 15:40:17 2013 jonathan martins
 =======
 ** Last update Tue Jan 15 17:19:17 2013 dorian schaegis
 >>>>>>> a522871da23541a60060110cddff32f043456f07
@@ -32,6 +32,7 @@ struct		s_board
   unsigned char	r3board[92];
   unsigned int	blacks;
   unsigned int	whites;
+  char		eaten[64];
 };
 
 typedef struct s_board t_board;
