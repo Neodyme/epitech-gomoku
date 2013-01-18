@@ -83,7 +83,7 @@ char		pose(t_board *board, int x, int y, char current)
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   int		i;
-  t_pos		*moveIA;
+  t_pos		moveIA;
   char		rules;
 
   SDL_Rect	pos;
@@ -100,15 +100,14 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
   cor.x = 0;
   cor.y = 0;
-  moveIA= malloc(sizeof(t_pos));
 
   while (current)
     {
       show_background(surf->background, surf->screen);
       if (mode && current == WHITE)
 	{
-	  callIA(board, rules, moveIA);
-	  current = pose(board, moveIA->x, moveIA->y, current);
+	  callIA(board, rules, &moveIA);
+	  current = pose(board, moveIA.x, moveIA.y, current);
 	  for (i = 0; i < 19 * 19; i++)
 	    {
 	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
