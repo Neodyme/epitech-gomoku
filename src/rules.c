@@ -19,50 +19,66 @@
 #include "board.h"
 #include "manip_boards.h"
 
+union		u_chemical_cheddar
+{
+  long		c;	/* cheddar */
+  char		l[8];	/* lerdammer */
+};
+typedef  union u_chemical_cheddar	t_chemical_cheddar; 
+
 #define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
 #define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
+/*
+**	consome ketchup
+**	renvoie l'incrémentation sur l'axe x (0x80=-1, 0x40=+1, 0xC0=wtf)
+*/
+#define	GETKETCHUP(X, S) (X  - ((S & 0x80) >> 7) + ((S & 0x40) >> 6))
+#define	GETDOUBLEKETCHUP(X, S) (X  - (2 * ((S & 0x80)) >> 7) + (2 * ((S & 0x40)) >> 6))
 
+/*
+**	consome mayo
+**	même que le ketchup, avec de la mayo.
+*/
+#define	GETMAYO(Y, S) (Y  - ((S & 0x20) >> 5) + ((S & 0x10) >> 4))
+#define	GETDOUBLEMAYO(Y, S) (Y  - (2 * ((S & 0x20) >> 5)) + (2 * ((S & 0x10)) >> 4))
 
+/*
+**	revoie la taile des lignes depuis de points dans les 8 directions]
+**	consome du ketchup et de la mayo
+*/
 long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) != color)
+  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
     return (d);
-  ((char*)&d)[sen]++;
+  ((char*)&d)[sen & 0x0f]++;
+  return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
+}
 
-  if (sen == UP_L)
-    return (drec(board, color, d, sen, x - 1, y - 1));
-  if (sen == UP_C)
-    return (drec(board, color, d, sen, x - 1, y));
-  if (sen == UP_R)
-    return (drec(board, color, d, sen, x - 1, y + 1));
-
-  if (sen == MI_L)
-    return (drec(board, color, d, sen, x, y - 1));
-  if (sen == MI_R)
-    return (drec(board, color, d, sen, x, y + 1));
-
-  if (sen == DO_R)
-    return (drec(board, color, d, sen, x + 1, y - 1));
-  if (sen == DO_R)
-    return (drec(board, color, d, sen, x + 1, y));
-  if (sen == DO_R)
-    return (drec(board, color, d, sen, x + 1, y + 1));
-  return (d);
+long	longdrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
+{
+ if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
+  {
+    if (((t_chemical_cheddar)drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen))).l[sen & 0x0f] == 2)
+      ((char*)&d)[sen & 0x0f] += 3;
+    return (d);
+  }
+  ((char*)&d)[sen & 0x0f]++;
+  return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
 
 long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
 {
   long d = 0;
 
-  d = drec(board, color, d, UP_L, x - 1, y - 1);
-  d = drec(board, color, d, UP_C, x - 1, y);
-  d = drec(board, color, d, UP_R, x - 1, y + 1);
-  d = drec(board, color, d, MI_L, x, y - 1);
-  d = drec(board, color, d, MI_R, x, y + 1);
-  d = drec(board, color, d, DO_L, x + 1, y - 1);
-  d = drec(board, color, d, DO_C, x + 1, y);
-  d = drec(board, color, d, DO_R, x + 1, y + 1);
+  d = longdrec(board, color, d, UP_L, x - 1, y - 1);
+  d = longdrec(board, color, d, UP_C, x - 1, y);
+  d = longdrec(board, color, d, UP_R, x - 1, y + 1);
+  d = longdrec(board, color, d, MI_L, x, y - 1);
+  d = longdrec(board, color, d, MI_R, x, y + 1);
+  d = longdrec(board, color, d, DO_L, x + 1, y - 1);
+  d = longdrec(board, color, d, DO_C, x + 1, y);
+  d = longdrec(board, color, d, DO_R, x + 1, y + 1);
   return (d);
 }
 
