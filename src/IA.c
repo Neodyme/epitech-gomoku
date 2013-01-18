@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Fri Jan 18 16:14:32 2013 jonathan martins
+** Last update Fri Jan 18 16:47:46 2013 jonathan martins
 */
 
 
@@ -102,6 +102,7 @@ int		minimax(t_board *node, int depth, char current)
 		      set_board(node, node->eaten[node->blacks + node->whites + 2],
 				node->eaten[node->blacks + node->whites + 3], BLACK);
 		    }
+		  node->whites = saveEaten;
 		  if (val2 > val)
 		    val = val2;
 		}
@@ -135,6 +136,7 @@ int		minimax(t_board *node, int depth, char current)
 		      set_board(node, node->eaten[node->blacks + node->whites + 2],
 				node->eaten[node->blacks + node->whites + 3], BLACK);
 		    }
+		  node->blacks = saveEaten;
 		  if (val2 < val)
 		    val = val2;
 		}
@@ -180,6 +182,7 @@ void		minmax(t_board *node, t_pos *bestMove)
 		  set_board(node, node->eaten[node->blacks + node->whites + 2],
 			    node->eaten[node->blacks + node->whites + 3], BLACK);
 		}
+	      node->whites = saveEaten;
 	      if (val2 > val)
 		{
 		  val = val2;
