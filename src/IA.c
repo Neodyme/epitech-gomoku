@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Fri Jan 18 16:13:13 2013 jonathan martins
+** Last update Fri Jan 18 16:14:32 2013 jonathan martins
 */
 
 
@@ -171,7 +171,7 @@ void		minmax(t_board *node, t_pos *bestMove)
 		  if (prise(node, x, y))
 		    node->whites++;
 		}
-	      val2 = minimax(node, DEPTH, BLACK);
+	      val2 = minimax(node, DEPTH - 1, BLACK);
 	      set_board(node, x, y, EMPTY);
 	      while (saveEaten < node->whites--)
 		{
