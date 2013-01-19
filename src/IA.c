@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Jan 19 22:29:47 2013 jonathan martins
+** Last update Sun Jan 20 00:14:10 2013 jonathan martins
 */
 
 
@@ -15,16 +15,16 @@
 #include	"rule.h"
 #include	"manip_boards.h"
 
-#define		INFINITY	2000000
+#define		INFINITY	200000000
 #define		DEPTH		2
 
 #define		FIVE_IN_ROW	INFINITY
-#define		FOUR		INFINITY
-#define		THREE_IN_ROW	500000
+#define		FOUR		10000000
+#define		THREE_IN_ROW	2000000
+#define		CAPTURE		1000000
 #define		BROKEN_THREE	10000
-#define		CAPTURE		9000
-#define		TWO_IN_ROW	100
-#define		SINGLE_MARK	1
+#define		TWO_IN_ROW	4000
+#define		SINGLE_MARK	100
 
 #define GETSAMURAI(X, S, N) (X  - ((N) * ((S & 0x80)) >> 7) + ((N) * ((S & 0x40)) >> 6))
 #define GETHARISSA(Y, S, N) (Y  - ((N) * ((S & 0x20) >> 5)) + ((N) * ((S & 0x10)) >> 4))
@@ -39,34 +39,10 @@ int		get_val(int size, int blockLeft, int blockRight)
     return THREE_IN_ROW;
   if (size == 2 && blockLeft == 0 && blockRight == 0)
     return TWO_IN_ROW;
-  return SINGLE_MARK * size;
+  if (size == 1 && blockLeft == 0 && blockRight == 0)
+    return SINGLE_MARK;
+  return size;
 }
-
-/* void		setvisited(char *visited, int i, int l) */
-/* { */
-/*   int		x = i/19; */
-/*   int		y = i%19; */
-/*   int		j; */
-
-/*   visited[i] = 1; */
-
-/*   j = GETSAMURAI(x, UP_L, ((char*)&l)[0]) */
-/*     * GETHARISSA(y, UP_L, ((char*)&l)[0]); */
-/*   j = GETSAMURAI(x, UP_C, ((char*)&l)[1]) */
-/* 	  * GETHARISSA(y, UP_C, ((char*)&l)[1])] = 1; */
-/*   j = GETSAMURAI(x, UP_R, ((char*)&l)[2]) */
-/* 	  * GETHARISSA(y, UP_R, ((char*)&l)[2])] = 1; */
-/*   j = GETSAMURAI(x, MI_L, ((char*)&l)[3]) */
-/* 	  * GETHARISSA(y, MI_L, ((char*)&l)[3])] = 1; */
-/*   j = GETSAMURAI(x, MI_R, ((char*)&l)[4]) */
-/* 	  * GETHARISSA(y, MI_R, ((char*)&l)[4])] = 1; */
-/*   j = GETSAMURAI(x, DO_L, ((char*)&l)[5]) */
-/* 	  * GETHARISSA(y, DO_L, ((char*)&l)[5])] = 1; */
-/*   j = GETSAMURAI(x, DO_C, ((char*)&l)[6]) */
-/* 	  * GETHARISSA(y, DO_C, ((char*)&l)[6])] = 1; */
-/*   j = GETSAMURAI(x, DO_R, ((char*)&l)[7]) */
-/* 	  * GETHARISSA(y, DO_R, ((char*)&l)[7])] = 1; */
-/* } */
 
 int		heuristic_eval(t_board *board)
 {
@@ -74,66 +50,61 @@ int		heuristic_eval(t_board *board)
   int		ret;
   int		i;
   long		l;
-  /* char		visited[361]; */
 
-  /* memset(visited, 0, 360); */
   for (i = 0; i < 19 * 19; i++)
     {
-      /* if (visited[i] == 0) */
-      /* 	{ */
-	  if (get_board(board, i/19, i%19) == WHITE)
-	    {
-	      l = getlines(board, WHITE, i/19, i%19);
-	      ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
-			    ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
-	      if (ret == INFINITY)
-		return INFINITY;
-	      eval += ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
-			    ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
-	      if (ret == INFINITY)
-		return INFINITY;
-	      eval += ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
-			    ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
-	      if (ret == INFINITY)
-		return INFINITY;
-	      eval += ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
-			    ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
-	      if (ret == INFINITY)
-		return INFINITY;
-	      eval += ret;
-	      /* setvisited(visited, i, l); */
-	    }
-	  if (get_board(board, i/19, i%19) == BLACK)
-	    {
-	      l = getlines(board, BLACK, i/19, i%19);
-	      ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
-			    ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
-	      if (ret == INFINITY)
-		return -INFINITY;
-	      eval -= ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
-			    ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
-	      if (ret == INFINITY)
-		return -INFINITY;
-	      eval -= ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
-			    ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
-	      if (ret == INFINITY)
-		return -INFINITY;
-	      eval -= ret;
-	      ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
-			    ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
-	      if (ret == INFINITY)
-		return -INFINITY;
-	      eval -= ret;
-	    }
-	/* } */
+      if (get_board(board, i/19, i%19) == WHITE)
+	{
+	  l = getlines(board, WHITE, i/19, i%19);
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
+	  if (ret == INFINITY)
+	    return INFINITY;
+	  eval += ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
+	  if (ret == INFINITY)
+	    return INFINITY;
+	  eval += ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
+	  if (ret == INFINITY)
+	    return INFINITY;
+	  eval += ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
+	  if (ret == INFINITY)
+	    return INFINITY;
+	  eval += ret;
+	}
+      if (get_board(board, i/19, i%19) == BLACK)
+	{
+	  l = getlines(board, BLACK, i/19, i%19);
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
+	  if (ret == INFINITY)
+	    return -INFINITY;
+	  eval -= ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
+	  if (ret == INFINITY)
+	    return -INFINITY;
+	  eval -= ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
+	  if (ret == INFINITY)
+	    return -INFINITY;
+	  eval -= ret;
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
+	  if (ret == INFINITY)
+	    return -INFINITY;
+	  eval -= ret;
+	}
     }
   eval += board->whites * CAPTURE;
   eval -= board->blacks * CAPTURE;
+  eval += random() % 10;
   return eval;
 }
 
@@ -155,7 +126,7 @@ int		leaf(t_board *board)
   return 0;
 }
 
-int		minimax(t_board *node, int depth, char current)
+int		minimax(t_board *node, int depth, char current, int min, int max)
 {
   int		val;
   int		val2;
@@ -166,7 +137,7 @@ int		minimax(t_board *node, int depth, char current)
     return heuristic_eval(node);
   if (current == WHITE)
     {
-      val = -INFINITY;
+      val = min;
       for (x = 0; x < 19; x++)
 	{
 	  for (y = 0; y < 19; y++)
@@ -175,10 +146,12 @@ int		minimax(t_board *node, int depth, char current)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
-		  val2 = minimax(node, depth - 1, BLACK);
+		  val2 = minimax(node, depth - 1, BLACK, val, max);
 		  set_board(node, x, y, EMPTY);
 		  if (val2 > val)
 		    val = val2;
+		  if (val > max)
+		    return max;
 		}
 	    }
 	}
@@ -186,7 +159,7 @@ int		minimax(t_board *node, int depth, char current)
     }
   if (current == BLACK)
     {
-      val = INFINITY;
+      val = max;
       for (x = 0; x < 19; x++)
 	{
 	  for (y = 0; y < 19; y++)
@@ -195,10 +168,12 @@ int		minimax(t_board *node, int depth, char current)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
-		  val2 = minimax(node, depth - 1, WHITE);
+		  val2 = minimax(node, depth - 1, WHITE, min, val);
 		  set_board(node, x, y, EMPTY);
 		  if (val2 < val)
 		    val = val2;
+		  if (val > max)
+		    return max;
 		}
 	    }
 	}
@@ -225,7 +200,7 @@ void		minmax(t_board *node, t_pos *bestMove)
 	      (rule3(node, x, y, WHITE)))
 	    {
 	      set_board(node, x, y, WHITE);
-	      val2 = minimax(node, DEPTH - 1, BLACK);
+	      val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
 	      set_board(node, x, y, EMPTY);
 	      if (val2 > val)
 		{
@@ -236,16 +211,16 @@ void		minmax(t_board *node, t_pos *bestMove)
 	    }
 	}
     }
+  if (get_board(node, bestMove->x, bestMove->y) != EMPTY)
+    for (bestMove->x = 0; bestMove->x < 19; bestMove->x++)
+      for(bestMove->y = 0; bestMove->y < 19; bestMove->y++)
+	if (get_board(node, bestMove->x, bestMove->y) == EMPTY)
+	  return;
 }
-
-#include <stdio.h>
 
 void		callIA(t_board *board, char rules, t_pos *ret)
 {
   if (ret != NULL)
-    {
-      minmax(board, ret);
-      printf("IA move : %d | %d\n", ret->x, ret->y);
-    }
+    minmax(board, ret);
   (void)rules;
 }
