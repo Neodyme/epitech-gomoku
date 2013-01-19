@@ -19,7 +19,7 @@ OBJ=			$(addprefix obj/, $(patsubst %.c, %.o, $(SRC)))
 
 INC=			-Iinc
 
-CFLAGS=			-W -Wall -Wextra -Werror\
+CFLAGS=			-W -Wall -Wextra\
 			-lSDL\
 			-O0 -O1 -O2 -O3 -g3\
 			-lrt

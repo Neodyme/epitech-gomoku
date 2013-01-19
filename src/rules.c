@@ -110,6 +110,8 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
   return (d);
 }
 
+#define DOUBLETAKE(BOARD, X1, Y1, X2, Y2) (set_board(BOARD, X1, Y1, EMPTY));\
+					   (set_board(BOARD, X2, Y2, EMPTY));
 
 int	rule3(t_board *board,  int x,  int y, char color)
 {
@@ -117,133 +119,62 @@ int	rule3(t_board *board,  int x,  int y, char color)
   int	counter = 0;
   
   res = longgetlines(board, color, x, y);
-  counter = (((t_chemical_cheddar)res).l[UP_L & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[UP_C & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[UP_R & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[MI_L & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[MI_R & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[DO_L & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[DO_C & 0x0f] == 2)
-    + (((t_chemical_cheddar)res).l[DO_R & 0x0f] == 2);
-if (counter >= 2)
-  return (0);
- return (1);
+
+  counter = (((t_chemical_cheddar)res).l[UP_L & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_R & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[UP_C & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_C & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[UP_R & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_L & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[MI_L & 0x0f] == 2 && ((t_chemical_cheddar)res).l[MI_R & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[MI_R & 0x0f] == 2 && ((t_chemical_cheddar)res).l[MI_L & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[DO_L & 0x0f] == 2 && ((t_chemical_cheddar)res).l[UP_R & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[DO_C & 0x0f] == 2 && ((t_chemical_cheddar)res).l[UP_C & 0x0f] != -128)
+    + (((t_chemical_cheddar)res).l[DO_R & 0x0f] == 2 && ((t_chemical_cheddar)res).l[UP_L & 0x0f] != -128);
+  if (counter >= 2)
+    return (0);
+  return (1);
 }
 
-
-/*
-** Parc national d'if - région Ardèche
-*/
-int	prise(t_board *board, unsigned int x, unsigned int y)
+int	prise(t_board *board,  int x,  int y, char color)
 {
-  /* printf("%i %i\n", WHITE, OPPOSITE(WHITE)); */
-  /* printf("%i %i\n", BLACK, OPPOSITE(BLACK)); */
-  if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x + 2, y) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x + 3, y) == get_board(board, x, y))))
+  long	res;
+  int	counter = 0;
+  
+  if (color == EMPTY)
+    return (0);
+  res = getlines(board, OPPOSITE(color), x, y);
+  if (((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
     {
-      /* printf("prend - 1\n"); */
-      TAKE(board, x + 1, y);
-      TAKE(board, x + 2, y);
-      board->eaten[board->blacks + board->whites + 0] = x + 1;
-      board->eaten[board->blacks + board->whites + 1] = y;
-      board->eaten[board->blacks + board->whites + 2] = x + 2;
-      board->eaten[board->blacks + board->whites + 3] = y;
-      return (1);
+      DOUBLETAKE (board, x - 1, y - 1, x - 2, y - 2);
     }
-  if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x, y + 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x, y + 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
     {
-      /* printf("prend | 1\n"); */
-      TAKE(board, x, y + 1);
-      TAKE(board, x, y + 2);
-      board->eaten[board->blacks + board->whites + 0] = x;
-      board->eaten[board->blacks + board->whites + 1] = y + 1;
-      board->eaten[board->blacks + board->whites + 2] = x;
-      board->eaten[board->blacks + board->whites + 3] = y + 2;
-      return (1);
+      DOUBLETAKE (board, x - 1, y, x - 2, y);
     }
-  if ((get_board(board, x + 1, y + 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x + 2, y + 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x + 3, y + 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
     {
-      /* printf("prend \ 1\n"); */
-      TAKE(board, x + 1, y + 1);
-      TAKE(board, x + 2, y + 2);
-      board->eaten[board->blacks + board->whites + 0] = x + 1;
-      board->eaten[board->blacks + board->whites + 1] = y + 1;
-      board->eaten[board->blacks + board->whites + 2] = x + 2;
-      board->eaten[board->blacks + board->whites + 3] = y + 2;
-      return (1);
+      DOUBLETAKE (board, x - 1, y + 1, x - 2, y + 2);
     }
-  if ((get_board(board, x + 1, y - 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x + 2, y - 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x + 3, y - 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x82)
     {
-      /* printf("prend / 1\n"); */
-      TAKE(board, x + 1, y - 1);
-      TAKE(board, x + 2, y - 2);
-      board->eaten[board->blacks + board->whites + 0] = x + 1;
-      board->eaten[board->blacks + board->whites + 1] = y - 1;
-      board->eaten[board->blacks + board->whites + 2] = x + 2;
-      board->eaten[board->blacks + board->whites + 3] = y - 2;
-      return (1);
+      DOUBLETAKE (board, x, y - 1, x, y - 2);
     }
-
-
-  if ((get_board(board, x - 1, y) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x - 2, y) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x - 3, y) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x82)
     {
-      /* printf("prend - 2\n"); */
-      TAKE(board, x - 1, y);
-      TAKE(board, x - 2, y);
-      board->eaten[board->blacks + board->whites + 0] = x - 1;
-      board->eaten[board->blacks + board->whites + 1] = y;
-      board->eaten[board->blacks + board->whites + 2] = x - 2;
-      board->eaten[board->blacks + board->whites + 3] = y;
-      return (1);
+      DOUBLETAKE (board, x, y + 1, x, y + 2);
     }
-  if ((get_board(board, x, y - 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x, y - 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x, y - 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82)
     {
-      /* printf("prend | 2\n"); */
-      TAKE(board, x, y - 1);
-      TAKE(board, x, y - 2);
-      board->eaten[board->blacks + board->whites + 0] = x;
-      board->eaten[board->blacks + board->whites + 1] = y - 1;
-      board->eaten[board->blacks + board->whites + 2] = x;
-      board->eaten[board->blacks + board->whites + 3] = y - 2;
-      return (1);
+      DOUBLETAKE (board, x + 1, y - 1, x + 2, y - 2);
     }
-  if ((get_board(board, x - 1, y - 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x - 2, y - 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x - 3, y - 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x82)
     {
-      /* printf("prend \ 2\n"); */
-      TAKE(board, x - 1, y - 1);
-      TAKE(board, x - 2, y - 2);
-      board->eaten[board->blacks + board->whites + 0] = x - 1;
-      board->eaten[board->blacks + board->whites + 1] = y - 1;
-      board->eaten[board->blacks + board->whites + 2] = x - 2;
-      board->eaten[board->blacks + board->whites + 3] = y - 2;
-      return (1);
+      DOUBLETAKE (board, x + 1, y, x + 2, y);
     }
-  if ((get_board(board, x - 1, y + 1) == OPPOSITE(get_board(board, x, y))
-       && (get_board(board, x - 2, y + 2) == OPPOSITE(get_board(board, x, y)))
-       && (get_board(board, x - 3, y + 3) == get_board(board, x, y))))
+  if (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82)
     {
-      /* printf("prend / 2\n"); */
-      TAKE(board, x - 1, y + 1);
-      TAKE(board, x - 2, y + 2);
-      board->eaten[board->blacks + board->whites + 0] = x - 1;
-      board->eaten[board->blacks + board->whites + 1] = y + 1;
-      board->eaten[board->blacks + board->whites + 2] = x - 2;
-      board->eaten[board->blacks + board->whites + 3] = y + 2;
-      return (1);
+      DOUBLETAKE (board, x + 1, y + 1, x + 2, y + 2);
     }
+  if (counter >= 2)
+    return (0);
   return (0);
 }
 
