@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Fri Jan 18 13:00:58 2013 Prost P.
+** Last update Sat Jan 19 19:28:38 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
@@ -21,7 +21,9 @@
 #define DO_R		80
 
 #define BLOCKED		0x80
+#define ISBLOCKED(L)	(L & BLOCKED)
 #define L_SIZE		0x7F
+#define GETLSIZE(L)	(L & L_SIZE)
 
 long		getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
