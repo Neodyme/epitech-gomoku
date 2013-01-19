@@ -1,5 +1,5 @@
 /*
--** rules.c for  in /home/pprost/c/ai/gomoku
+** rules.c for  in /home/pprost/c/ai/gomoku
 **
 ** Made by  Prost P.
 ** Login   <pprost@epitech.net>
@@ -133,14 +133,14 @@ int	rule3(t_board *board,  int x,  int y, char color)
   return (1);
 }
 
-int	prise(t_board *board,  int x,  int y, char color)
+int	prise(t_board *board, unsigned int x, unsigned int y, int color)
 {
   long	res;
   int	counter = 0;
   
   if (color == EMPTY)
     return (0);
-  res = getlines(board, OPPOSITE(color), x, y);
+  res = getlines(board, color, x, y);
   if (((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
     {
       DOUBLETAKE (board, x - 1, y - 1, x - 2, y - 2);
