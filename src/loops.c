@@ -195,7 +195,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
-	  long l = getlines(board, current, cor.x, cor.y);
+	  long l = getlines(board, OPPOSITE(current), cor.x, cor.y);
 	    printf("<%d %d %d %d %d %d %d %d>\n",
 	    	   ((char*)&l)[0],
 	    	   ((char*)&l)[1],

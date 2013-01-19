@@ -26,7 +26,7 @@ union		u_chemical_cheddar
 };
 typedef  union u_chemical_cheddar	t_chemical_cheddar; 
 
-#define OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
+#define OPPOSITE(COLOR) ((~COLOR) & 0x3)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
 #define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
 /*
@@ -49,7 +49,12 @@ typedef  union u_chemical_cheddar	t_chemical_cheddar;
 */
 long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
+  if (get_board(board, x, y) == (OPPOSITE(color)))
+    {
+       ((char*)&d)[sen & 0x0f] |= BLOCKED;
+      return (d);
+    }
+  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) != color)
     return (d);
   ((char*)&d)[sen & 0x0f]++;
   return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
@@ -57,20 +62,26 @@ long	drec(t_board *board, int color, long d, int sen, register unsigned int x, r
 
 long	longdrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
- if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
+  if (get_board(board, x, y) == (OPPOSITE(color)))
+    {
+       ((char*)&d)[sen & 0x0f] |= BLOCKED;
+      return (d);
+    }
+  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
   {
     if (((t_chemical_cheddar)drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen))).l[sen & 0x0f] == 2)
-      ((char*)&d)[sen & 0x0f] += 3;
+      ((char*)&d)[sen & 0x0f] += 2;
     return (d);
   }
   ((char*)&d)[sen & 0x0f]++;
-  return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
+   return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
 
-long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
+long	longgetlines(t_board *board, int color, unsigned int x, unsigned int y)
 {
-  long d = 0;
+  long	d;
 
+  d = 0;
   d = longdrec(board, color, d, UP_L, x - 1, y - 1);
   d = longdrec(board, color, d, UP_C, x - 1, y);
   d = longdrec(board, color, d, UP_R, x - 1, y + 1);
@@ -82,7 +93,46 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
   return (d);
 }
 
+long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
+{
+  long	d;
 
+  d = 0;
+  d = drec(board, color, d, UP_L, x - 1, y - 1);
+  d = drec(board, color, d, UP_C, x - 1, y);
+  d = drec(board, color, d, UP_R, x - 1, y + 1);
+  d = drec(board, color, d, MI_L, x, y - 1);
+  d = drec(board, color, d, MI_R, x, y + 1);
+  d = drec(board, color, d, DO_L, x + 1, y - 1);
+  d = drec(board, color, d, DO_C, x + 1, y);
+  d = drec(board, color, d, DO_R, x + 1, y + 1);
+  return (d);
+}
+
+
+int	rule3(t_board *board,  int x,  int y, char color)
+{
+  long	res;
+  int	counter;
+  
+  res = longgetlines(board, color, x, y);
+  counter = (((t_chemical_cheddar)res).l[UP_L & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[UP_C & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[UP_R & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[MI_L & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[MI_R & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[DO_L & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[DO_C & 0x0f] == 2)
+    + (((t_chemical_cheddar)res).l[DO_R & 0x0f] == 2);
+  if (counter >= 2)
+    return (0);
+  return (1);
+}
+
+
+/*
+** Parc national d'if - région Ardèche
+*/
 int	prise(t_board *board, unsigned int x, unsigned int y)
 {
 
@@ -175,47 +225,54 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
    - (12	* ((((get_board(BOARD, XX, YX)) || (XX == -1) || YX == -1)) \
 		   || ((get_board(BOARD, XX2, YX2)) || (XX2 == 19) || YX2 == 19))))
 
-int	rule3(t_board *board,  int x,  int y, char color)
-{
-  /* printf("%d\n", COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)); */
+/*
+** banc de macros élevés en pleine mer 
+*/
+/* int	rule3(t_board *board,  int x,  int y, char color) */
+/* { */
+/*   /\* printf("%d\n", COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)); *\/ */
 
-  if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  color)  == 4)
-    return (0);
+/*   if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  color)  == 4) */
+/*     return (0); */
 
-  if (COUNTHAMBURGER(board, x, y - 3, x, y - 2,  x, y - 1, x, y, x, y - 4,  x, y + 1,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x, y + 3, x, y + 2,  x, y + 1, x, y, x, y - 1,  x, y + 4,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x, y - 1, x, y + 1,  x, y + 2, x, y, x, y - 2,  x, y + 3,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x, y - 2, x, y - 1,  x, y + 1, x, y, x, y - 3,  x, y + 2,  color)  == 4)
-    return (0);
+/*   if (COUNTHAMBURGER(board, x, y - 3, x, y - 2,  x, y - 1, x, y, x, y - 4,  x, y + 1,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x, y + 3, x, y + 2,  x, y + 1, x, y, x, y - 1,  x, y + 4,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x, y - 1, x, y + 1,  x, y + 2, x, y, x, y - 2,  x, y + 3,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x, y - 2, x, y - 1,  x, y + 1, x, y, x, y - 3,  x, y + 2,  color)  == 4) */
+/*     return (0); */
 
-  if (COUNTHAMBURGER(board, x - 3, y - 3, x - 2, y - 2,  x - 1, y - 1, x, y, x - 4, y - 4,  x + 1, y + 1,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x + 3, y + 3, x + 2, y + 2,  x + 1, y + 1, x, y, x - 1, y - 1,  x + 4, y + 4,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x - 1, y - 1, x + 1, y + 1,  x + 2, y + 2, x, y, x - 2, y - 2,  x + 3, y + 3,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x - 2, y - 2, x - 1, y - 1,  x + 1, y + 1, x, y, x - 3, y - 3,  x + 2, y + 2,  color)  == 4)
-    return (0);
+/*   if (COUNTHAMBURGER(board, x - 3, y - 3, x - 2, y - 2,  x - 1, y - 1, x, y, x - 4, y - 4,  x + 1, y + 1,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x + 3, y + 3, x + 2, y + 2,  x + 1, y + 1, x, y, x - 1, y - 1,  x + 4, y + 4,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x - 1, y - 1, x + 1, y + 1,  x + 2, y + 2, x, y, x - 2, y - 2,  x + 3, y + 3,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x - 2, y - 2, x - 1, y - 1,  x + 1, y + 1, x, y, x - 3, y - 3,  x + 2, y + 2,  color)  == 4) */
+/*     return (0); */
 
-  if (COUNTHAMBURGER(board, x - 1, y + 1, x - 2, y + 2,  x - 3, y + 3, x, y, x + 1, y - 1,  x - 4, y + 4,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x - 2, y + 2, x - 1, y + 1,  x + 1, y - 1, x, y, x - 3, y + 3,  x + 2, y - 2,  color)  == 4)
-    return (0);
-  if (COUNTHAMBURGER(board, x + 3, y - 3, x + 2, y - 2,  x + 1, y - 1, x, y, x + 4, y - 4,  x - 1, y + 1,  color)  == 4)
-    return (0);
+/*   if (COUNTHAMBURGER(board, x - 1, y + 1, x - 2, y + 2,  x - 3, y + 3, x, y, x + 1, y - 1,  x - 4, y + 4,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x - 2, y + 2, x - 1, y + 1,  x + 1, y - 1, x, y, x - 3, y + 3,  x + 2, y - 2,  color)  == 4) */
+/*     return (0); */
+/*   if (COUNTHAMBURGER(board, x + 3, y - 3, x + 2, y - 2,  x + 1, y - 1, x, y, x + 4, y - 4,  x - 1, y + 1,  color)  == 4) */
+/*     return (0); */
 
-  return (1);
-}
+/*   return (1); */
+/* } */
 
+
+/*
+** car on ne sait pas si il a prit un cheezburger ou un l'opposé d'u hamburger
+*/
 #define VERIFIELECHAT(BOARD, X, Y, COLOR)				\
    ((HAZCHEEZBURGER(BOARD, X - 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y))) \
     || (HAZCHEEZBURGER(BOARD, X + 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y))) \
