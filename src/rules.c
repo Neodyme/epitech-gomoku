@@ -1,5 +1,5 @@
 /*
-** rules.c for  in /home/pprost/c/ai/gomoku
+-** rules.c for  in /home/pprost/c/ai/gomoku
 **
 ** Made by  Prost P.
 ** Login   <pprost@epitech.net>
@@ -23,6 +23,7 @@ union		u_chemical_cheddar
 {
   long		c;	/* cheddar */
   char		l[8];	/* lerdammer */
+  unsigned char	fl[8];	/* fake lerdammer */
 };
 typedef  union u_chemical_cheddar	t_chemical_cheddar;
 
@@ -113,7 +114,7 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
 int	rule3(t_board *board,  int x,  int y, char color)
 {
   long	res;
-  int	counter;
+  int	counter = 0;
   
   res = longgetlines(board, color, x, y);
   counter = (((t_chemical_cheddar)res).l[UP_L & 0x0f] == 2)
@@ -124,9 +125,9 @@ int	rule3(t_board *board,  int x,  int y, char color)
     + (((t_chemical_cheddar)res).l[DO_L & 0x0f] == 2)
     + (((t_chemical_cheddar)res).l[DO_C & 0x0f] == 2)
     + (((t_chemical_cheddar)res).l[DO_R & 0x0f] == 2);
-  if (counter >= 2)
-    return (0);
-  return (1);
+if (counter >= 2)
+  return (0);
+ return (1);
 }
 
 
