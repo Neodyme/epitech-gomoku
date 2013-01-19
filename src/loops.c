@@ -21,12 +21,10 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
 char		pose(t_board *board, int x, int y, char current)
 {
-  int		i;
-
-  getms("get");
-  get_board(board, x, y);
-  getms(NULL);
-  if ((get_board(board, x, y) == EMPTY) &&
+  char		get;
+  
+  get = get_board(board, x, y);
+  if ((get == EMPTY) &&
       (rule3(board, x, y, current)))
     {
       set_board(board, x, y, current);
@@ -46,7 +44,7 @@ char		pose(t_board *board, int x, int y, char current)
   else
     {
       printf("There's ");
-      switch (get_board(board, x, y))
+      switch (get)
 	{
 	case BLACK:
 	  printf("a Black Stone");
@@ -75,11 +73,12 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   SDL_Event     event;
   char		current;
 
+  int		get;
 
   current = BLACK;
   SDL_ShowCursor(0);
   init_board(board);
-  rules = 3;
+  rules = 0;
 
   cor.x = 0;
   cor.y = 0;
@@ -102,8 +101,8 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		  return (get_board(board, i/19, i%19));
 		}
 	    }
-	  place_pawns(board, surf);
 	}
+
       SDL_WaitEvent(&event);
 
       if (board->whites >= 5)
@@ -121,30 +120,46 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  (event.type == SDL_QUIT))
 	current = 0;
 
-      // Click
-      /* if (event.type == SDL_MOUSEBUTTONUP) */
-      /* 	{ */
-      /* 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19)) */
-      /* 	    { */
-      /* 	      /\* printf("At %i-%i: ", cor.x, cor.y); *\/ */
-      /* 	      current = pose(board, cor.x, cor.y, current); */
 
-      /* 	    } */
+      if (event.type == SDL_MOUSEBUTTONUP)
+	{
+	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
+	    {
+	      /* printf("At %i-%i: ", cor.x, cor.y); */	      
+	      current = pose(board, cor.x, cor.y, current);
+	      get = getprise(board, cor.x, cor.y, current);	      
+	      if (get)
+		{
+		  printf("Taken %i ", get * 2);
+		  if (current == BLACK)
+		    {
+		      board->blacks += get;
+		      printf("Black Stones (%i total)\n", board->blacks*2);
+		    }
+		  else
+		    {
+		      board->whites += get;
+		      printf("Whites Stones (%i total)\n", board->whites*2);
+		    }
+		  prise(board, cor.x, cor.y, current);
+		}
+	    }
+	  for (i = 0; i < 19 * 19; i++)
+	    {
+	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
+		{
+		  if (get_board(board, i/19, i%19) == BLACK)
+		    printf("Blacks wins with a row!\n");
+		  if (get_board(board, i/19, i%19) == WHITE)
+		    printf("Whites wins with a row!\n");
+		  return (get_board(board, i/19, i%19));
+		}
+	    }
+	}
 
-      /* 	  for (i = 0; i < 19 * 19; i++) */
-      /* 	    { */
-      /* 	      if (rule5(board, i/19, i%19, OPPOSITE(current))) */
-      /* 		{ */
-      /* 		  if (get_board(board, i/19, i%19) == BLACK) */
-      /* 		    printf("Blacks wins with a row!\n"); */
-      /* 		  if (get_board(board, i/19, i%19) == WHITE) */
-      /* 		    printf("Whites wins with a row!\n"); */
-      /* 		  return (get_board(board, i/19, i%19)); */
-      /* 		} */
-      /* 	    } */
-      /* 	} */
       place_pawns(board, surf);
-      if (event.type == SDL_MOUSEMOTION)
+
+      if ((event.type == SDL_MOUSEMOTION) || (event.type == SDL_MOUSEBUTTONUP))
 	{
      	  pos.w = 32;
 	  pos.h = 32;
@@ -177,50 +192,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    }
 	}
 
-      if (event.type == SDL_MOUSEBUTTONUP)
-	{
-	  long l = getlines(board, current, cor.x, cor.y);
-	    printf("<%d %d %d %d %d %d %d %d>\n",
-	    	   ISBLOCKED(((char*)&l)[0]),
-	    	   ISBLOCKED(((char*)&l)[1]),
-		   GETLSIZE(((char*)&l)[2]),
-	    	   ((char*)&l)[3],
-	    	   ((char*)&l)[4],
-	    	   ((char*)&l)[5],
-	    	   ((char*)&l)[6],
-	    	   ((char*)&l)[7]);
-	  (void)l;
-	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
-	    {
-	      /* printf("At %i-%i: ", cor.x, cor.y); */	      
-	      current = pose(board, cor.x, cor.y, current);	      
-	      if (prise(board, cor.x, cor.y, current))
-		{
-		  printf("Taken two ");
-		  if (current == BLACK)
-		    {
-		      board->blacks++;
-		      printf("Black Stones (%i total)\n", board->blacks*2);
-		    }
-		  else
-		    {
-		      board->whites++;
-		      printf("Whites Stones (%i total)\n", board->whites*2);
-		    }
-		}
-	    }
-	  for (i = 0; i < 19 * 19; i++)
-	    {
-	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
-		{
-		  if (get_board(board, i/19, i%19) == BLACK)
-		    printf("Blacks wins with a row!\n");
-		  if (get_board(board, i/19, i%19) == WHITE)
-		    printf("Whites wins with a row!\n");
-		  return (get_board(board, i/19, i%19));
-		}
-	    }
-	}
+
       SDL_Flip(surf->screen);
     }
   return (42);
@@ -263,6 +235,12 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 		    loop = game_loop(board, surf, 0);
 		  if ((event.motion.y > 560) && (event.motion.y < 600))
 		    loop = 0;
+
+		  if (loop == 1)
+		    current = surf->blackwin;
+		  if (loop == 2)
+		    current = surf->whitewin;
+		  printf("%i\n", loop);
 		}
 	    }
 	  else
