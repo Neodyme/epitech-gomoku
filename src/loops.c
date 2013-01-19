@@ -240,7 +240,6 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 		    current = surf->blackwin;
 		  if (loop == 2)
 		    current = surf->whitewin;
-		  printf("%i\n", loop);
 		}
 	    }
 	  else
