@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Jan 19 22:25:00 2013 jonathan martins
+** Last update Sat Jan 19 22:29:47 2013 jonathan martins
 */
 
 
@@ -42,8 +42,8 @@ int		get_val(int size, int blockLeft, int blockRight)
   return SINGLE_MARK * size;
 }
 
-void		setvisited(char *visited, int i, int l)
-{
+/* void		setvisited(char *visited, int i, int l) */
+/* { */
 /*   int		x = i/19; */
 /*   int		y = i%19; */
 /*   int		j; */
@@ -66,7 +66,7 @@ void		setvisited(char *visited, int i, int l)
 /* 	  * GETHARISSA(y, DO_C, ((char*)&l)[6])] = 1; */
 /*   j = GETSAMURAI(x, DO_R, ((char*)&l)[7]) */
 /* 	  * GETHARISSA(y, DO_R, ((char*)&l)[7])] = 1; */
-}
+/* } */
 
 int		heuristic_eval(t_board *board)
 {
@@ -74,13 +74,13 @@ int		heuristic_eval(t_board *board)
   int		ret;
   int		i;
   long		l;
-  char		visited[361];
+  /* char		visited[361]; */
 
-  memset(visited, 0, 360);
+  /* memset(visited, 0, 360); */
   for (i = 0; i < 19 * 19; i++)
     {
-      if (visited[i] == 0)
-	{
+      /* if (visited[i] == 0) */
+      /* 	{ */
 	  if (get_board(board, i/19, i%19) == WHITE)
 	    {
 	      l = getlines(board, WHITE, i/19, i%19);
@@ -104,7 +104,7 @@ int		heuristic_eval(t_board *board)
 	      if (ret == INFINITY)
 		return INFINITY;
 	      eval += ret;
-	      setvisited(visited, i, l);
+	      /* setvisited(visited, i, l); */
 	    }
 	  if (get_board(board, i/19, i%19) == BLACK)
 	    {
@@ -130,7 +130,7 @@ int		heuristic_eval(t_board *board)
 		return -INFINITY;
 	      eval -= ret;
 	    }
-	}
+	/* } */
     }
   eval += board->whites * CAPTURE;
   eval -= board->blacks * CAPTURE;
