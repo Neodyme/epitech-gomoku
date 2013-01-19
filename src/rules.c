@@ -63,7 +63,7 @@ long	drec(t_board *board, int color, long d, int sen, register unsigned int x, r
 
 long	longdrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  ~,.,,,mmmmmmmmmmmmmmmmmm  if (get_board(board, x, y) == (OPPOSITE(color)))
+  if (get_board(board, x, y) == (OPPOSITE(color)))
     {
        ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
