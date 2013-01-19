@@ -50,12 +50,12 @@ typedef  union u_chemical_cheddar	t_chemical_cheddar;
 */
 long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if (get_board(board, x, y) == (OPPOSITE(color)))
+  if ((x <= 0 || x >= 19 || y <= 0 || y >= 19) || (get_board(board, x, y) == (OPPOSITE(color))))
     {
        ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
-  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) != color)
+  if (get_board(board, x, y) != color)
     return (d);
   ((char*)&d)[sen & 0x0f]++;
   return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
@@ -68,7 +68,7 @@ long	longdrec(t_board *board, int color, long d, int sen, register unsigned int 
        ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
-  if ((x <= 0 && x > 19 && y <= 0 && y > 19) || get_board(board, x, y) == EMPTY)
+  if ((x <= 0 || x >= 19 || y <= 0 || y >= 19) || get_board(board, x, y) == EMPTY)
   {
     if (((t_chemical_cheddar)drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen))).l[sen & 0x0f] == 2)
       ((char*)&d)[sen & 0x0f] += 2;
@@ -77,6 +77,7 @@ long	longdrec(t_board *board, int color, long d, int sen, register unsigned int 
   ((char*)&d)[sen & 0x0f]++;
    return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
+
 
 long	longgetlines(t_board *board, int color, unsigned int x, unsigned int y)
 {
@@ -140,7 +141,6 @@ int	prise(t_board *board, unsigned int x, unsigned int y, int color)
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
-  printf("size: %d\n", getprise(board, x, y, color));
   if (((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
     {
       DOUBLETAKE (board, x - 1, y - 1, x - 2, y - 2);
@@ -203,47 +203,18 @@ int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
    - (12	* ((((get_board(BOARD, XX, YX)) || (XX == -1) || YX == -1)) \
 		   || ((get_board(BOARD, XX2, YX2)) || (XX2 == 19) || YX2 == 19))))
 
-/*
-** banc de macros élevés en pleine mer 
-*/
-/* int	rule3(t_board *board,  int x,  int y, char color) */
+
+/* int	rule5(t_board *board,  int x,  int y, char color) */
 /* { */
-/*   /\* printf("%d\n", COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)); *\/ */
+/*   long	res; */
+/*   int	counter = 0; */
+  
+/*   res = longgetlines(board, color, x, y); */
 
-/*   if (COUNTHAMBURGER(board, x - 3, y,  x - 2, y,  x - 1, y,  x, y,  x - 4, y,  x + 1, y,  color)  == 4) */
+/*   counter =  */
+    
+/*   if (counter >= 2) */
 /*     return (0); */
-/*   if (COUNTHAMBURGER(board, x + 3, y, x + 2, y,  x + 1, y,  x, y,  x - 1 , y,  x + 4, y,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x - 1 , y,  x + 1, y,  x + 2, y, x, y,  x - 2 , y,  x + 3, y,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x - 2 , y,  x - 1, y,  x + 1, y, x, y,  x - 3 , y,  x + 2, y,  color)  == 4) */
-/*     return (0); */
-
-/*   if (COUNTHAMBURGER(board, x, y - 3, x, y - 2,  x, y - 1, x, y, x, y - 4,  x, y + 1,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x, y + 3, x, y + 2,  x, y + 1, x, y, x, y - 1,  x, y + 4,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x, y - 1, x, y + 1,  x, y + 2, x, y, x, y - 2,  x, y + 3,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x, y - 2, x, y - 1,  x, y + 1, x, y, x, y - 3,  x, y + 2,  color)  == 4) */
-/*     return (0); */
-
-/*   if (COUNTHAMBURGER(board, x - 3, y - 3, x - 2, y - 2,  x - 1, y - 1, x, y, x - 4, y - 4,  x + 1, y + 1,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x + 3, y + 3, x + 2, y + 2,  x + 1, y + 1, x, y, x - 1, y - 1,  x + 4, y + 4,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x - 1, y - 1, x + 1, y + 1,  x + 2, y + 2, x, y, x - 2, y - 2,  x + 3, y + 3,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x - 2, y - 2, x - 1, y - 1,  x + 1, y + 1, x, y, x - 3, y - 3,  x + 2, y + 2,  color)  == 4) */
-/*     return (0); */
-
-/*   if (COUNTHAMBURGER(board, x - 1, y + 1, x - 2, y + 2,  x - 3, y + 3, x, y, x + 1, y - 1,  x - 4, y + 4,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x - 2, y + 2, x - 1, y + 1,  x + 1, y - 1, x, y, x - 3, y + 3,  x + 2, y - 2,  color)  == 4) */
-/*     return (0); */
-/*   if (COUNTHAMBURGER(board, x + 3, y - 3, x + 2, y - 2,  x + 1, y - 1, x, y, x + 4, y - 4,  x - 1, y + 1,  color)  == 4) */
-/*     return (0); */
-
 /*   return (1); */
 /* } */
 
