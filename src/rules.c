@@ -1,9 +1,9 @@
 /*
 ** rules.c for  in /home/pprost/c/ai/gomoku
-** 
+**
 ** Made by  Prost P.
 ** Login   <pprost@epitech.net>
-** 
+**
 ** Started on  Sat Dec  1 18:23:29 2012 Prost P.
 */
 
@@ -15,7 +15,7 @@
 #include <time.h>
 
 #include <inttypes.h>
- 
+
 #include "board.h"
 #include "manip_boards.h"
 
@@ -24,7 +24,7 @@ union		u_chemical_cheddar
   long		c;	/* cheddar */
   char		l[8];	/* lerdammer */
 };
-typedef  union u_chemical_cheddar	t_chemical_cheddar; 
+typedef  union u_chemical_cheddar	t_chemical_cheddar;
 
 #define OPPOSITE(COLOR) ((~COLOR) & 0x3)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
@@ -135,7 +135,6 @@ int	rule3(t_board *board,  int x,  int y, char color)
 */
 int	prise(t_board *board, unsigned int x, unsigned int y)
 {
-
   /* printf("%i %i\n", WHITE, OPPOSITE(WHITE)); */
   /* printf("%i %i\n", BLACK, OPPOSITE(BLACK)); */
   if ((get_board(board, x + 1, y) == OPPOSITE(get_board(board, x, y))
@@ -145,8 +144,12 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend - 1\n"); */
       TAKE(board, x + 1, y);
       TAKE(board, x + 2, y);
-      return (1); 
-   }
+      board->eaten[board->blacks + board->whites + 0] = x + 1;
+      board->eaten[board->blacks + board->whites + 1] = y;
+      board->eaten[board->blacks + board->whites + 2] = x + 2;
+      board->eaten[board->blacks + board->whites + 3] = y;
+      return (1);
+    }
   if ((get_board(board, x, y + 1) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x, y + 2) == OPPOSITE(get_board(board, x, y)))
        && (get_board(board, x, y + 3) == get_board(board, x, y))))
@@ -154,6 +157,10 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend | 1\n"); */
       TAKE(board, x, y + 1);
       TAKE(board, x, y + 2);
+      board->eaten[board->blacks + board->whites + 0] = x;
+      board->eaten[board->blacks + board->whites + 1] = y + 1;
+      board->eaten[board->blacks + board->whites + 2] = x;
+      board->eaten[board->blacks + board->whites + 3] = y + 2;
       return (1);
     }
   if ((get_board(board, x + 1, y + 1) == OPPOSITE(get_board(board, x, y))
@@ -163,6 +170,10 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend \ 1\n"); */
       TAKE(board, x + 1, y + 1);
       TAKE(board, x + 2, y + 2);
+      board->eaten[board->blacks + board->whites + 0] = x + 1;
+      board->eaten[board->blacks + board->whites + 1] = y + 1;
+      board->eaten[board->blacks + board->whites + 2] = x + 2;
+      board->eaten[board->blacks + board->whites + 3] = y + 2;
       return (1);
     }
   if ((get_board(board, x + 1, y - 1) == OPPOSITE(get_board(board, x, y))
@@ -172,8 +183,13 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend / 1\n"); */
       TAKE(board, x + 1, y - 1);
       TAKE(board, x + 2, y - 2);
+      board->eaten[board->blacks + board->whites + 0] = x + 1;
+      board->eaten[board->blacks + board->whites + 1] = y - 1;
+      board->eaten[board->blacks + board->whites + 2] = x + 2;
+      board->eaten[board->blacks + board->whites + 3] = y - 2;
       return (1);
     }
+
 
   if ((get_board(board, x - 1, y) == OPPOSITE(get_board(board, x, y))
        && (get_board(board, x - 2, y) == OPPOSITE(get_board(board, x, y)))
@@ -182,6 +198,10 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend - 2\n"); */
       TAKE(board, x - 1, y);
       TAKE(board, x - 2, y);
+      board->eaten[board->blacks + board->whites + 0] = x - 1;
+      board->eaten[board->blacks + board->whites + 1] = y;
+      board->eaten[board->blacks + board->whites + 2] = x - 2;
+      board->eaten[board->blacks + board->whites + 3] = y;
       return (1);
     }
   if ((get_board(board, x, y - 1) == OPPOSITE(get_board(board, x, y))
@@ -191,6 +211,10 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend | 2\n"); */
       TAKE(board, x, y - 1);
       TAKE(board, x, y - 2);
+      board->eaten[board->blacks + board->whites + 0] = x;
+      board->eaten[board->blacks + board->whites + 1] = y - 1;
+      board->eaten[board->blacks + board->whites + 2] = x;
+      board->eaten[board->blacks + board->whites + 3] = y - 2;
       return (1);
     }
   if ((get_board(board, x - 1, y - 1) == OPPOSITE(get_board(board, x, y))
@@ -200,6 +224,10 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend \ 2\n"); */
       TAKE(board, x - 1, y - 1);
       TAKE(board, x - 2, y - 2);
+      board->eaten[board->blacks + board->whites + 0] = x - 1;
+      board->eaten[board->blacks + board->whites + 1] = y - 1;
+      board->eaten[board->blacks + board->whites + 2] = x - 2;
+      board->eaten[board->blacks + board->whites + 3] = y - 2;
       return (1);
     }
   if ((get_board(board, x - 1, y + 1) == OPPOSITE(get_board(board, x, y))
@@ -209,9 +237,12 @@ int	prise(t_board *board, unsigned int x, unsigned int y)
       /* printf("prend / 2\n"); */
       TAKE(board, x - 1, y + 1);
       TAKE(board, x - 2, y + 2);
+      board->eaten[board->blacks + board->whites + 0] = x - 1;
+      board->eaten[board->blacks + board->whites + 1] = y + 1;
+      board->eaten[board->blacks + board->whites + 2] = x - 2;
+      board->eaten[board->blacks + board->whites + 3] = y + 2;
       return (1);
     }
-/* here, do your time-consuming job */
   return (0);
 }
 
