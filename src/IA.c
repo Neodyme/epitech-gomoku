@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Jan 20 00:14:10 2013 jonathan martins
+** Last update Sun Jan 20 02:16:49 2013 jonathan martins
 */
 
 
@@ -19,7 +19,7 @@
 #define		DEPTH		2
 
 #define		FIVE_IN_ROW	INFINITY
-#define		FOUR		10000000
+#define		FOUR		50000000
 #define		THREE_IN_ROW	2000000
 #define		CAPTURE		1000000
 #define		BROKEN_THREE	10000
@@ -102,9 +102,9 @@ int		heuristic_eval(t_board *board)
 	  eval -= ret;
 	}
     }
-  eval += board->whites * CAPTURE;
-  eval -= board->blacks * CAPTURE;
-  eval += random() % 10;
+  eval += board->blacks * CAPTURE;
+  eval -= board->whites * CAPTURE;
+  eval -= random() % 5;
   return eval;
 }
 
@@ -132,6 +132,7 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
   int		val2;
   int		x;
   int		y;
+  int		get;
 
   if (depth == 0 || leaf(node) == 1)
     return heuristic_eval(node);
@@ -146,7 +147,10 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  get = getprise(node, x, y, WHITE);
+		  node->blacks += get;
 		  val2 = minimax(node, depth - 1, BLACK, val, max);
+		  node->blacks -= get;
 		  set_board(node, x, y, EMPTY);
 		  if (val2 > val)
 		    val = val2;
@@ -168,7 +172,10 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  get = getprise(node, x, y, BLACK);
+		  node->whites += get;
 		  val2 = minimax(node, depth - 1, WHITE, min, val);
+		  node->whites -= get;
 		  set_board(node, x, y, EMPTY);
 		  if (val2 < val)
 		    val = val2;
@@ -188,6 +195,7 @@ void		minmax(t_board *node, t_pos *bestMove)
   int		val2;
   int		x;
   int		y;
+  int		get;
 
   val = -INFINITY;
   bestMove->x = 0;
@@ -200,7 +208,12 @@ void		minmax(t_board *node, t_pos *bestMove)
 	      (rule3(node, x, y, WHITE)))
 	    {
 	      set_board(node, x, y, WHITE);
+	      get = getprise(node, x, y, WHITE);
+	      if (get)
+		node->blacks += get;
 	      val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
+	      if (get)
+		node->blacks -= get;
 	      set_board(node, x, y, EMPTY);
 	      if (val2 > val)
 		{

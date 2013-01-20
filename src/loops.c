@@ -22,7 +22,7 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 char		pose(t_board *board, int x, int y, char current)
 {
   char		get;
-  
+
   get = get_board(board, x, y);
   if ((get == EMPTY) &&
       (rule3(board, x, y, current)))
@@ -90,6 +90,22 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	{
 	  callIA(board, rules, &moveIA);
 	  current = pose(board, moveIA.x, moveIA.y, current);
+	  get = getprise(board, moveIA.x, moveIA.y, current);
+	  if (get)
+	    {
+	      printf("Taken %i ", get * 2);
+	      if (current == BLACK)
+		{
+		  board->blacks += get;
+		  printf("Black Stones (%i total)\n", board->blacks*2);
+		}
+	      else
+		{
+		  board->whites += get;
+		  printf("Whites Stones (%i total)\n", board->whites*2);
+		}
+	      prise(board, moveIA.x, moveIA.y, current);
+	    }
 	  for (i = 0; i < 19 * 19; i++)
 	    {
 	      if (rule5(board, i/19, i%19, OPPOSITE(current)))
@@ -121,13 +137,14 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	current = 0;
 
 
+      // click
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
 	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
 	    {
-	      /* printf("At %i-%i: ", cor.x, cor.y); */	      
+	      /* printf("At %i-%i: ", cor.x, cor.y); */
 	      current = pose(board, cor.x, cor.y, current);
-	      get = getprise(board, cor.x, cor.y, current);	      
+	      get = getprise(board, cor.x, cor.y, current);
 	      if (get)
 		{
 		  printf("Taken %i ", get * 2);
