@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Jan 20 02:28:48 2013 jonathan martins
+** Last update Sun Jan 20 17:07:08 2013 jonathan martins
 */
 
 
@@ -189,7 +189,7 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
   return 0;
 }
 
-void		minmax(t_board *node, t_pos *bestMove)
+void		minmax(t_board *node, t_pos *bestMove, char current)
 {
   int		val;
   int		val2;
@@ -197,7 +197,10 @@ void		minmax(t_board *node, t_pos *bestMove)
   int		y;
   int		get;
 
-  val = -INFINITY;
+  if (current == WHITE)
+    val = -INFINITY;
+  else
+    val = INFINITY;
   bestMove->x = 0;
   bestMove->y = 0;
   for (x = 0; x < 19; x++)
@@ -211,15 +214,30 @@ void		minmax(t_board *node, t_pos *bestMove)
 	      get = getprise(node, x, y, WHITE);
 	      if (get)
 		node->blacks += get;
-	      val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
+	      if (current == WHITE)
+		val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
+	      else
+		val2 = minimax(node, DEPTH - 1, WHITE, -INFINITY, INFINITY);
 	      if (get)
 		node->blacks -= get;
 	      set_board(node, x, y, EMPTY);
-	      if (val2 > val)
+	      if (current == WHITE)
 		{
-		  val = val2;
-		  bestMove->x = x;
-		  bestMove->y = y;
+		  if (val2 > val)
+		    {
+		      val = val2;
+		      bestMove->x = x;
+		      bestMove->y = y;
+		    }
+		}
+	      else
+		{
+		  if (val2 < val)
+		    {
+		      val = val2;
+		      bestMove->x = x;
+		      bestMove->y = y;
+		    }
 		}
 	    }
 	}
@@ -231,9 +249,9 @@ void		minmax(t_board *node, t_pos *bestMove)
 	  return;
 }
 
-void		callIA(t_board *board, char rules, t_pos *ret)
+void		callIA(t_board *board, char rules, t_pos *ret, char current)
 {
   if (ret != NULL)
-    minmax(board, ret);
+    minmax(board, ret, current);
   (void)rules;
 }

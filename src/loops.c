@@ -117,14 +117,14 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       // IA
       if (mode && current == WHITE)
 	{
-	  callIA(board, rules, &move);
+	  callIA(board, rules, &move, current);
 	  current = pose(board, &move, current, rules);
 	}
       else if (hint)
 	{
 	  if (hint > 1)
 	    {
-	      callIA(board, rules, &move);
+	      callIA(board, rules, &move, current);
 	      hint--;
 	    }
 	  pos.x = move.x * 32 -16;
