@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Jan 20 02:16:49 2013 jonathan martins
+** Last update Sun Jan 20 02:28:48 2013 jonathan martins
 */
 
 
@@ -31,7 +31,7 @@
 
 int		get_val(int size, int blockLeft, int blockRight)
 {
-  if (size == 5)
+  if (size >= 5)
     return INFINITY;
   if (size == 4 && (blockLeft == 0 || blockRight == 0))
     return FOUR;
@@ -56,22 +56,22 @@ int		heuristic_eval(t_board *board)
       if (get_board(board, i/19, i%19) == WHITE)
 	{
 	  l = getlines(board, WHITE, i/19, i%19);
-	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]) + 1,
 			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]) + 1,
 			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]) + 1,
 			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]) + 1,
 			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
 	  if (ret == INFINITY)
 	    return INFINITY;
@@ -80,22 +80,22 @@ int		heuristic_eval(t_board *board)
       if (get_board(board, i/19, i%19) == BLACK)
 	{
 	  l = getlines(board, BLACK, i/19, i%19);
-	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]) + 1,
 			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]) + 1,
 			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]) + 1,
 			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]) + 1,
 			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
