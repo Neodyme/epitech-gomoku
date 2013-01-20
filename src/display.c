@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Wed Dec 12 18:45:52 2012 dorian schaegis
+** Last update Sun Jan 20 06:35:37 2013 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -64,7 +64,7 @@ char		init_sdl(t_surfaces *surf)
   if (SDL_Init(SDL_INIT_VIDEO))
     return (printf("Video initialization failed\n"));
 
-  if ((surf->screen = SDL_SetVideoMode(640, 640, 24, SDL_HWSURFACE)) == NULL)
+  if ((surf->screen = SDL_SetVideoMode(640, 684, 24, SDL_HWSURFACE)) == NULL)
     return (printf("Set Video Mode failed\n"));
 
   if ((surf->background = SDL_LoadBMP("./res/board.bmp")) == NULL)
@@ -86,6 +86,11 @@ char		init_sdl(t_surfaces *surf)
   if ((surf->whitestone = SDL_LoadBMP("./res/whitestone.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
   if ((surf->nopestone = SDL_LoadBMP("./res/nope.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+
+  if ((surf->rule3 = SDL_LoadBMP("./res/r3.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+  if ((surf->rule5 = SDL_LoadBMP("./res/r5.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
 
 
@@ -115,6 +120,9 @@ void		free_sdl(t_surfaces *surf)
   SDL_FreeSurface(surf->blackstone);
   SDL_FreeSurface(surf->whitestone);
   SDL_FreeSurface(surf->nopestone);
+
+  SDL_FreeSurface(surf->rule3);
+  SDL_FreeSurface(surf->rule5);
 }
 
 void		show_background(SDL_Surface *background, SDL_Surface *screen)
@@ -123,7 +131,7 @@ void		show_background(SDL_Surface *background, SDL_Surface *screen)
 
   SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 128, 128, 128));
   pos.w = 640;
-  pos.h = 640;
+  pos.h = 684;
   pos.x = 1;
   pos.y = 1;
   SDL_BlitSurface(background, NULL, screen, &pos);

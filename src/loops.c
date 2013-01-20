@@ -101,7 +101,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   current = BLACK;
   SDL_ShowCursor(0);
   init_board(board);
-  rules = 0;
+  rules = RULE3 | RULE5;
 
   cor.x = 0;
   cor.y = 0;
@@ -109,15 +109,24 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   printf("New Game\n");
   while (current)
     {
+      // Background
       show_background(surf->background, surf->screen);
+
+      // IA
       if (mode && current == WHITE)
 	{
 	  callIA(board, rules, &move);
 	  current = pose(board, &move, current, rules);
 	}
+      else
+	SDL_WaitEvent(&event);
 
-      SDL_WaitEvent(&event);
+      // Fuite
+      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
+	  (event.type == SDL_QUIT))
+	current = 0;
 
+      // Victoire
       if (board->whites >= 5)
 	{
 	  printf("Blacks wins with captures!\n");
@@ -129,19 +138,43 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  return (WHITE);
 	}
 
-      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
-	  (event.type == SDL_QUIT))
-	current = 0;
-
-
       // Click
       if (event.type == SDL_MOUSEBUTTONUP)
-	if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
-	  {
-	    move.x = cor.x;
-	    move.y = cor.y;
-	    current = pose(board, &move, current, rules);
-	  }
+	{
+	  // Mouvements sur le board: position du curseur
+	  if ((cor.x >= 0) && (cor.x < 19) && (cor.y >= 0) && (cor.y < 19))
+	    {
+	      move.x = cor.x;
+	      move.y = cor.y;
+	      current = pose(board, &move, current, rules);
+	    }
+	  // Mouvements en bas du board: sélection des règles
+	  else if (event.motion.y > 632)
+	    {
+	      if (event.motion.x < 320)
+		rules = rules ^ RULE3;
+	      else
+		rules = rules ^ RULE5;
+	    }
+	}
+
+      // Affichage de l'état des règles
+      if (rules)
+	{
+     	  pos.w = 320;
+	  pos.h = 56;
+	  pos.y = 628;
+	  if (rules & RULE3)
+	    {
+	      pos.x = 0;
+	      SDL_BlitSurface(surf->rule3, NULL, surf->screen, &pos);
+	    }
+	  if (rules & RULE5)
+	    {
+	      pos.x = 320;
+	      SDL_BlitSurface(surf->rule5, NULL, surf->screen, &pos);
+	    }
+	}
 
       // Affichage des pions
       place_pawns(board, surf);
@@ -176,7 +209,10 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		}
 	      else
 		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
+	      SDL_ShowCursor(0);
 	    }
+	  else if (event.motion.y > 632)
+	    SDL_ShowCursor(1);
 	}
 
       for (i = 0; i < 19 * 19; i++)
@@ -190,7 +226,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      return (get_board(board, i/19, i%19));
 	    }
 	}
-
 
       SDL_Flip(surf->screen);
     }
