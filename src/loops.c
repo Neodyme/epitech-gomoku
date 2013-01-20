@@ -91,9 +91,10 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   int		i;
   t_pos		move;
   char		rules;
+  char		hint;
 
-  SDL_Rect	pos;
-  SDL_Rect	cor;
+  SDL_Rect	pos; // Pour les placements dans la fenêtre
+  SDL_Rect	cor; // Pour les placements dans le board
 
   SDL_Event     event;
   char		current;
@@ -105,6 +106,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
   cor.x = 0;
   cor.y = 0;
+  hint = 3;
 
   printf("New Game\n");
   while (current)
@@ -118,8 +120,20 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  callIA(board, rules, &move);
 	  current = pose(board, &move, current, rules);
 	}
-      else
-	SDL_WaitEvent(&event);
+      else if (hint)
+	{
+	  if (hint > 1)
+	    {
+	      callIA(board, rules, &move);
+	      hint--;
+	    }
+	  pos.x = move.x * 32 -16;
+	  pos.y = move.y * 32 -16;
+	  pos.w = 32;
+	  pos.h = 32;
+	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+	}
+      SDL_WaitEvent(&event);
 
       // Fuite
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
