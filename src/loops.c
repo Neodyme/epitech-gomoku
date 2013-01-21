@@ -23,7 +23,6 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 {
   char		get;
   int		iget;
-  (void)	rules;
 
 
   /* printf("At %i-%i: ", cor.move->x, cor.move->y); */
@@ -31,7 +30,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
   // Pose
   get = get_board(board, move->x, move->y);
   if ((get == EMPTY) &&
-      (rule3(board, move->x, move->y, current)))
+      ((rules & RULE3) || (rule3(board, move->x, move->y, current))))
     {
       set_board(board, move->x, move->y, current);
       printf("Placed a ");
@@ -83,12 +82,22 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
       prise(board, move->x, move->y, current);
     }
 
+  // Règle de 5
+  if ((rules & RULE5) && (rule5(board, move->x, move->y, current)))
+    {
+      if (current == BLACK)
+	printf("Blacks wins with a row!\n");
+      if (current == WHITE)
+	printf("Whites wins with a row!\n");
+      return (current + 10);
+    }
+
   return (current);
 }
 
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
-  int		i;
+  t_pos		moveIA;
   t_pos		move;
   char		rules;
   char		hint;
@@ -106,39 +115,40 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
   cor.x = 0;
   cor.y = 0;
-  hint = 3;
+  hint = 2;
 
+  SDL_PollEvent(&event);
   printf("New Game\n");
   while (current)
     {
+      hint = 0;
+      // Fuite
+      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
+	  (event.type == SDL_QUIT))
+	current = 0;
+
       // Background
       show_background(surf->background, surf->screen);
 
       // IA
       if (mode && current == WHITE)
 	{
-	  callIA(board, rules, &move, current);
-	  current = pose(board, &move, current, rules);
+	  callIA(board, rules, &moveIA, current);
+	  current = pose(board, &moveIA, current, rules);
 	}
       else if (hint)
 	{
 	  if (hint > 1)
 	    {
-	      callIA(board, rules, &move, current);
+	      callIA(board, rules, &moveIA, current);
 	      hint--;
 	    }
-	  pos.x = move.x * 32 -16;
-	  pos.y = move.y * 32 -16;
+	  pos.x = moveIA.x * 32 +16;
+	  pos.y = moveIA.y * 32 +16;
 	  pos.w = 32;
 	  pos.h = 32;
 	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
 	}
-      SDL_WaitEvent(&event);
-
-      // Fuite
-      if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
-	  (event.type == SDL_QUIT))
-	current = 0;
 
       // Victoire
       if (board->whites >= 5)
@@ -161,6 +171,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      move.x = cor.x;
 	      move.y = cor.y;
 	      current = pose(board, &move, current, rules);
+	      hint = 2;
 	    }
 	  // Mouvements en bas du board: sélection des règles
 	  else if (event.motion.y > 632)
@@ -180,12 +191,12 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  pos.y = 628;
 	  if (rules & RULE3)
 	    {
-	      pos.x = 0;
+	      pos.x = 1;
 	      SDL_BlitSurface(surf->rule3, NULL, surf->screen, &pos);
 	    }
 	  if (rules & RULE5)
 	    {
-	      pos.x = 320;
+	      pos.x = 321;
 	      SDL_BlitSurface(surf->rule5, NULL, surf->screen, &pos);
 	    }
 	}
@@ -208,7 +219,8 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    {
 	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
-		  if (!rule3(board, cor.x, cor.y, current))
+		  if (!getprise(board, cor.x, cor.y, current) && (rules & RULE3)
+		      && (!rule3(board, cor.x, cor.y, current)))
 		    SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
 		  else if (current == BLACK)
 		    {
@@ -229,19 +241,10 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    SDL_ShowCursor(1);
 	}
 
-      for (i = 0; i < 19 * 19; i++)
-	{
-	  if (rule5(board, i/19, i%19, OPPOSITE(current)))
-	    {
-	      if (get_board(board, i/19, i%19) == BLACK)
-		printf("Blacks wins with a row!\n");
-	      if (get_board(board, i/19, i%19) == WHITE)
-		printf("Whites wins with a row!\n");
-	      return (get_board(board, i/19, i%19));
-	    }
-	}
-
       SDL_Flip(surf->screen);
+      if (current > 10)
+	return (current - 10);
+      SDL_WaitEvent(&event);
     }
   return (42);
 }
@@ -264,6 +267,8 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	   (event.type == SDL_QUIT)) && (current == surf->title))
 	loop = 0;
 
+
+      // Écran de victoire
       if ((((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
 	   (event.type == SDL_QUIT)) && (current != surf->title))
 	{
