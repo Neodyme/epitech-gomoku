@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 18:14:22 2012 dorian schaegis
-** Last update Sun Jan 20 06:35:37 2013 dorian schaegis
+** Last update Wed Jan 30 19:47:55 2013 dorian schaegis
 */
 
 #define		_BSD_SOURCE
@@ -92,6 +92,10 @@ char		init_sdl(t_surfaces *surf)
     return (printf("Texture couldn't be loaded\n"));
   if ((surf->rule5 = SDL_LoadBMP("./res/r5.bmp")) == NULL)
     return (printf("Texture couldn't be loaded\n"));
+  if ((surf->hint = SDL_LoadBMP("./res/hint.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
+  if ((surf->exit = SDL_LoadBMP("./res/exit.bmp")) == NULL)
+    return (printf("Texture couldn't be loaded\n"));
 
 
   SDL_SetColorKey(surf->cursor, SDL_SRCCOLORKEY, SDL_MapRGB(surf->cursor->format, 255, 0, 255));
@@ -123,6 +127,8 @@ void		free_sdl(t_surfaces *surf)
 
   SDL_FreeSurface(surf->rule3);
   SDL_FreeSurface(surf->rule5);
+  SDL_FreeSurface(surf->hint);
+  SDL_FreeSurface(surf->exit);
 }
 
 void		show_background(SDL_Surface *background, SDL_Surface *screen)

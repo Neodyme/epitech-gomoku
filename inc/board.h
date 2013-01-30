@@ -50,6 +50,8 @@ struct		s_dl
 
   SDL_Surface	*rule3;
   SDL_Surface	*rule5;
+  SDL_Surface	*hint;
+  SDL_Surface	*exit;
 };
 
 typedef struct s_dl t_surfaces;

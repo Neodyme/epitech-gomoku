@@ -115,13 +115,12 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 
   cor.x = 0;
   cor.y = 0;
-  hint = 2;
+  hint = 0;
 
   SDL_PollEvent(&event);
   printf("New Game\n");
   while (current)
     {
-      hint = 0;
       // Fuite
       if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
 	  (event.type == SDL_QUIT))
@@ -140,6 +139,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	{
 	  if (hint > 1)
 	    {
+	      /* printf("Hint!\n"); */
 	      callIA(board, rules, &moveIA, current);
 	      hint--;
 	    }
@@ -171,15 +171,24 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      move.x = cor.x;
 	      move.y = cor.y;
 	      current = pose(board, &move, current, rules);
-	      hint = 2;
+	      if (hint)
+		hint = 2;
 	    }
 	  // Mouvements en bas du board: sélection des règles
 	  else if (event.motion.y > 632)
 	    {
-	      if (event.motion.x < 320)
+	      if (event.motion.x < 160)
 		rules = rules ^ RULE3;
-	      else
+	      else if (event.motion.x < 320)
 		rules = rules ^ RULE5;
+	      else if (event.motion.x < 480)
+		{
+		  hint = !hint;
+		  if (hint)
+		    hint++;
+		}
+	      else if (event.motion.x < 640)
+	        return (42);
 	    }
 	}
 
@@ -188,7 +197,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	{
      	  pos.w = 320;
 	  pos.h = 56;
-	  pos.y = 628;
+	  pos.y = 630;
 	  if (rules & RULE3)
 	    {
 	      pos.x = 1;
@@ -196,8 +205,13 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    }
 	  if (rules & RULE5)
 	    {
-	      pos.x = 321;
+	      pos.x = 161;
 	      SDL_BlitSurface(surf->rule5, NULL, surf->screen, &pos);
+	    }
+	  if (hint)
+	    {
+	      pos.x = 320;
+	      SDL_BlitSurface(surf->hint, NULL, surf->screen, &pos);
 	    }
 	}
 
