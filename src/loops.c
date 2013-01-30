@@ -30,7 +30,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
   // Pose
   get = get_board(board, move->x, move->y);
   if ((get == EMPTY) &&
-      ((rules & RULE3) || (rule3(board, move->x, move->y, current))))
+      (!(rules & RULE3) || (rule3(board, move->x, move->y, current))))
     {
       set_board(board, move->x, move->y, current);
       printf("Placed a ");
