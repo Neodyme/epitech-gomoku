@@ -22,7 +22,7 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 char		pose(t_board *board, t_pos *move, char current, char rules)
 {
   char		get;
-  int		iget;
+  long		iget;
 
 
   /* printf("At %i-%i: ", cor.move->x, cor.move->y); */
@@ -68,7 +68,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
   iget = getprise(board, move->x, move->y, current);
   if (iget)
     {
-      printf("Taken %i ", get * 2);
+      printf("Taken %i ", iget * 2);
       if (current == BLACK)
 	{
 	  board->blacks += iget;
@@ -83,7 +83,9 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
     }
 
   // Règle de 5
-  if ((rules & RULE5) && (rule5(board, move->x, move->y, current)))
+
+  // (rules & RULE5) -> tester si les 5 cassables sont actifs
+  if (rule5(board, move->x, move->y, current))
     {
       if (current == BLACK)
 	printf("Blacks wins with a row!\n");
