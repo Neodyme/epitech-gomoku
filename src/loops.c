@@ -84,7 +84,8 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
     }
 
   // Règle de 5
-  if ((rules & RULE5) && (rule5(board, move->x, move->y, OPPOSITE(current))))
+  // (rules & RULE5) && 
+  if (rule5(board, move->x, move->y, OPPOSITE(current)))
     {
       if (current == WHITE)
 	printf("Blacks wins with a row!\n");
@@ -118,7 +119,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   cor.y = 0;
   hint = 0;
 
-  SDL_PollEvent(&event);
+  SDL_WaitEvent(&event);
   printf("New Game\n");
   while (current)
     {
@@ -151,7 +152,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
 	}
 
-      // Victoire
+      // Victoire par capture
       if (board->whites >= 5)
 	{
 	  printf("Blacks wins with captures!\n");
@@ -159,7 +160,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	}
       if (board->blacks >= 5)
 	{
-	  printf("Blacks wins with captures!\n");
+	  printf("Whites wins with captures!\n");
 	  return (WHITE);
 	}
 
@@ -260,6 +261,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       SDL_Flip(surf->screen);
       if (current > 10)
 	return (current - 10);
+      SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
       SDL_WaitEvent(&event);
     }
   return (42);
@@ -317,6 +319,9 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	      current = surf->title;
 	    }
 	}
+      // debug
+      if ((loop == 1) || (loop == 2))
+	place_pawns(board, surf);
       SDL_Flip(surf->screen);
     }
   return (0);
