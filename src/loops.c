@@ -184,28 +184,26 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	}
 
       // Affichage de l'état des règles
-      if (rules)
-	{
-     	  pos.w = 320;
-	  pos.h = 56;
-	  pos.y = 630;
-	  if (rules & RULE3)
-	    {
-	      pos.x = 1;
-	      SDL_BlitSurface(surf->rule3, NULL, surf->screen, &pos);
-	    }
-	  if (rules & RULE5)
-	    {
-	      pos.x = 161;
-	      SDL_BlitSurface(surf->rule5, NULL, surf->screen, &pos);
-	    }
-	  if (hint)
-	    {
-	      pos.x = 320;
-	      SDL_BlitSurface(surf->hint, NULL, surf->screen, &pos);
-	    }
-	}
+      pos.w = 320;
+      pos.h = 56;
+      pos.y = 630;
 
+      if (rules & RULE3)
+	{
+	  pos.x = 1;
+	  SDL_BlitSurface(surf->rule3, NULL, surf->screen, &pos);
+	}
+      if (rules & RULE5)
+	{
+	  pos.x = 161;
+	  SDL_BlitSurface(surf->rule5, NULL, surf->screen, &pos);
+	}
+      if (hint)
+	{
+	  pos.x = 320;
+	  SDL_BlitSurface(surf->hint, NULL, surf->screen, &pos);
+	}
+ 
       // Affichage des pions
       place_pawns(board, surf);
 
