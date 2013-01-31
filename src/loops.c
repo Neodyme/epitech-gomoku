@@ -322,8 +322,10 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 
 		  if (loop == 1)
 		    current = surf->blackwin;
-		  if (loop == 2)
+		  else if (loop == 2)
 		    current = surf->whitewin;
+		  else		    
+		    show_background(surf->title, surf->screen);
 		}
 	    }
 	  else
