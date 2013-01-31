@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Thu Jan 31 19:04:09 2013 Prost P.
+** Last update Thu Jan 31 21:14:15 2013 dorian schaegis
 */
 
 #define		 _BSD_SOURCE
@@ -13,7 +13,7 @@
 #include	<SDL/SDL.h>
 #include	<string.h>
 
-#include	<gperftools/profiler.h>
+/* #include	<gperftools/profiler.h> */
 
 #include	"board.h"
 #include	"display.h"
@@ -25,7 +25,7 @@ int		main(int ac, char **av)
   t_surfaces	surf;
   t_board	board;
 
-  ProfilerStart("./gomo.prof");
+  /* ProfilerStart("./gomo.prof"); */
   if (init_sdl(&surf))
     return (1);
   if ((ac > 1) && (!strcmp(av[1], "-immed")))
@@ -34,6 +34,6 @@ int		main(int ac, char **av)
     menu_loop(&board, &surf);
   printf("Exiting\n");
   free_sdl(&surf);
-  ProfilerStop();
+  /* ProfilerStop(); */
   return (0);
 }
