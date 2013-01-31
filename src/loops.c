@@ -68,7 +68,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
   iget = getprise(board, move->x, move->y, current);
   if (iget)
     {
-      printf("Taken %i ", get * 2);
+      printf("Taken %i ", iget*2);
       if (current == BLACK)
 	{
 	  board->blacks += iget;
@@ -83,7 +83,8 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
     }
 
   // Règle de 5
-  if ((rules & RULE5) && (rule5(board, move->x, move->y, OPPOSITE(current))))
+  // (rules & RULE5) && 
+  if (rule5(board, move->x, move->y, OPPOSITE(current)))
     {
       if (current == WHITE)
 	printf("Blacks wins with a row!\n");
@@ -117,7 +118,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
   cor.y = 0;
   hint = 0;
 
-  SDL_PollEvent(&event);
+  SDL_WaitEvent(&event);
   printf("New Game\n");
   while (current)
     {
@@ -133,6 +134,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       if (mode && current == WHITE)
 	{
 	  callIA(board, rules, &moveIA, current);
+	  SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
 	  current = pose(board, &moveIA, current, rules);
 	}
       else if (hint)
@@ -141,6 +143,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    {
 	      /* printf("Hint!\n"); */
 	      callIA(board, rules, &moveIA, current);
+	      SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
 	      hint--;
 	    }
 	  pos.x = moveIA.x * 32 +16;
@@ -148,18 +151,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  pos.w = 32;
 	  pos.h = 32;
 	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-	}
-
-      // Victoire
-      if (board->whites >= 5)
-	{
-	  printf("Blacks wins with captures!\n");
-	  return (BLACK);
-	}
-      if (board->blacks >= 5)
-	{
-	  printf("Blacks wins with captures!\n");
-	  return (WHITE);
 	}
 
       // Click
@@ -257,8 +248,33 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	}
 
       SDL_Flip(surf->screen);
-      if (current > 10)
-	return (current - 10);
+
+      // Victoire par capture
+      if (board->whites >= 5)
+	{
+	  printf("Blacks wins with captures!\n");
+	  current = BLACK + 10;
+	}
+      if (board->blacks >= 5)
+	{
+	  printf("Whites wins with captures!\n");
+	  current = WHITE + 10;
+	}
+
+      // Quit de victoire
+      while (current > 10)
+	{
+	  SDL_ShowCursor(1);
+	  show_background(surf->exit, surf->screen);
+	  place_pawns(board, surf);
+	  SDL_Flip(surf->screen);
+	  SDL_WaitEvent(&event);
+	  if ((event.type == SDL_MOUSEBUTTONUP) || 
+	      ((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
+	      (event.type == SDL_QUIT))
+	    return (current - 10);
+	}
+
       SDL_WaitEvent(&event);
     }
   return (42);
@@ -316,6 +332,7 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	      current = surf->title;
 	    }
 	}
+
       SDL_Flip(surf->screen);
     }
   return (0);
