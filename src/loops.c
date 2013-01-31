@@ -262,8 +262,20 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  current = WHITE + 10;
 	}
 
-      if (current > 10)
-	return (current - 10);
+      // Quit de victoire
+      while (current > 10)
+	{
+	  SDL_ShowCursor(1);
+	  show_background(surf->exit, surf->screen);
+	  place_pawns(board, surf);
+	  SDL_Flip(surf->screen);
+	  SDL_WaitEvent(&event);
+	  if ((event.type == SDL_MOUSEBUTTONUP) || 
+	      ((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
+	      (event.type == SDL_QUIT))
+	    return (current - 10);
+	}
+
       SDL_WaitEvent(&event);
     }
   return (42);
@@ -321,9 +333,7 @@ char		menu_loop(t_board *board, t_surfaces *surf)
 	      current = surf->title;
 	    }
 	}
-      // debug
-      if ((loop == 1) || (loop == 2))
-	place_pawns(board, surf);
+
       SDL_Flip(surf->screen);
     }
   return (0);
