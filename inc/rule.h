@@ -12,5 +12,6 @@
 int	rule3(t_board *board, unsigned int x, unsigned int y, char color);
 int	rule5(t_board *board, unsigned int x, unsigned int y, char color);
 int	prise(t_board *board, unsigned int x, unsigned int y, int color);
+long	prisegetlines(t_board *board, unsigned int x, unsigned int y, int color);
 
 #endif

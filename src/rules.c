@@ -50,7 +50,7 @@ typedef  union u_chemical_cheddar	t_chemical_cheddar;
 */
 long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if ((x <= 0 || x >= 19 || y <= 0 || y >= 19) || (get_board(board, x, y) == (OPPOSITE(color))))
+  if ((x >= 19 || y >= 19) || (get_board(board, x, y) == (OPPOSITE(color))))
     {
        ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
@@ -68,7 +68,7 @@ long	longdrec(t_board *board, int color, long d, int sen, register unsigned int 
        ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
-  if ((x <= 0 || x >= 19 || y <= 0 || y >= 19) || get_board(board, x, y) == EMPTY)
+  if ((x >= 19 || y >= 19) || get_board(board, x, y) == EMPTY)
   {
     if (((t_chemical_cheddar)drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen))).l[sen & 0x0f] == 2)
       ((char*)&d)[sen & 0x0f] += 2;
@@ -78,6 +78,20 @@ long	longdrec(t_board *board, int color, long d, int sen, register unsigned int 
    return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
 
+long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
+{
+  if ((x >= 19 || y >= 19) || (get_board(board, x, y) == (OPPOSITE(color))))
+    {
+      ((char*)&d)[sen & 0x0f] |= BLOCKED;
+      return (d);
+    }
+  /* if (getprise(board, color, x, y)) */
+  /*   ((char*)&d)[sen & 0x0f] |= PRENABLE; */
+  if (get_board(board, x, y) != color)
+    return (d);
+  ((char*)&d)[sen & 0x0f]++;
+  return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
+}
 
 long	longgetlines(t_board *board, int color, unsigned int x, unsigned int y)
 {
@@ -92,6 +106,22 @@ long	longgetlines(t_board *board, int color, unsigned int x, unsigned int y)
   d = longdrec(board, color, d, DO_L, x + 1, y - 1);
   d = longdrec(board, color, d, DO_C, x + 1, y);
   d = longdrec(board, color, d, DO_R, x + 1, y + 1);
+  return (d);
+}
+
+long	prisegetlines(t_board *board, int color, unsigned int x, unsigned int y)
+{
+  long	d;
+
+  d = 0;
+  d = prisedrec(board, color, d, UP_L, x - 1, y - 1);
+  d = prisedrec(board, color, d, UP_C, x - 1, y);
+  d = prisedrec(board, color, d, UP_R, x - 1, y + 1);
+  d = prisedrec(board, color, d, MI_L, x, y - 1);
+  d = prisedrec(board, color, d, MI_R, x, y + 1);
+  d = prisedrec(board, color, d, DO_L, x + 1, y - 1);
+  d = prisedrec(board, color, d, DO_C, x + 1, y);
+  d = prisedrec(board, color, d, DO_R, x + 1, y + 1);
   return (d);
 }
 
@@ -111,8 +141,25 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
   return (d);
 }
 
-#define DOUBLETAKE(BOARD, X1, Y1, X2, Y2) (set_board(BOARD, X1, Y1, EMPTY));\
-					   (set_board(BOARD, X2, Y2, EMPTY));
+long	getprise(t_board *board, int color, unsigned int x, unsigned int y)
+{
+  long  res;
+
+  if (color == EMPTY)
+    return (0);
+  res = getlines(board, color, x, y);
+  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82));
+}
+
+#define DOUBLETAKE(BOARD, X1, Y1, X2, Y2) (set_board(BOARD, X1, Y1, EMPTY)); \
+  (set_board(BOARD, X2, Y2, EMPTY));
 
 int	rule3(t_board *board,  int x,  int y, char color)
 {
@@ -120,7 +167,7 @@ int	rule3(t_board *board,  int x,  int y, char color)
   int	counter = 0;
   
   res = longgetlines(board, color, x, y);
-
+  
   counter = (((t_chemical_cheddar)res).l[UP_L & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_R & 0x0f] != -128)
     + (((t_chemical_cheddar)res).l[UP_C & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_C & 0x0f] != -128)
     + (((t_chemical_cheddar)res).l[UP_R & 0x0f] == 2 && ((t_chemical_cheddar)res).l[DO_L & 0x0f] != -128)
@@ -142,137 +189,66 @@ int	prise(t_board *board, unsigned int x, unsigned int y, int color)
     return (0);
   res = getlines(board, color, x, y);
   if (((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x - 1, y - 1, x - 2, y - 2);
-    }
+    {DOUBLETAKE (board, x - 1, y - 1, x - 2, y - 2);}
   if (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x - 1, y, x - 2, y);
-    }
+    {DOUBLETAKE (board, x - 1, y, x - 2, y);}
   if (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x - 1, y + 1, x - 2, y + 2);
-    }
+    {DOUBLETAKE (board, x - 1, y + 1, x - 2, y + 2);}
   if (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x, y - 1, x, y - 2);
-    }
+    {DOUBLETAKE (board, x, y - 1, x, y - 2);}
   if (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x, y + 1, x, y + 2);
-    }
+    {DOUBLETAKE (board, x, y + 1, x, y + 2);}
   if (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x + 1, y - 1, x + 2, y - 2);
-    }
+    {DOUBLETAKE (board, x + 1, y - 1, x + 2, y - 2);}
   if (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x + 1, y, x + 2, y);
-    }
+    {DOUBLETAKE (board, x + 1, y, x + 2, y);}
   if (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82)
-    {
-      DOUBLETAKE (board, x + 1, y + 1, x + 2, y + 2);
-    }
+    {DOUBLETAKE (board, x + 1, y + 1, x + 2, y + 2);}
   return (0);
 }
 
-int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
+
+int	isprenable(t_board *board, unsigned int x, unsigned int y, int color)
 {
   long	res;
 
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
-  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x82)
-    + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82));
+  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x81) && ((t_chemical_cheddar)res).fl[DO_R & 0x0f] == BLOCKED
+	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[UP_C & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[UP_L & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[MI_R & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[MI_L & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[UP_R & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[UP_C & 0x0f] == BLOCKED)
+	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[UP_L & 0x0f] == BLOCKED));
 }
-
-#define HAZHAMBURGER(BOARD, X, Y) (!!!!get_board(BOARD, X, Y)) /* ZOMG EXCLAMATION MARKR */
-#define HAZCHEEZBURGER(BOARD, X, Y, COLOR) (get_board(BOARD, X, Y) == COLOR) /* ZOMG EXCLAMATION MARKR */
-#define COUNTHAMBURGER(BOARD, X0, Y0, X1, Y1, X2, Y2, X3, Y3, XX, YX, XX2, YX2, COLOR) \
-  (HAZCHEEZBURGER(BOARD, X0, Y0, COLOR)					\
-   + (HAZCHEEZBURGER(BOARD, X1, Y1, COLOR))				\
-   + (HAZCHEEZBURGER(BOARD, X2, Y2, COLOR))				\
-   + 1									\
-   - (12	* ((((get_board(BOARD, XX, YX)) || (XX == -1) || YX == -1)) \
-		   || ((get_board(BOARD, XX2, YX2)) || (XX2 == 19) || YX2 == 19))))
-
-
-/* int	rule5(t_board *board,  int x,  int y, char color) */
-/* { */
-/*   long	res; */
-/*   int	counter = 0; */
-  
-/*   res = longgetlines(board, color, x, y); */
-
-/*   counter =  */
-    
-/*   if (counter >= 2) */
-/*     return (0); */
-/*   return (1); */
-/* } */
-
-
-/*
-** car on ne sait pas si il a prit un cheezburger ou un l'opposé d'u hamburger
-*/
-#define VERIFIELECHAT(BOARD, X, Y, COLOR)				\
-   ((HAZCHEEZBURGER(BOARD, X - 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y))) \
-    || (HAZCHEEZBURGER(BOARD, X + 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y))) \
-									\
-   || (HAZCHEEZBURGER(BOARD, X, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y + 1))) \
-   || (HAZCHEEZBURGER(BOARD, X, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y - 1))) \
-   									\
-   || (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1))) \
-   || (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y + 1))) \
-   									\
-   || (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 2, Y + 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 1, Y - 1))) \
-   || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 2, Y - 2, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 1, Y + 1)))\
-									\
-   || (HAZCHEEZBURGER(BOARD, X - 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y))) \
-   || (HAZCHEEZBURGER(BOARD, X + 1, Y, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y))) \
-									\
-   || (HAZCHEEZBURGER(BOARD, X, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y - 2))) \
-   || (HAZCHEEZBURGER(BOARD, X, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X, Y + 2))) \
-   									\
-   || (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y + 2))) \
-   || (HAZCHEEZBURGER(BOARD, X - 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y - 2))) \
-   									\
-   || (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, COLOR) && (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X - 2, Y + 2))) \
-    || (HAZCHEEZBURGER(BOARD, X + 1, Y - 1, COLOR) && (HAZCHEEZBURGER(BOARD, X - 1, Y + 1, OPPOSITE(COLOR)) && !HAZHAMBURGER(BOARD, X + 2, Y - 2))))
 
 int	rule5(t_board *board,  int x,  int y, char color)
 {
-  if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
-      && (!VERIFIELECHAT(board, x + 1, y, color) && HAZCHEEZBURGER(board, x + 1, y, color))
-      && (!VERIFIELECHAT(board, x + 2, y, color) && HAZCHEEZBURGER(board, x + 2, y, color))
-      && (!VERIFIELECHAT(board, x + 3, y, color) && HAZCHEEZBURGER(board, x + 3, y, color))
-      && (!VERIFIELECHAT(board, x + 4, y, color) && HAZCHEEZBURGER(board, x + 4, y, color)))
-    return (1);
-  if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
-      && (!VERIFIELECHAT(board, x, y + 1, color) && HAZCHEEZBURGER(board, x, y + 1, color))
-      && (!VERIFIELECHAT(board, x, y + 2, color) && HAZCHEEZBURGER(board, x, y + 2, color))
-      && (!VERIFIELECHAT(board, x, y + 3, color) && HAZCHEEZBURGER(board, x, y + 3, color))
-      && (!VERIFIELECHAT(board, x, y + 4, color) && HAZCHEEZBURGER(board, x, y + 4, color)))
-    return (1);
+  long	res;
+  int	counter1;
+  int	counter2;
 
-  if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
-      && (!VERIFIELECHAT(board, x + 1, y + 1, color) && HAZCHEEZBURGER(board, x + 1, y + 1, color))
-      && (!VERIFIELECHAT(board, x + 2, y + 2, color) && HAZCHEEZBURGER(board, x + 2, y + 2, color))
-      && (!VERIFIELECHAT(board, x + 3, y + 3, color) && HAZCHEEZBURGER(board, x + 3, y + 3, color))
-      && (!VERIFIELECHAT(board, x + 4, y + 4, color) && HAZCHEEZBURGER(board, x + 4, y + 4, color)))
-    return (1);
-  if ((!VERIFIELECHAT(board, x, y, color) && HAZCHEEZBURGER(board, x, y, color))
-      && (!VERIFIELECHAT(board, x + 1, y - 1, color + 1) && HAZCHEEZBURGER(board, x + 1, y - 1, color))
-      && (!VERIFIELECHAT(board, x + 2, y - 2, color + 2) && HAZCHEEZBURGER(board, x + 2, y - 2, color))
-      && (!VERIFIELECHAT(board, x + 3, y - 3, color + 3) && HAZCHEEZBURGER(board, x + 3, y - 3, color))
-      && (!VERIFIELECHAT(board, x + 4, y - 4, color + 4) && HAZCHEEZBURGER(board, x + 4, y - 4, color)))
-    return (1);
-  return (0);
+  if (color == EMPTY)
+    return (0);
+  res = prisegetlines(board, color, x, y);
+  counter1 = (GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) >= 5) 
+    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]) >= 5)
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]) >= 5);
+  counter2 = (GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_L & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_C & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_R & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_L & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_R & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_L & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_C & 0x0f]))
+    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_R & 0x0f]));
+    return (counter1 && counter2 != 1);
 }

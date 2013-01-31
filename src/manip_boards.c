@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:10:45 2012 dorian schaegis
-** Last update Thu Jan 17 17:35:29 2013 Prost P.
+** Last update Thu Jan 31 16:30:31 2013 Prost P.
 */
 
 #include	<unistd.h>
@@ -32,7 +32,7 @@ inline void	set_board(t_board *board, register int x, register int y, int val)
   board->board[BYTE(x, y, char)] = (board->board[BYTE(x, y, char)] & ~(3 << BIT(x, y, char))) | (val << BIT(x, y, char));
 }
 
-inline char    	get_board(t_board *board, register int x, register int y)
+inline int    	get_board(t_board *board, register int x, register int y)
 {
   return ((board->board[BYTE(x, y, char)] & (3 << BIT(x, y, char))) >> BIT(x, y, char));
 }
