@@ -85,8 +85,8 @@ long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int
       ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
-  /* if (getprise(board, color, x, y)) */
-  /*   ((char*)&d)[sen & 0x0f] |= PRENABLE; */
+  if (isprenable(board, color, x, y))
+    ((char*)&d)[sen & 0x0f] |= PRENABLE;
   if (get_board(board, x, y) != color)
     return (d);
   ((char*)&d)[sen & 0x0f]++;
@@ -141,21 +141,21 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
   return (d);
 }
 
-long	getprise(t_board *board, int color, unsigned int x, unsigned int y)
+int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
 {
   long  res;
 
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
-  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x82)
+  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0fl] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x82)
-	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82)
+	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x82)
-	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x82));
+	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x82));
 }
 
 #define DOUBLETAKE(BOARD, X1, Y1, X2, Y2) (set_board(BOARD, X1, Y1, EMPTY)); \
@@ -208,7 +208,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y, int color)
 }
 
 
-int	isprenable(t_board *board, unsigned int x, unsigned int y, int color)
+int	isprenable(t_board *board, int color, unsigned int x, unsigned int y)
 {
   long	res;
 
@@ -250,5 +250,6 @@ int	rule5(t_board *board,  int x,  int y, char color)
     + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_L & 0x0f]))
     + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_C & 0x0f]))
     + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_R & 0x0f]));
-    return (counter1 && counter2 != 1);
+  /* printf("%d %d %d\n", counter1, counter2, isprenable(board, color, x, y)); */
+  return (counter1 && counter2 != 1);
 }
