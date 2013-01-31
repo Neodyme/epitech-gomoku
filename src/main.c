@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Wed Nov 21 14:26:37 2012 dorian schaegis
-** Last update Thu Jan 31 16:23:10 2013 dorian schaegis
+** Last update Thu Jan 31 19:04:09 2013 Prost P.
 */
 
 #define		 _BSD_SOURCE
