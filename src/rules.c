@@ -17,6 +17,7 @@
 #include <inttypes.h>
 
 #include "board.h"
+#include "rule.h"
 #include "manip_boards.h"
 
 union		u_chemical_cheddar
@@ -96,14 +97,11 @@ long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int
       return (d);
     }
   if (isprenable(board, color, x, y))
-    {
-      printf("prenable\n");
-      ((char*)&d)[sen & 0x0f] |= PRENABLE;
-    }
+    ((char*)&d)[sen & 0x0f] |= PRENABLE;
   if (get_board(board, x, y) != color)
     return (d);
   ((char*)&d)[sen & 0x0f]++;
-  return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
+  return (prisedrec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
 
 long	longgetlines(t_board *board, int color, unsigned int x, unsigned int y)
@@ -161,8 +159,7 @@ int	isprenable(t_board *board, int color, unsigned int x, unsigned int y)
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
-  printf("%d %d %d %d\n", x, y, ((t_chemical_cheddar)res).fl[UP_C & 0x0f],  ((t_chemical_cheddar)res).fl[DO_C & 0x0f]);
-  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x81 && ((t_chemical_cheddar)res).fl[DO_R & 0x0f] == BLOCKED)
+  return ((((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[DO_R & 0x0f] == BLOCKED)
 	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[DO_C & 0x0f] == BLOCKED)
 	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[DO_L & 0x0f] == BLOCKED)
 	  + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[MI_R & 0x0f] == BLOCKED)
@@ -192,7 +189,7 @@ int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
 #define DOUBLETAKE(BOARD, X1, Y1, X2, Y2) (set_board(BOARD, X1, Y1, EMPTY)); \
   (set_board(BOARD, X2, Y2, EMPTY));
 
-int	rule3(t_board *board,  int x,  int y, char color)
+int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
 {
   long	res;
   int	counter = 0;
@@ -238,8 +235,7 @@ int	prise(t_board *board, unsigned int x, unsigned int y, int color)
   return (0);
 }
 
-
-int	rule5(t_board *board,  int x,  int y, char color)
+int	rule5(t_board *board, unsigned int x, unsigned int y, char color, int rules)
 {
   long	res;
   int	counter1;
@@ -247,7 +243,10 @@ int	rule5(t_board *board,  int x,  int y, char color)
 
   if (color == EMPTY || get_board(board, x, y) == EMPTY)
     return (0);
-  res = prisegetlines(board, color, x, y);
+  if (rules & RULE5)
+    res = prisegetlines(board, color, x, y);
+  else
+    res = getlines(board, color, x, y);
   counter1 = (((GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]))) >= 4)
 	      + ((GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]))) >= 4) 
 	      + ((GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]))) >= 4)

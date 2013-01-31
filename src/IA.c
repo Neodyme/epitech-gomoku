@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Jan 20 17:07:08 2013 jonathan martins
+** Last update Thu Jan 31 21:26:02 2013 Prost P.
 */
 
 
@@ -118,9 +118,9 @@ int		leaf(t_board *board)
     return 1;
   for (i = 0; i < 19 * 19; i++)
     {
-      if (rule5(board, i/19, i%19, BLACK))
+      if (rule5(board, i/19, i%19, BLACK, RULE5))
 	return 1;
-      if (rule5(board, i/19, i%19, WHITE))
+      if (rule5(board, i/19, i%19, WHITE, RULE5))
 	return 1;
     }
   return 0;

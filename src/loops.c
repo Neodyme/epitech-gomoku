@@ -84,7 +84,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 
   // Règle de 5
   // (rules & RULE5) && 
-  if (rule5(board, move->x, move->y, OPPOSITE(current)))
+  if (rule5(board, move->x, move->y, OPPOSITE(current), rules))
     {
       if (current == WHITE)
 	printf("Blacks wins with a row!\n");
