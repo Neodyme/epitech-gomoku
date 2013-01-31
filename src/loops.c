@@ -66,7 +66,6 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 
   // Prise
   iget = getprise(board, move->x, move->y, current);
-  printf("%d\n", iget);
   if (iget)
     {
       printf("Taken %i ", get * 2);

@@ -5,27 +5,31 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Thu Jan 31 18:38:06 2013 Prost P.
+** Last update Thu Jan 31 20:49:00 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
-#define		__GOMO_MANIP_H
+# define       	__GOMO_MANIP_H
 
-#define UP_L		167
-#define UP_C		134
-#define UP_R		149
-#define MI_L		36
-#define MI_R		19
-#define DO_L		98
-#define DO_C		65
-#define DO_R		80
+# define UP_L		167
+# define UP_C		134
+# define UP_R		149
+# define MI_L		36
+# define MI_R		19
+# define DO_L		98
+# define DO_C		65
+# define DO_R		80
 
-#define BLOCKED		0x80
-#define ISBLOCKED(L)	((L) & (0x80))
-#define PRENABLE       	0x40
-#define ISPRENABLE(L)	((L) & (0x80))
-#define L_SIZE		0x3F
-#define GETLSIZE(L)	((L) & (L_SIZE))
+# define BLOCKED       	0x80
+# define ISBLOCKED(L)	((L) & (BLOCKED))
+# define BLOCKED2      	0x40
+# define ISBLOCKED2(L)	((L) & (0xC0))
+
+# define PRENABLE      	0x20
+# define ISPRENABLE(L)	((L) & (PRENABLE))
+
+# define L_SIZE		0x1F
+# define GETLSIZE(L)	((L) & (L_SIZE))
 
 int		isprenable(t_board *board, int color, unsigned int x, unsigned int y);
 long		longgetlines(t_board *board, int color, unsigned int x, unsigned int y);
