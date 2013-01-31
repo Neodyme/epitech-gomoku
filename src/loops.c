@@ -135,6 +135,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       if (mode && current == WHITE)
 	{
 	  callIA(board, rules, &moveIA, current);
+	  SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
 	  current = pose(board, &moveIA, current, rules);
 	}
       else if (hint)
@@ -143,6 +144,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    {
 	      /* printf("Hint!\n"); */
 	      callIA(board, rules, &moveIA, current);
+	      SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
 	      hint--;
 	    }
 	  pos.x = moveIA.x * 32 +16;
@@ -150,18 +152,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  pos.w = 32;
 	  pos.h = 32;
 	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-	}
-
-      // Victoire par capture
-      if (board->whites >= 5)
-	{
-	  printf("Blacks wins with captures!\n");
-	  return (BLACK);
-	}
-      if (board->blacks >= 5)
-	{
-	  printf("Whites wins with captures!\n");
-	  return (WHITE);
 	}
 
       // Click
@@ -259,9 +249,21 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	}
 
       SDL_Flip(surf->screen);
+
+      // Victoire par capture
+      if (board->whites >= 5)
+	{
+	  printf("Blacks wins with captures!\n");
+	  current = BLACK + 10;
+	}
+      if (board->blacks >= 5)
+	{
+	  printf("Whites wins with captures!\n");
+	  current = WHITE + 10;
+	}
+
       if (current > 10)
 	return (current - 10);
-      SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
       SDL_WaitEvent(&event);
     }
   return (42);
