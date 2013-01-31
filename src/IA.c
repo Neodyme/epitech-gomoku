@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Jan 20 00:14:10 2013 jonathan martins
+** Last update Sun Jan 20 17:07:08 2013 jonathan martins
 */
 
 
@@ -19,7 +19,7 @@
 #define		DEPTH		2
 
 #define		FIVE_IN_ROW	INFINITY
-#define		FOUR		10000000
+#define		FOUR		50000000
 #define		THREE_IN_ROW	2000000
 #define		CAPTURE		1000000
 #define		BROKEN_THREE	10000
@@ -31,7 +31,7 @@
 
 int		get_val(int size, int blockLeft, int blockRight)
 {
-  if (size == 5)
+  if (size >= 5)
     return INFINITY;
   if (size == 4 && (blockLeft == 0 || blockRight == 0))
     return FOUR;
@@ -56,22 +56,22 @@ int		heuristic_eval(t_board *board)
       if (get_board(board, i/19, i%19) == WHITE)
 	{
 	  l = getlines(board, WHITE, i/19, i%19);
-	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]) + 1,
 			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]) + 1,
 			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]) + 1,
 			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
 	  if (ret == INFINITY)
 	    return INFINITY;
 	  eval += ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]) + 1,
 			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
 	  if (ret == INFINITY)
 	    return INFINITY;
@@ -80,31 +80,31 @@ int		heuristic_eval(t_board *board)
       if (get_board(board, i/19, i%19) == BLACK)
 	{
 	  l = getlines(board, BLACK, i/19, i%19);
-	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]),
+	  ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7]) + 1,
 			ISBLOCKED(((char*)&l)[0]), ISBLOCKED(((char*)&l)[7]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]),
+	  ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6]) + 1,
 			ISBLOCKED(((char*)&l)[1]), ISBLOCKED(((char*)&l)[6]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]),
+	  ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5]) + 1,
 			ISBLOCKED(((char*)&l)[2]), ISBLOCKED(((char*)&l)[5]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
-	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]),
+	  ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4]) + 1,
 			ISBLOCKED(((char*)&l)[3]), ISBLOCKED(((char*)&l)[4]));
 	  if (ret == INFINITY)
 	    return -INFINITY;
 	  eval -= ret;
 	}
     }
-  eval += board->whites * CAPTURE;
-  eval -= board->blacks * CAPTURE;
-  eval += random() % 10;
+  eval += board->blacks * CAPTURE;
+  eval -= board->whites * CAPTURE;
+  eval -= random() % 5;
   return eval;
 }
 
@@ -132,6 +132,7 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
   int		val2;
   int		x;
   int		y;
+  int		get;
 
   if (depth == 0 || leaf(node) == 1)
     return heuristic_eval(node);
@@ -146,7 +147,10 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  get = getprise(node, x, y, WHITE);
+		  node->blacks += get;
 		  val2 = minimax(node, depth - 1, BLACK, val, max);
+		  node->blacks -= get;
 		  set_board(node, x, y, EMPTY);
 		  if (val2 > val)
 		    val = val2;
@@ -168,7 +172,10 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
 		  (rule3(node, x, y, current)))
 		{
 		  set_board(node, x, y, current);
+		  get = getprise(node, x, y, BLACK);
+		  node->whites += get;
 		  val2 = minimax(node, depth - 1, WHITE, min, val);
+		  node->whites -= get;
 		  set_board(node, x, y, EMPTY);
 		  if (val2 < val)
 		    val = val2;
@@ -182,14 +189,18 @@ int		minimax(t_board *node, int depth, char current, int min, int max)
   return 0;
 }
 
-void		minmax(t_board *node, t_pos *bestMove)
+void		minmax(t_board *node, t_pos *bestMove, char current)
 {
   int		val;
   int		val2;
   int		x;
   int		y;
+  int		get;
 
-  val = -INFINITY;
+  if (current == WHITE)
+    val = -INFINITY;
+  else
+    val = INFINITY;
   bestMove->x = 0;
   bestMove->y = 0;
   for (x = 0; x < 19; x++)
@@ -200,13 +211,33 @@ void		minmax(t_board *node, t_pos *bestMove)
 	      (rule3(node, x, y, WHITE)))
 	    {
 	      set_board(node, x, y, WHITE);
-	      val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
+	      get = getprise(node, x, y, WHITE);
+	      if (get)
+		node->blacks += get;
+	      if (current == WHITE)
+		val2 = minimax(node, DEPTH - 1, BLACK, -INFINITY, INFINITY);
+	      else
+		val2 = minimax(node, DEPTH - 1, WHITE, -INFINITY, INFINITY);
+	      if (get)
+		node->blacks -= get;
 	      set_board(node, x, y, EMPTY);
-	      if (val2 > val)
+	      if (current == WHITE)
 		{
-		  val = val2;
-		  bestMove->x = x;
-		  bestMove->y = y;
+		  if (val2 > val)
+		    {
+		      val = val2;
+		      bestMove->x = x;
+		      bestMove->y = y;
+		    }
+		}
+	      else
+		{
+		  if (val2 < val)
+		    {
+		      val = val2;
+		      bestMove->x = x;
+		      bestMove->y = y;
+		    }
 		}
 	    }
 	}
@@ -218,9 +249,9 @@ void		minmax(t_board *node, t_pos *bestMove)
 	  return;
 }
 
-void		callIA(t_board *board, char rules, t_pos *ret)
+void		callIA(t_board *board, char rules, t_pos *ret, char current)
 {
   if (ret != NULL)
-    minmax(board, ret);
+    minmax(board, ret, current);
   (void)rules;
 }
