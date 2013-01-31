@@ -86,11 +86,11 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
   // Règle de 5
   if ((rules & RULE5) && (rule5(board, move->x, move->y, OPPOSITE(current))))
     {
-      if (current == BLACK)
-	printf("Blacks wins with a row!\n");
       if (current == WHITE)
+	printf("Blacks wins with a row!\n");
+      if (current == BLACK)
 	printf("Whites wins with a row!\n");
-      return (current + 10);
+      return (OPPOSITE(current) + 10);
     }
 
   return (current);
