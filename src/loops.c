@@ -65,11 +65,10 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
     }
 
   // Prise
-  iget = getprise(board, move->x, move->y, current);
-  printf("%d\n", iget);
+  iget = getprise(board, move->x, move->y, OPPOSITE(current));
   if (iget)
     {
-      printf("Taken %i ", iget * 2);
+      printf("Taken %ld ", iget * 2);
       if (current == BLACK)
 	{
 	  board->blacks += iget;
@@ -236,7 +235,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    {
 	      if (get_board(board, cor.x, cor.y) == EMPTY)
 		{
-
 		  if (!getprise(board, cor.x, cor.y, current) && (rules & RULE3)
 		      && (!rule3(board, cor.x, cor.y, current)))
 		    SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
