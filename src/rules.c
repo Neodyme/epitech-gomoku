@@ -234,14 +234,10 @@ int	rule5(t_board *board,  int x,  int y, char color)
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
-  counter1 = (GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) >= 4) 
-    + (GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]) >= 4)
-    + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]) >= 4);
+  counter1 = (((GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]))) >= 4)
+	      + ((GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]))) >= 4) 
+	      + ((GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]))) >= 4)
+	      + ((GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]))) >= 4));
   counter2 = (GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_L & 0x0f]))
     + (GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_C & 0x0f]))
     + (GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_R & 0x0f]))
@@ -252,13 +248,5 @@ int	rule5(t_board *board,  int x,  int y, char color)
     + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_R & 0x0f]));
 
   /* printf("%d %d %d\n", counter1, counter2, isprenable(board, color, x, y)); */
-  printf("%d %d  %d %d %d %d %d %d %d\n", counter1, color, 
-	 (((t_chemical_cheddar)res).l[UP_C & 0x0f]),
-	 (((t_chemical_cheddar)res).l[UP_R & 0x0f]),
-	 (((t_chemical_cheddar)res).l[MI_L & 0x0f]),
-	 (((t_chemical_cheddar)res).l[MI_R & 0x0f]),
-	 (((t_chemical_cheddar)res).l[DO_L & 0x0f]),
-	 (((t_chemical_cheddar)res).l[DO_C & 0x0f]),
-	 (((t_chemical_cheddar)res).l[DO_R & 0x0f]));
   return (counter1 );
 }
