@@ -166,7 +166,16 @@ int	isprenable(t_board *board, int color, unsigned int x, unsigned int y)
 	  + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[MI_L & 0x0f] == BLOCKED)
 	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[UP_R & 0x0f] == BLOCKED)
 	  + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[UP_C & 0x0f] == BLOCKED)
-	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[UP_L & 0x0f] == BLOCKED));
+	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x01 && ((t_chemical_cheddar)res).fl[UP_L & 0x0f] == BLOCKED)
+
+	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[MI_R & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[MI_L & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[DO_L & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[DO_C & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x81)
+	  + (((t_chemical_cheddar)res).fl[UP_L & 0x0f] == 0x00 && ((t_chemical_cheddar)res).fl[DO_R & 0x0f] == 0x81));
 }
 
 int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
