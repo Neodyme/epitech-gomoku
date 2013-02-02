@@ -136,7 +136,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       if (mode && current == WHITE)
 	{
 	  callIA(board, rules, &moveIA, current);
-	  SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
+	  /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
 	  current = pose(board, &moveIA, current, rules);
 	}
       else if (hint)
@@ -145,7 +145,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    {
 	      /* printf("Hint!\n"); */
 	      callIA(board, rules, &moveIA, current);
-	      SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK);
+	      /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
 	      hint--;
 	    }
 	  pos.x = moveIA.x * 32 +16;

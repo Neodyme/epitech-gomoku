@@ -22,7 +22,7 @@ INC=			-Iinc
 CFLAGS=			-W -Wall -Wextra\
 			-lSDL\
 			-O0 -O1 -O2 -O3 -g3\
-			-lrt # -lprofiler
+			-lrt -Wstack-protector # -lprofiler
 
 $(NAME):		$(OBJ)
 			@echo -en "[BIN] $(NAME) -> \E[33;31m"
