@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  2 00:00:30 2013 jonathan martins
+** Last update Sat Feb  2 01:32:47 2013 jonathan martins
 */
 
 
@@ -96,24 +96,22 @@ int		heuristic_eval(t_board *board)
     }
   eval += board->blacks * CAPTURE;
   eval -= board->whites * CAPTURE;
-  eval -= random() % 5;
+  eval -= random() % 200;
   return eval;
 }
 
-int		leaf(t_board *board)
+int		check(t_board *board, int x, int y)
 {
-  int		i;
+  int		xx;
+  int		yy;
 
-  if (board->whites >= 5)
-    return 1;
-  if (board->blacks >= 5)
-    return 1;
-  for (i = 0; i < 19 * 19; i++)
+  for (xx = x - 4; xx < x + 4; xx++)
     {
-      if (rule5(board, i/19, i%19, BLACK, RULE5))
-	return 1;
-      if (rule5(board, i/19, i%19, WHITE, RULE5))
-	return 1;
+      for (yy = y - 4; yy < y + 4; yy++)
+	{
+	  if (get_board(board, xx, yy) != EMPTY)
+	    return 1;
+	}
     }
   return 0;
 }
@@ -127,7 +125,7 @@ int		minimax(t_board *node, int depth, char current,
   int		y;
   int		get;
 
-  if (depth == 0 || leaf(node) == 1)
+  if (depth == 0)
     return heuristic_eval(node);
   if (current == WHITE)
     {
@@ -136,6 +134,8 @@ int		minimax(t_board *node, int depth, char current,
 	{
 	  for (y = 0; y < 19; y++)
 	    {
+	      if (check(node, x, y) == 0)
+		continue;
 	      if ((get_board(node, x, y) == EMPTY) &&
 		  (!(rules & RULE3) || (rule3(node, x, y, current))))
 		{
@@ -200,6 +200,8 @@ void		minmax(t_board *node, t_pos *bestMove, char current, char rules)
     {
       for (y = 0; y < 19; y++)
 	{
+	  if (check(node, x, y) == 0)
+	    continue;
 	  if ((get_board(node, x, y) == EMPTY) &&
 	      (!(rules & RULE3) || (rule3(node, x, y, current))))
 	    {
