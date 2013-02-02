@@ -45,6 +45,36 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 	  current = BLACK;
 	}
       printf(" Stone at %i:%i\n", move->x, move->y);
+
+      // Prise
+      iget = getprise(board, move->x, move->y, current);
+      if (iget)
+	{
+	  printf("Taken %i ", iget*2);
+	  if (current == BLACK)
+	    {
+	      board->blacks += iget;
+	      printf("Black Stones (%i total)\n", board->blacks*2);
+	    }
+	  else
+	    {
+	      board->whites += iget;
+	      printf("Whites Stones (%i total)\n", board->whites*2);
+	    }
+	  prise(board, move->x, move->y, current);
+	}
+
+      // Règle de 5
+      // (rules & RULE5) && 
+      if (rule5(board, move->x, move->y, OPPOSITE(current), rules))
+	{
+	  if (current == WHITE)
+	    printf("Blacks wins with a row!\n");
+	  if (current == BLACK)
+	    printf("Whites wins with a row!\n");
+	  return (OPPOSITE(current) + 10);
+	}
+
     }
   else
     {
@@ -61,37 +91,9 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 	  printf("nothing");
 	  break;
 	}
-      printf(" here\n");
+      printf(" at %i:%i\n", move->x, move->y);
     }
 
-  // Prise
-  iget = getprise(board, move->x, move->y, current);
-  if (iget)
-    {
-      printf("Taken %i ", iget*2);
-      if (current == BLACK)
-	{
-	  board->blacks += iget;
-	  printf("Black Stones (%i total)\n", board->blacks*2);
-	}
-      else
-	{
-	  board->whites += iget;
-	  printf("Whites Stones (%i total)\n", board->whites*2);
-	}
-      prise(board, move->x, move->y, current);
-    }
-
-  // Règle de 5
-  // (rules & RULE5) && 
-  if (rule5(board, move->x, move->y, OPPOSITE(current), rules))
-    {
-      if (current == WHITE)
-	printf("Blacks wins with a row!\n");
-      if (current == BLACK)
-	printf("Whites wins with a row!\n");
-      return (OPPOSITE(current) + 10);
-    }
 
   return (current);
 }
@@ -239,7 +241,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		}
 	      else
 		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
-	      SDL_ShowCursor(0);
+	      SDL_ShowCursor(1);
 	    }
 	  else if (event.motion.y > 632)
 	    SDL_ShowCursor(1);
@@ -273,7 +275,9 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    return (current - 10);
 	}
 
+      /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
       SDL_WaitEvent(&event);
+
     }
   return (42);
 }
