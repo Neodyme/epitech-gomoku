@@ -96,7 +96,7 @@ long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int
       ((char*)&d)[sen & 0x0f] |= BLOCKED2;
       return (d);
     }
-  if (isprenable(board, color, x, y))
+  if (isprenable(board, color, x, y) && ((char*)&d)[sen & 0x0f] <= 3)
     ((char*)&d)[sen & 0x0f] |= PRENABLE;
   if (get_board(board, x, y) != color)
     return (d);
