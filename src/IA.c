@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  9 16:35:24 2013 jonathan martins
+** Last update Sat Feb  9 18:45:52 2013 jonathan martins
 */
 
 
@@ -23,7 +23,7 @@
 #define		FOUR_IN_ROW	250
 #define		BROKEN_FOUR	50
 #define		THREE_IN_ROW	33
-#define		CAPTURE		600
+#define		CAPTURE		798
 #define		BROKEN_THREE	5
 #define		TWO_IN_ROW	3
 #define		SINGLE_MARK	1
