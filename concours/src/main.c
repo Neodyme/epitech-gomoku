@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Jan 20 03:59:57 2013 Shauny
+** Last update Sat Feb  9 16:48:48 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -67,14 +67,17 @@ void			main(int ac, char **av)
       close(s);
       exit(EXIT_FAILURE);
     }
-  printf("%s\n", buffer);
   if (strncmp(buffer, "RULES", 5) == 0)
     {
       toggle_rules(buffer);
       while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
 	{
+	  printf("Et j'attends\n");
 	  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
-	    play(s, buffer);
+	    {
+	      printf("Je joue\n");
+	      play(s, buffer);
+	    }
 	  /* if (strncmp(buffer, "REM", 3) == 0) */
 	  // rem(s, buffer);
 	  /* if (strncmp(buffer, "ADD", 3) == 0) */

@@ -26,7 +26,7 @@ CFLAGS=			-W -Wall -Wextra\
 
 $(NAME):		$(OBJ)
 			@echo -en "[BIN] $(NAME) -> \E[33;31m"
-			@$(CC) $(CFLAGS) $(OBJ) $(INC) -o $(NAME)
+			@$(CC) $(CFLAGS) $(OBJ) $(INC) -o $(NAME) `sdl-config --cflags --libs`
 			@echo -e "\E[33;39mDone!"
 
 all:			$(NAME)
