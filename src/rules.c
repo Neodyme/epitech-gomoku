@@ -138,7 +138,7 @@ long	prisegetlines(t_board *board, int color, unsigned int x, unsigned int y)
 
 long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
 {
-  long	d;
+   long	d;
 
   d = 0;
   d = drec(board, color, d, UP_L, x - 1, y - 1);
@@ -207,12 +207,15 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
   
   counter = ((((((t_chemical_cheddar)res).l[UP_L & 0x0f] + ((t_chemical_cheddar)res).l[DO_R & 0x0f])
 	       * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_L & 0x0f]) * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_R & 0x0f])) >= 2)
-	     + (((((t_chemical_cheddar)res).l[UP_C & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_C & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[DO_C & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_C & 0x0f])) >= 2)
-	     + (((((t_chemical_cheddar)res).l[UP_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_R & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[DO_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_L & 0x0f])) >= 2)
-	     + (((((t_chemical_cheddar)res).l[MI_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_L & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[MI_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_R & 0x0f])) >= 2));
+
+	     + (((((t_chemical_cheddar)res).l[UP_C & 0x0f] + ((t_chemical_cheddar)res).l[DO_C & 0x0f]))
+		* !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_C & 0x0f])  * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_C & 0x0f]) >= 2)
+
+	     + (((((t_chemical_cheddar)res).l[UP_R & 0x0f] + ((t_chemical_cheddar)res).l[DO_L & 0x0f]))
+		* !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_R & 0x0f])  * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_L & 0x0f]) >= 2)
+
+	     + (((((t_chemical_cheddar)res).l[MI_L & 0x0f] + ((t_chemical_cheddar)res).l[MI_R & 0x0f]))
+		* !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_L & 0x0f])  * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_R & 0x0f]) >= 2));
   if (counter >= 2)
     return (0);
   return (1);

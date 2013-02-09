@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  9 16:35:24 2013 jonathan martins
+** Last update Sat Feb  9 19:04:07 2013 jonathan martins
 */
 
 
@@ -23,7 +23,7 @@
 #define		FOUR_IN_ROW	250
 #define		BROKEN_FOUR	50
 #define		THREE_IN_ROW	33
-#define		CAPTURE		600
+#define		CAPTURE		798
 #define		BROKEN_THREE	5
 #define		TWO_IN_ROW	3
 #define		SINGLE_MARK	1
@@ -86,26 +86,26 @@ int		heuristic_eval(t_board *board, char rules)
 	    {
 	      l = getlines(board, WHITE, x, y);
 	      ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7])
-			    + 1, ISBLOCKED(((char*)&l)[0]),
-			    ISBLOCKED(((char*)&l)[7]));
+			    + 1, ISBLOCKED2(((char*)&l)[0]),
+			    ISBLOCKED2(((char*)&l)[7]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, WHITE, rules)))
 		return INFINITY;
 	      eval += ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6])
-			    + 1, ISBLOCKED(((char*)&l)[1]),
-			    ISBLOCKED(((char*)&l)[6]));
+			    + 1, ISBLOCKED2(((char*)&l)[1]),
+			    ISBLOCKED2(((char*)&l)[6]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, WHITE, rules)))
 		return INFINITY;
 	      eval += ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5])
-			    + 1, ISBLOCKED(((char*)&l)[2]),
-			    ISBLOCKED(((char*)&l)[5]));
+			    + 1, ISBLOCKED2(((char*)&l)[2]),
+			    ISBLOCKED2(((char*)&l)[5]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, WHITE, rules)))
 		return INFINITY;
 	      eval += ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4])
-			    + 1, ISBLOCKED(((char*)&l)[3]),
-			    ISBLOCKED(((char*)&l)[4]));
+			    + 1, ISBLOCKED2(((char*)&l)[3]),
+			    ISBLOCKED2(((char*)&l)[4]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, WHITE, rules)))
 		return INFINITY;
 	      eval += ret;
@@ -114,26 +114,26 @@ int		heuristic_eval(t_board *board, char rules)
 	    {
 	      l = getlines(board, BLACK, x, y);
 	      ret = get_val(GETLSIZE(((char*)&l)[0]) + GETLSIZE(((char*)&l)[7])
-			    + 1, ISBLOCKED(((char*)&l)[0]),
-			    ISBLOCKED(((char*)&l)[7]));
+			    + 1, ISBLOCKED2(((char*)&l)[0]),
+			    ISBLOCKED2(((char*)&l)[7]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, BLACK, rules)))
 		return -INFINITY;
 	      eval -= ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[1]) + GETLSIZE(((char*)&l)[6])
-			    + 1, ISBLOCKED(((char*)&l)[1]),
-			    ISBLOCKED(((char*)&l)[6]));
+			    + 1, ISBLOCKED2(((char*)&l)[1]),
+			    ISBLOCKED2(((char*)&l)[6]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, BLACK, rules)))
 		return -INFINITY;
 	      eval -= ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[2]) + GETLSIZE(((char*)&l)[5])
-			    + 1, ISBLOCKED(((char*)&l)[2]),
-			    ISBLOCKED(((char*)&l)[5]));
+			    + 1, ISBLOCKED2(((char*)&l)[2]),
+			    ISBLOCKED2(((char*)&l)[5]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, BLACK, rules)))
 		return -INFINITY;
 	      eval -= ret;
 	      ret = get_val(GETLSIZE(((char*)&l)[3]) + GETLSIZE(((char*)&l)[4])
-			    + 1, ISBLOCKED(((char*)&l)[3]),
-			    ISBLOCKED(((char*)&l)[4]));
+			    + 1, ISBLOCKED2(((char*)&l)[3]),
+			    ISBLOCKED2(((char*)&l)[4]));
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, BLACK, rules)))
 		return -INFINITY;
 	      eval -= ret;
