@@ -107,6 +107,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   t_pos		moveIA;
+  t_pos		moveHint;
   t_pos		move;
   char		rules;
   char		hint;
@@ -138,29 +139,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
       // Background
       show_background(surf->background, surf->screen);
 
-      // IA
-      if (mode && current == WHITE)
-	{
-	  callIA(board, rules, &moveIA, current);
-	  /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
-	  current = pose(board, &moveIA, current, rules);
-	}
-      else if (hint)
-	{
-	  if (hint > 1)
-	    {
-	      /* printf("Hint!\n"); */
-	      callIA(board, rules, &moveIA, current);
-	      /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
-	      hint--;
-	    }
-	  pos.x = moveIA.x * 32 +16;
-	  pos.y = moveIA.y * 32 +16;
-	  pos.w = 32;
-	  pos.h = 32;
-	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-	}
-
       // Click
       if (event.type == SDL_MOUSEBUTTONUP)
 	{
@@ -170,6 +148,14 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      move.x = cor.x;
 	      move.y = cor.y;
 	      current = pose(board, &move, current, rules);
+
+	      // IA
+	      if (mode && current == WHITE)
+		{
+		  callIA(board, rules, &moveIA, current);
+		  current = pose(board, &moveIA, current, rules);
+		}
+
 	      if (hint)
 		hint = 2;
 	    }
@@ -185,9 +171,17 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		  hint = !hint;
 		  if (hint)
 		    hint++;
-		}
+		} 
 	      else if (event.motion.x < 640)
 	        return (42);
+	    }
+
+	  // Calcul du hint
+	  if (hint > 1)
+	    {
+	      callIA(board, rules, &moveHint, current);
+	      printf("Hint at %i:%i\n", moveHint.x, moveHint.y);
+	      hint--;
 	    }
 	}
 
@@ -211,7 +205,18 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  pos.x = 320;
 	  SDL_BlitSurface(surf->hint, NULL, surf->screen, &pos);
 	}
- 
+
+
+      // Affichage du Hint
+      if (hint)
+	{
+	  pos.x = moveHint.x * 32 +16;
+	  pos.y = moveHint.y * 32 +16;
+	  pos.w = 32;
+	  pos.h = 32;
+	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+	}
+
       // Affichage des pions
       place_pawns(board, surf);
 
@@ -281,7 +286,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    return (current - 10);
 	}
 
-      /* SDL_PeepEvents(&event, 1337, SDL_GETEVENT, SDL_ALLEVENTS ^ SDL_QUITMASK); */
       SDL_WaitEvent(&event);
 
     }
