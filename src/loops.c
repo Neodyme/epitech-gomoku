@@ -107,6 +107,7 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 char		game_loop(t_board *board, t_surfaces *surf, char mode)
 {
   t_pos		moveIA;
+  t_pos		moveHint;
   t_pos		move;
   char		rules;
   char		hint;
@@ -147,8 +148,6 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      move.x = cor.x;
 	      move.y = cor.y;
 	      current = pose(board, &move, current, rules);
-	      if (hint)
-		hint = 2;
 
 	      // IA
 	      if (mode && current == WHITE)
@@ -156,22 +155,9 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		  callIA(board, rules, &moveIA, current);
 		  current = pose(board, &moveIA, current, rules);
 		}
-	      else if (hint)
-		{
-		  if (hint > 1)
-		    {
-		      /* printf("Hint!\n"); */
-		      callIA(board, rules, &moveIA, current);
-		      hint--;
-		    }
-		  pos.x = moveIA.x * 32 +16;
-		  pos.y = moveIA.y * 32 +16;
-		  pos.w = 32;
-		  pos.h = 32;
-		  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
-		}
 
-
+	      if (hint)
+		hint = 2;
 	    }
 	  // Mouvements en bas du board: sélection des règles
 	  else if (event.motion.y > 632)
@@ -185,9 +171,17 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		  hint = !hint;
 		  if (hint)
 		    hint++;
-		}
+		} 
 	      else if (event.motion.x < 640)
 	        return (42);
+	    }
+
+	  // Calcul du hint
+	  if (hint > 1)
+	    {
+	      callIA(board, rules, &moveHint, current);
+	      printf("Hint at %i:%i\n", moveHint.x, moveHint.y);
+	      hint--;
 	    }
 	}
 
@@ -211,7 +205,18 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  pos.x = 320;
 	  SDL_BlitSurface(surf->hint, NULL, surf->screen, &pos);
 	}
- 
+
+
+      // Affichage du Hint
+      if (hint)
+	{
+	  pos.x = moveHint.x * 32 +16;
+	  pos.y = moveHint.y * 32 +16;
+	  pos.w = 32;
+	  pos.h = 32;
+	  SDL_BlitSurface(surf->cursor, NULL, surf->screen, &pos);
+	}
+
       // Affichage des pions
       place_pawns(board, surf);
 
