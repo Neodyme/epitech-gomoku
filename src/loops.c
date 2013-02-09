@@ -21,6 +21,7 @@ long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
 char		pose(t_board *board, t_pos *move, char current, char rules)
 {
+  int		i;
   char		get;
   int		iget;
 
@@ -66,13 +67,18 @@ char		pose(t_board *board, t_pos *move, char current, char rules)
 
       // Règle de 5
       // (rules & RULE5) && 
-      if (rule5(board, move->x, move->y, OPPOSITE(current), rules))
+      for (i = 0; i < 19*19; i++)
 	{
-	  if (current == WHITE)
-	    printf("Blacks wins with a row!\n");
-	  if (current == BLACK)
-	    printf("Whites wins with a row!\n");
-	  return (OPPOSITE(current) + 10);
+	  move->x = i / 19;
+	  move->y = i % 19; //  
+	  if ((get_board(board, move->x, move->y) == OPPOSITE(current)) && (rule5(board, move->x, move->y, OPPOSITE(current), rules)))
+	    {
+	      if (current == WHITE)
+		printf("Blacks wins with a row!\n");
+	      if (current == BLACK)
+		printf("Whites wins with a row!\n");
+	      return (OPPOSITE(current) + 10);
+	    }
 	}
 
     }
@@ -241,7 +247,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 		}
 	      else
 		SDL_BlitSurface(surf->nopestone, NULL, surf->screen, &pos);
-	      SDL_ShowCursor(1);
+	      SDL_ShowCursor(0);
 	    }
 	  else if (event.motion.y > 632)
 	    SDL_ShowCursor(1);
