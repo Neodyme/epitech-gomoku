@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  9 11:25:20 2013 jonathan martins
+** Last update Sat Feb  9 16:33:32 2013 jonathan martins
 */
 
 
@@ -24,7 +24,7 @@
 #define		BROKEN_FOUR	50
 #define		THREE_IN_ROW	33
 #define		CAPTURE		600
-#define		BROKEN_THREE	2
+#define		BROKEN_THREE	5
 #define		TWO_IN_ROW	3
 #define		SINGLE_MARK	1
 
@@ -150,9 +150,9 @@ int		check(t_board *board, int x, int y)
   int		xx;
   int		yy;
 
-  for (xx = x - 3; xx < x + 3; xx++)
+  for (xx = x - 2; xx < x + 2; xx++)
     {
-      for (yy = y - 3; yy < y + 3; yy++)
+      for (yy = y - 2; yy < y + 2; yy++)
 	{
 
 	  if (get_board(board, xx, yy) != EMPTY
@@ -174,6 +174,8 @@ int		minimax(t_board *node, int depth, char current, char rules)
   if (depth == 0)
     return heuristic_eval(node, rules);
   val = heuristic_eval(node, rules);
+  if (val == INFINITY || val == -INFINITY)
+    return val;
   for (x = 0; x < 19; x++)
     {
       for (y = 0; y < 19; y++)
@@ -233,6 +235,8 @@ void		minmax(t_board *node, t_pos *bestMove, char current, char rules)
 	      else
 		node->whites += get;
 	      val2 = minimax(node, DEPTH - 1, OPPOSITE(current), rules);
+	      if (val2 == INFINITY)
+		printf("PROUT: %d | %d\n", x, y);
 	      if (current == WHITE)
 		node->blacks -= get;
 	      else
@@ -272,14 +276,14 @@ for (i = 180; i < 361; i++)
 
 void		callIA(t_board *board, char rules, t_pos *ret, char current)
 {
-  struct timespec start, end;
-  clock_gettime(CLOCK_MONOTONIC, &start);
+  /* struct timespec start, end; */
+  /* clock_gettime(CLOCK_MONOTONIC, &start); */
 
 
   set_pos(board, ret);
   minmax(board, ret, current, rules);
 
 
-  clock_gettime(CLOCK_MONOTONIC, &end);
-  printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
+  /* clock_gettime(CLOCK_MONOTONIC, &end); */
+  /* printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000); */
 }
