@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Thu Jan 31 20:49:00 2013 Prost P.
+** Last update Fri Feb  8 18:26:35 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
@@ -23,7 +23,7 @@
 # define BLOCKED       	0x80
 # define ISBLOCKED(L)	((L) & (BLOCKED))
 # define BLOCKED2      	0x40
-# define ISBLOCKED2(L)	((L) & (0xC0))
+# define ISBLOCKED2(L)	((L & BLOCKED2) || (L & BLOCKED))
 
 # define PRENABLE      	0x20
 # define ISPRENABLE(L)	((L) & (PRENABLE))

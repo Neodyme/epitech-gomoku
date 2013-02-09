@@ -53,7 +53,7 @@ long	drec(t_board *board, int color, long d, int sen, register unsigned int x, r
 {
   if ((get_board(board, x, y) == (OPPOSITE(color))))
     {
-       ((char*)&d)[sen & 0x0f] |= BLOCKED;
+      ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
   if (x >= 19 || y >= 19)
@@ -205,17 +205,14 @@ int	rule3(t_board *board, unsigned int x, unsigned int y, char color)
   
   res = longgetlines(board, color, x, y);
   
-  counter = ((((((t_chemical_cheddar)res).l[UP_L & 0x0f]  * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_R & 0x0f]))
-	       + ((t_chemical_cheddar)res).l[DO_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_L & 0x0f])) >= 2)
-	     
-	     + (((((t_chemical_cheddar)res).l[UP_C & 0x0f] *  !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_C & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[DO_C & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_C & 0x0f])) >= 2)
-	     
-	     + (((((t_chemical_cheddar)res).l[UP_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_L & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[DO_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_R & 0x0f])) >= 2)
-	     
-	     + (((((t_chemical_cheddar)res).l[MI_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_R & 0x0f]))
-		 + ((t_chemical_cheddar)res).l[MI_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_L & 0x0f])) >= 2));
+  counter = ((((((t_chemical_cheddar)res).l[UP_L & 0x0f] + ((t_chemical_cheddar)res).l[DO_R & 0x0f])
+	       * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_L & 0x0f]) * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_R & 0x0f])) >= 2)
+	     + (((((t_chemical_cheddar)res).l[UP_C & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_C & 0x0f]))
+		 + ((t_chemical_cheddar)res).l[DO_C & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_C & 0x0f])) >= 2)
+	     + (((((t_chemical_cheddar)res).l[UP_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[UP_R & 0x0f]))
+		 + ((t_chemical_cheddar)res).l[DO_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[DO_L & 0x0f])) >= 2)
+	     + (((((t_chemical_cheddar)res).l[MI_L & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_L & 0x0f]))
+		 + ((t_chemical_cheddar)res).l[MI_R & 0x0f] * !ISBLOCKED2(((t_chemical_cheddar)res).l[MI_R & 0x0f])) >= 2));
   if (counter >= 2)
     return (0);
   return (1);
