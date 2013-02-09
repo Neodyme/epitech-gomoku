@@ -27,7 +27,6 @@ struct		s_board
   unsigned char	r3board[92];
   unsigned int	blacks;
   unsigned int	whites;
-  char		eaten[64];
 };
 
 typedef struct s_board t_board;
