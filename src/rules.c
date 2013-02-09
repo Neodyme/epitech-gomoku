@@ -97,7 +97,10 @@ long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int
       return (d);
     }
   if (isprenable(board, color, x, y) && ((char*)&d)[sen & 0x0f] <= 3)
-    ((char*)&d)[sen & 0x0f] |= PRENABLE;
+    {    
+      ((char*)&d)[sen & 0x0f] |= PRENABLE;
+      return (d);
+    }
   if (get_board(board, x, y) != color)
     return (d);
   ((char*)&d)[sen & 0x0f]++;
@@ -275,7 +278,5 @@ int	rule5(t_board *board, unsigned int x, unsigned int y, char color, int rules)
 
 	      + (GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f])) >= 4 && 
 		 (ISPRENABLE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) ^ ISPRENABLE(((t_chemical_cheddar)res).l[MI_R & 0x0f]))));
-  
-  printf("%u %u %d %d <%d>\n", x, y, counter1, counter2, rules);
- return (counter1 && counter2 != 1);
+  return (counter1 && counter2 != 1);
 }
