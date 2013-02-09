@@ -137,6 +137,7 @@ long	prisegetlines(t_board *board, int color, unsigned int x, unsigned int y)
 }
 
 long	getlines(t_board *board, int color, unsigned int x, unsigned int y)
+{
    long	d;
 
   d = 0;
