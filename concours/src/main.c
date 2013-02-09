@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sat Feb  9 17:03:41 2013 Shauny
+** Last update Sat Feb  9 17:42:29 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -17,16 +17,28 @@
 #include		<stdlib.h>
 #include		<unistd.h>
 #include		<string.h>
+#include		<time.h>
+#include		<stdint.h>
 
-void			toggle_rules(char *str)
+#include		"rule.h"
+
+int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
 {
-  // Doit set les règles dans la structure
+  return ((timeA_p->tv_sec * 1000000000) + timeA_p->tv_nsec) -
+    ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
+}
+
+int			toggle_rules(char *str)
+{
+  char			rules;
+  int			timeout;
+
   if (strlen(str) >= 11)
     {
-      str[6]; // DOUBLE_3
-      str[8]; // BREAKING 5
-      &str[10]; // TIMEOUT
+      rules = (str[6] & 1) | ((str[8] & 1) << 1);
+      timeout = atoi(&str[10]);
     }
+  return (timeout);
 }
 
 void			play(int s, char *buffer)
@@ -40,10 +52,12 @@ void			play(int s, char *buffer)
 
 void			main(int ac, char **av)
 {
+  struct timespec start, end;
   struct protoent	*pe;
   struct sockaddr_in	sin;
   char			buffer[256];
   int			s;
+  int			timeout;
 
   pe = getprotobyname("TCP");
   if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
@@ -69,14 +83,18 @@ void			main(int ac, char **av)
     }
   if (strncmp(buffer, "RULES", 5) == 0)
     {
-      toggle_rules(buffer);
+      timeout = toggle_rules(buffer);
       while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
 	{
 	  printf("Et j'attends\n");
 	  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
 	    {
-	      printf("Je joue\n");
+	      clock_gettime(CLOCK_MONOTONIC, &start);
 	      play(s, buffer);
+	      clock_gettime(CLOCK_MONOTONIC, &end);
+	      printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
+	      if (((int)timespecDiff(&end, &start) / 1000000) > timeout)
+		printf("Prout\n");
 	    }
 	  /* if (strncmp(buffer, "REM", 3) == 0) */
 	  // rem(s, buffer);
