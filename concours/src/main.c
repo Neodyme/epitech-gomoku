@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sat Feb  9 16:48:48 2013 Shauny
+** Last update Sat Feb  9 17:03:41 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -61,7 +61,7 @@ void			main(int ac, char **av)
       close(s);
       exit(EXIT_FAILURE);
     }
-  bzero(&buffer, sizeof(buffer));
+  bzero(&buffer, 256);
   if (read(s, buffer, 255) < 1)
     {
       close(s);
@@ -82,7 +82,7 @@ void			main(int ac, char **av)
 	  // rem(s, buffer);
 	  /* if (strncmp(buffer, "ADD", 3) == 0) */
 	  // add(s, buffer);
-	  bzero(&buffer, sizeof(buffer));
+	  bzero(&buffer, 256);
 	  if (read(s, buffer, 255) < 1)
 	    {
 	      close(s);
