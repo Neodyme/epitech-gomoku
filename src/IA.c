@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  9 16:33:32 2013 jonathan martins
+** Last update Sat Feb  9 16:35:24 2013 jonathan martins
 */
 
 
@@ -235,8 +235,6 @@ void		minmax(t_board *node, t_pos *bestMove, char current, char rules)
 	      else
 		node->whites += get;
 	      val2 = minimax(node, DEPTH - 1, OPPOSITE(current), rules);
-	      if (val2 == INFINITY)
-		printf("PROUT: %d | %d\n", x, y);
 	      if (current == WHITE)
 		node->blacks -= get;
 	      else
