@@ -180,7 +180,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  if (hint > 1)
 	    {
 	      callIA(board, rules, &moveHint, current);
-	      printf("Hint at %i:%i\n", moveHint.x, moveHint.y);
+	      /* printf("Hint at %i:%i\n", moveHint.x, moveHint.y); */
 	      hint--;
 	    }
 	}
