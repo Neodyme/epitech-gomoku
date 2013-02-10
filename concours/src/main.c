@@ -61,7 +61,6 @@ char			**message_to_wordtab(char *buffer)
   while (buffer[0] != '\0')
     {
       ret[i] = strndup(buffer, strchr(buffer, '\n') - buffer);
-      printf(" >> '%s'\n", ret[i++]);
       buffer = strchr(buffer, '\n') + 1;
     }
   ret[i] = NULL;
@@ -70,7 +69,7 @@ char			**message_to_wordtab(char *buffer)
 
 int			main(int ac, char **av)
 {
-  struct timespec start, end;
+  struct timespec	start, end;
   struct protoent	*pe;
   struct sockaddr_in	sin;
   t_board		board;
@@ -132,7 +131,7 @@ int			main(int ac, char **av)
 	      return (EXIT_FAILURE);
 	    }
 	  // Boucle jusqu'a une victoire ou une defaite
-	  while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
+	  while (1)
 	    {
 	      mess = 0;
 	      printf("-----------------------\nEt j'attends\n");
@@ -143,9 +142,8 @@ int			main(int ac, char **av)
 		  printf("Connection close\n");
 		  return (EXIT_FAILURE);
 		}
-	      printf("[%s]\n", buffer);
+	      printf("%s\n", buffer);
 	      message = message_to_wordtab(buffer);
-	      printf("message[0] = '%s'\n", message[0]);
 	      while (message[mess] != 0)
 		{
 		  if (strncmp(message[mess], "YOURTURN", 8) == 0)
@@ -220,13 +218,57 @@ int			main(int ac, char **av)
 		      set_board(&board, x1, y1, current_color);
 		      current_color = OPPOSITE(current_color);
 		    }
+		  else if (strncmp(message[mess], "WIN", 3) == 0 || strncmp(message[mess], "LOSE", 4) == 0)
+		    {
+		      i = 0;
+		      if (strncmp(message[mess], "WIN", 3) == 0)
+			printf("You win !\nVictoire");
+		      else
+			printf("You loose !\nDefaite");
+		      while (message[mess][i] != ' ' && message[mess][i] != '\0')
+			i++;
+		      if (message[mess][i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur pour connaitre la raison de WIN ou LOSE\n");
+			  return (EXIT_FAILURE);
+			}
+		      while (message[mess][i] == ' ' && message[mess][i] != '\0')
+			i++;
+		      if (message[mess][i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur pour connaitre la raison de WIN ou LOSE\n");
+			  return (EXIT_FAILURE);
+			}
+		      if (strncmp(&message[mess][i], "CAPTURE", 7) == 0)
+			{
+			  printf(" par capture de 10 pierres ou plus.");
+			  return (EXIT_SUCCESS);
+			}
+		      if (strncmp(&message[mess][i], "FIVEALIGN", 9) == 0)
+			{
+			  printf(" par alignement de 5 pierres.");
+			  return (EXIT_SUCCESS);
+			}
+		      if (strncmp(&message[mess][i], "RULEERR", 7) == 0)
+			{
+			  printf(" pour non-respect des regles.");
+			  return (EXIT_SUCCESS);
+			}
+		      if (strncmp(&message[mess][i], "TIMEOUT", 7) == 0)
+			{
+			  printf(" par timeout.");
+			  return (EXIT_SUCCESS);
+			}
+		    }
 		  mess++;
 		}
 	    }
-	  // Envoi du Win ou du Lose
 	}
       close(s);
-      return (EXIT_SUCCESS);
+      printf("Erreur lors de la reception des regles\n");
+      return (EXIT_FAILURE);
     }
   else
     {
