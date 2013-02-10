@@ -68,31 +68,32 @@ long	drec(t_board *board, int color, long d, int sen, register unsigned int x, r
 
 long	longdrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if (get_board(board, x, y) == (OPPOSITE(color)))
-    {
-       ((char*)&d)[sen & 0x0f] |= BLOCKED;
-      return (d);
-    }
   if ((x >= 19 || y >= 19) || get_board(board, x, y) == EMPTY)
   {
     if (((t_chemical_cheddar)drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen))).l[sen & 0x0f] == 2)
       ((char*)&d)[sen & 0x0f] += 2;
     return (d);
   }
+  if (get_board(board, x, y) == (OPPOSITE(color)))
+    {
+       ((char*)&d)[sen & 0x0f] |= BLOCKED;
+      return (d);
+    }
   ((char*)&d)[sen & 0x0f]++;
    return (drec(board, color, d, sen, GETKETCHUP(x, sen), GETMAYO(y, sen)));
 }
 
 long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
+  if (x >= 19 || y >= 19)
+    {
+      /* ((char*)&d)[sen & 0x0f]--; */
+      ((char*)&d)[sen & 0x0f] |= BLOCKED2;
+      return (d);
+    }
   if ((get_board(board, x, y) == (OPPOSITE(color))))
     {
       ((char*)&d)[sen & 0x0f] |= BLOCKED;
-      return (d);
-    }
-  if (x >= 19 || y >= 19)
-    {
-      ((char*)&d)[sen & 0x0f] |= BLOCKED2;
       return (d);
     }
   if (isprenable(board, color, x, y) && ((char*)&d)[sen & 0x0f] <= 3)
@@ -186,6 +187,8 @@ int	getprise(t_board *board, unsigned int x, unsigned int y, int color)
   if (color == EMPTY)
     return (0);
   res = getlines(board, color, x, y);
+  /* if (((t_chemical_cheddar)res).fl[MI_L & 0x0fl]) */
+  /*   printf("%x\n", ((t_chemical_cheddar)res).fl[MI_L & 0x0fl]); */
   return ((((t_chemical_cheddar)res).fl[UP_L & 0x0fl] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[UP_C & 0x0f] == 0x82)
 	  + (((t_chemical_cheddar)res).fl[UP_R & 0x0f] == 0x82)
