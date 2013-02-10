@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sat Feb  9 19:04:07 2013 jonathan martins
+** Last update Sun Feb 10 16:30:41 2013 Shauny
 */
 
 
@@ -37,11 +37,11 @@
 #include <stdint.h>
 #include <time.h>
 
-int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
-{
-  return ((timeA_p->tv_sec * 1000000000) + timeA_p->tv_nsec) -
-    ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
-}
+/* int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p) */
+/* { */
+/*   return ((timeA_p->tv_sec * 1000000000) + timeA_p->tv_nsec) - */
+/*     ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec); */
+/* } */
 
 /* A RETIRER */
 
