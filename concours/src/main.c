@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 17:42:24 2013 Shauny
+** Last update Sun Feb 10 19:04:55 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -40,6 +40,34 @@ int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
 /*     exit(EXIT_FAILURE); */
 /* } */
 
+char			**message_to_wordtab(char *buffer)
+{
+  char			**ret;
+  int			i;
+  int			j;
+  int			k;
+
+  i = 0;
+  j = 0;
+  k = 0;
+  while (buffer[i] != '\0')
+    {
+      if (buffer[i] == '\n')
+	k++;
+      i++;
+    }
+  ret = malloc(sizeof (**ret) * (j + 1));
+  i = 0;
+  k = 0;
+  while (buffer[0] != '\0')
+    {
+      ret[i++] = strndup(buffer, buffer - strchr(buffer, '\n'));
+      buffer = strchr(buffer, '\n') + 1;
+    }
+  ret[i] = NULL;
+  return (ret);
+}
+
 int			main(int ac, char **av)
 {
   struct timespec start, end;
@@ -47,17 +75,19 @@ int			main(int ac, char **av)
   struct sockaddr_in	sin;
   t_board		board;
   t_pos			move;
+  char			**message;
   char			buffer[256];
   char			play[64];
   int			s;
   char			rules;
   unsigned int		timeout;
   int			x1, y1, x2, y2;
-  int			i;
+  int			i, mess;
   int			current_color;
 
   if (ac == 3)
     {
+      mess = 0;
       init_board(&board);
       current_color = WHITE;
       pe = getprotobyname("TCP");
@@ -113,78 +143,83 @@ int			main(int ac, char **av)
 		  printf("Connection close\n");
 		  return (EXIT_FAILURE);
 		}
-	      printf("%s\n", buffer);
-	      if (strncmp(buffer, "YOURTURN\n", 9) == 0)
+	      printf("[%s]\n", buffer);
+	      message = message_to_wordtab(buffer);
+	      while (message[mess] != 0)
 		{
-		  printf("C'est mon tour en %d\n", current_color);
-		  clock_gettime(CLOCK_MONOTONIC, &start);
-		  // play(s, buffer);
-		  callIA(&board, rules, &move, current_color);
-		  set_board(&board, move.x, move.y, current_color);
-		  clock_gettime(CLOCK_MONOTONIC, &end);
-		  bzero(&play, 64);
-		  snprintf(play, 16, "PLAY %d %d\n", move.x, move.y);
-		  if (write(s, play, strlen(play)) == -1)
+		  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
 		    {
-		      close(s);
-		      perror("gomoku");
-		      return (EXIT_FAILURE);
+		      printf("C'est mon tour en %d\n", current_color);
+		      clock_gettime(CLOCK_MONOTONIC, &start);
+		      // play(s, buffer);
+		      callIA(&board, rules, &move, current_color);
+		      set_board(&board, move.x, move.y, current_color);
+		      clock_gettime(CLOCK_MONOTONIC, &end);
+		      bzero(&play, 64);
+		      snprintf(play, 16, "PLAY %d %d\n", move.x, move.y);
+		      if (write(s, play, strlen(play)) == -1)
+			{
+			  close(s);
+			  perror("gomoku");
+			  return (EXIT_FAILURE);
+			}
+		      if (((unsigned int)timespecDiff(&end, &start) / 1000000) > timeout)
+			printf("Prout\n");
+		      printf("time: '%d'ms\n", (unsigned int)timespecDiff(&end, &start) / 1000000);
 		    }
-		  if (((unsigned int)timespecDiff(&end, &start) / 1000000) > timeout)
-		    printf("Prout\n");
-		  printf("time: '%d'ms\n", (unsigned int)timespecDiff(&end, &start) / 1000000);
-		}
-	      else if (strncmp(buffer, "REM", 3) == 0)
-		{
-		  printf("Il y a une prise\n");
-		  i = 4;
-		  x1 = atoi(&buffer[i]);
-		  while (buffer[i] != ' ' && buffer[i] != '\0')
-		    i++;
-		  if (buffer[i] == '\0')
+		  else if (strncmp(buffer, "REM", 3) == 0)
 		    {
-		      close(s);
-		      printf("Erreur dans la commande REM\n");
-		      return (EXIT_FAILURE);
+		      printf("Il y a une prise\n");
+		      i = 4;
+		      x1 = atoi(&buffer[i]);
+		      while (buffer[i] != ' ' && buffer[i] != '\0')
+			i++;
+		      if (buffer[i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur dans la commande REM\n");
+			  return (EXIT_FAILURE);
+			}
+		      y1 = atoi(&buffer[i]);
+		      while (buffer[i] != ' ' && buffer[i] != '\0')
+			i++;
+		      if (buffer[i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur dans la commande REM\n");
+			  return (EXIT_FAILURE);
+			}
+		      x2 = atoi(&buffer[i]);
+		      while (buffer[i] != ' ' && buffer[i] != '\0')
+			i++;
+		      if (buffer[i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur dans la commande REM\n");
+			  return (EXIT_FAILURE);
+			}
+		      y2 = atoi(&buffer[i]);
+		      set_board(&board, x1, y1, EMPTY);
+		      set_board(&board, x2, y2, EMPTY);
 		    }
-		  y1 = atoi(&buffer[i]);
-		  while (buffer[i] != ' ' && buffer[i] != '\0')
-		    i++;
-		  if (buffer[i] == '\0')
+		  else if (strncmp(buffer, "ADD", 3) == 0)
 		    {
-		      close(s);
-		      printf("Erreur dans la commande REM\n");
-		      return (EXIT_FAILURE);
+		      printf("Il y a un ajout par %d\n", current_color);
+		      i = 4;
+		      x1 = atoi(&buffer[i]);
+		      while (buffer[i] != ' ' && buffer[i] != '\0')
+			i++;
+		      if (buffer[i] == '\0')
+			{
+			  close(s);
+			  printf("Erreur dans la commande ADD\n");
+			  return (EXIT_FAILURE);
+			}
+		      y1 = atoi(&buffer[i]);
+		      set_board(&board, x1, y1, current_color);
+		      current_color = OPPOSITE(current_color);
 		    }
-		  x2 = atoi(&buffer[i]);
-		  while (buffer[i] != ' ' && buffer[i] != '\0')
-		    i++;
-		  if (buffer[i] == '\0')
-		    {
-		      close(s);
-		      printf("Erreur dans la commande REM\n");
-		      return (EXIT_FAILURE);
-		    }
-		  y2 = atoi(&buffer[i]);
-		  set_board(&board, x1, y1, EMPTY);
-		  set_board(&board, x2, y2, EMPTY);
-		}
-	      else if (strncmp(buffer, "ADD", 3) == 0)
-		{
-		  printf("Il y a un ajout par %d\n", current_color);
-		  i = 4;
-		  x1 = atoi(&buffer[i]);
-		  while (buffer[i] != ' ' && buffer[i] != '\0')
-		    i++;
-		  if (buffer[i] == '\0')
-		    {
-		      close(s);
-		      printf("Erreur dans la commande ADD\n");
-		      return (EXIT_FAILURE);
-		    }
-		  y1 = atoi(&buffer[i]);
-		  set_board(&board, x1, y1, current_color);
-		  current_color = OPPOSITE(current_color);
+		  mess++;
 		}
 	    }
 	  // Envoi du Win ou du Lose
