@@ -5,7 +5,6 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 19:30:49 2013 Prost P.
 */
 
 #include		<sys/types.h>
@@ -149,7 +148,7 @@ int			main(int ac, char **av)
 	      printf("message[0] = '%s'\n", message[0]);
 	      while (message[mess] != 0)
 		{
-		  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
+		  if (strncmp(buffer, "YOURTURN", 9) == 0)
 		    {
 		      printf("C'est mon tour en %d\n", current_color);
 		      clock_gettime(CLOCK_MONOTONIC, &start);
