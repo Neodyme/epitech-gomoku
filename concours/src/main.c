@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sat Feb  9 17:42:29 2013 Shauny
+** Last update Sun Feb 10 15:21:52 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -20,7 +20,10 @@
 #include		<time.h>
 #include		<stdint.h>
 
+#include		"board.h"
 #include		"rule.h"
+#include		"manip_boards.h"
+#include		"IA.h"
 
 int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
 {
@@ -28,87 +31,164 @@ int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
     ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
 }
 
-int			toggle_rules(char *str)
-{
-  char			rules;
-  int			timeout;
+/* void			play(int s, char *buffer) */
+/* { */
+/*   char			str[64]; */
 
-  if (strlen(str) >= 11)
-    {
-      rules = (str[6] & 1) | ((str[8] & 1) << 1);
-      timeout = atoi(&str[10]);
-    }
-  return (timeout);
-}
+/*   snprintf(str, 64, "PLAY %s %s\n", "42", "42"); */
+/*   if (write(s, str, strlen(str)) == -1) */
+/*     exit(EXIT_FAILURE); */
+/* } */
 
-void			play(int s, char *buffer)
-{
-  char			str[64];
-
-  snprintf(str, 64, "PLAY %s %s\n", "42", "42");
-  if (write(s, str, strlen(str)) == -1)
-    exit(EXIT_FAILURE);
-}
-
-void			main(int ac, char **av)
+int			main(int ac, char **av)
 {
   struct timespec start, end;
   struct protoent	*pe;
   struct sockaddr_in	sin;
+  t_board		board;
+  t_pos			move;
   char			buffer[256];
+  char			play[64];
   int			s;
+  char			rules;
   int			timeout;
+  int			x1, y1, x2, y2;
+  int			i;
 
-  pe = getprotobyname("TCP");
-  if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
-    exit(EXIT_FAILURE);
-  sin.sin_family = AF_INET;
-  sin.sin_port = htons(atoi(av[2]));
-  sin.sin_addr.s_addr = inet_addr(av[1]);
-  if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == -1)
+  if (ac == 3)
     {
-      close(s);
-      exit(EXIT_FAILURE);
-    }
-  if (write(s, "CONNECT CLIENT\n", 15) == -1)
-    {
-      close(s);
-      exit(EXIT_FAILURE);
-    }
-  bzero(&buffer, 256);
-  if (read(s, buffer, 255) < 1)
-    {
-      close(s);
-      exit(EXIT_FAILURE);
-    }
-  if (strncmp(buffer, "RULES", 5) == 0)
-    {
-      timeout = toggle_rules(buffer);
-      while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
+      init_board(&board);
+      pe = getprotobyname("TCP");
+      if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
 	{
-	  printf("Et j'attends\n");
-	  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
+	  perror("gomoku: ");
+	  return (EXIT_FAILURE);
+	}
+      sin.sin_family = AF_INET;
+      sin.sin_port = htons(atoi(av[2]));
+      sin.sin_addr.s_addr = inet_addr(av[1]);
+      if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == -1)
+	{
+	  close(s);
+	  perror("gomoku: ");
+	  return (EXIT_FAILURE);
+	}
+      if (write(s, "CONNECT CLIENT\n", 15) == -1)
+	{
+	  close(s);
+	  perror("gomoku: ");
+	  return (EXIT_FAILURE);
+	}
+      bzero(&buffer, 256);
+      if (read(s, buffer, 255) < 1)
+	{
+	  close(s);
+	  perror("gomoku: ");
+	  return (EXIT_FAILURE);
+	}
+      if (strncmp(buffer, "RULES", 5) == 0)
+	{
+	  // Recupère les regles
+	  if (strlen(buffer) >= 11)
 	    {
-	      clock_gettime(CLOCK_MONOTONIC, &start);
-	      play(s, buffer);
-	      clock_gettime(CLOCK_MONOTONIC, &end);
-	      printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
-	      if (((int)timespecDiff(&end, &start) / 1000000) > timeout)
-		printf("Prout\n");
+	      rules = (buffer[6] & 1) | ((buffer[8] & 1) << 1);
+	      timeout = atoi(&buffer[10]);
 	    }
-	  /* if (strncmp(buffer, "REM", 3) == 0) */
-	  // rem(s, buffer);
-	  /* if (strncmp(buffer, "ADD", 3) == 0) */
-	  // add(s, buffer);
-	  bzero(&buffer, 256);
-	  if (read(s, buffer, 255) < 1)
+	  else
 	    {
 	      close(s);
-	      exit(EXIT_FAILURE);
+	      printf("Erreur dans les règles\n");
+	      return (EXIT_FAILURE);
 	    }
-	  printf("%s\n", buffer);
+	  // Boucle jusqu'a une victoire ou une defaite
+	  while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
+	    {
+	      printf("Et j'attends\n");
+	      if (strncmp(buffer, "YOURTURN\n", 9) == 0)
+		{
+		  clock_gettime(CLOCK_MONOTONIC, &start);
+		  // play(s, buffer);
+		  callIA(&board, rules, &move, WHITE);
+		  set_board(&board, move.x, move.y, WHITE);
+		  clock_gettime(CLOCK_MONOTONIC, &end);
+		  bzero(&play, 64);
+		  snprintf(play, 16, "PLAY %d %d\n", move.x, move.y);
+		  if (write(s, play, strlen(play)) == -1)
+		    {
+		      close(s);
+		      perror("gomoku: ");
+		      return (EXIT_FAILURE);
+		    }
+		  printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
+		  if (((int)timespecDiff(&end, &start) / 1000000) > timeout)
+		    printf("Prout\n");
+		}
+	      if (strncmp(buffer, "REM", 3) == 0)
+		{
+		  i = 4;
+		  x1 = atoi(&buffer[i]);
+		  while (buffer[i] != ' ' && buffer[i] != '\0')
+		    i++;
+		  if (buffer[i] == '\0')
+		    {
+		      close(s);
+		      printf("Erreur dans la commande REM\n");
+		      return (EXIT_FAILURE);
+		    }
+		  y1 = atoi(&buffer[i]);
+		  while (buffer[i] != ' ' && buffer[i] != '\0')
+		    i++;
+		  if (buffer[i] == '\0')
+		    {
+		      close(s);
+		      printf("Erreur dans la commande REM\n");
+		      return (EXIT_FAILURE);
+		    }
+		  x2 = atoi(&buffer[i]);
+		  while (buffer[i] != ' ' && buffer[i] != '\0')
+		    i++;
+		  if (buffer[i] == '\0')
+		    {
+		      close(s);
+		      printf("Erreur dans la commande REM\n");
+		      return (EXIT_FAILURE);
+		    }
+		  y2 = atoi(&buffer[i]);
+		  set_board(&board, x1, y1, EMPTY);
+		  set_board(&board, x2, y2, EMPTY);
+		}
+	      if (strncmp(buffer, "ADD", 3) == 0)
+		{
+		  i = 4;
+		  x1 = atoi(&buffer[i]);
+		  while (buffer[i] != ' ' && buffer[i] != '\0')
+		    i++;
+		  if (buffer[i] == '\0')
+		    {
+		      close(s);
+		      printf("Erreur dans la commande ADD\n");
+		      return (EXIT_FAILURE);
+		    }
+		  y1 = atoi(&buffer[i]);
+		  set_board(&board, x1, y1, BLACK);
+		}
+	      bzero(&buffer, 256);
+	      if (read(s, buffer, 255) < 1)
+		{
+		  close(s);
+		  perror("gomoku: ");
+		  return (EXIT_FAILURE);
+		}
+	      printf("%s\n", buffer);
+	    }
+	  // Envoi du Win ou du Lose
 	}
-      // Envoi du Win ou du Lose
+      close(s);
+      return (EXIT_SUCCESS);
     }
-  close(s);
+  else
+    {
+      printf("Usage: network IP_ADDESS PORT\n");
+      return (EXIT_FAILURE);
+    }
 }
