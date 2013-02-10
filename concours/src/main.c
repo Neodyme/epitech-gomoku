@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 17:29:22 2013 Shauny
+** Last update Sun Feb 10 17:31:06 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -185,7 +185,7 @@ int			main(int ac, char **av)
 		    }
 		  y1 = atoi(&buffer[i]);
 		  set_board(&board, x1, y1, current_color);
-		  current_color = OPOSIT(current_color);
+		  current_color = OPPOSITE(current_color);
 		}
 	    }
 	  // Envoi du Win ou du Lose
