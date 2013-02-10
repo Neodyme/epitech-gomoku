@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Feb 10 16:30:41 2013 Shauny
+** Last update Sun Feb 10 17:32:32 2013 Shauny
 */
 
 
@@ -27,8 +27,6 @@
 #define		BROKEN_THREE	5
 #define		TWO_IN_ROW	3
 #define		SINGLE_MARK	1
-
-#define         OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
 
 
 /* A RETIRER */

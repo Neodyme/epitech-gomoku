@@ -15,8 +15,6 @@
 #include	"manip_boards.h"
 #include	"getms.h"
 
-#define		OPPOSITE(COLOR) (~(COLOR) & 0b00000011)
-
 long	getlines(t_board *board, int color, unsigned int x, unsigned int y);
 
 char		pose(t_board *board, t_pos *move, char current, char rules)

@@ -28,7 +28,6 @@ union		u_chemical_cheddar
 };
 typedef  union u_chemical_cheddar	t_chemical_cheddar;
 
-#define OPPOSITE(COLOR) ((~COLOR) & 0x3)
 #define CHCKPOS(X) ((X > 19) ? (19) : (X))
 #define TAKE(BOARD, X, Y) (set_board(BOARD, X, Y, EMPTY));
 /*
