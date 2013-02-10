@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 19:04:55 2013 Shauny
+** Last update Sun Feb 10 19:11:59 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -87,7 +87,6 @@ int			main(int ac, char **av)
 
   if (ac == 3)
     {
-      mess = 0;
       init_board(&board);
       current_color = WHITE;
       pe = getprotobyname("TCP");
@@ -135,6 +134,7 @@ int			main(int ac, char **av)
 	  // Boucle jusqu'a une victoire ou une defaite
 	  while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
 	    {
+	      mess = 0;
 	      printf("-----------------------\nEt j'attends\n");
 	      bzero(&buffer, 256);
 	      if (read(s, buffer, 255) < 1)
@@ -145,6 +145,7 @@ int			main(int ac, char **av)
 		}
 	      printf("[%s]\n", buffer);
 	      message = message_to_wordtab(buffer);
+	      printf("message[0] = '%s'\n", message[0]);
 	      while (message[mess] != 0)
 		{
 		  if (strncmp(buffer, "YOURTURN\n", 9) == 0)
