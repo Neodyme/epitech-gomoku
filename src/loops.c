@@ -150,7 +150,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	      current = pose(board, &move, current, rules);
 
 	      // IA
-	      if (mode && current == WHITE)
+	      if (mode && (current == WHITE))
 		{
 		  callIA(board, rules, &moveIA, current);
 		  current = pose(board, &moveIA, current, rules);
@@ -177,7 +177,7 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	    }
 
 	  // Calcul du hint
-	  if (hint > 1)
+	  if ((hint > 1) && (current < 3))
 	    {
 	      callIA(board, rules, &moveHint, current);
 	      /* printf("Hint at %i:%i\n", moveHint.x, moveHint.y); */
