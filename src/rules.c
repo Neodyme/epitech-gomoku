@@ -50,14 +50,14 @@ typedef  union u_chemical_cheddar	t_chemical_cheddar;
 */
 long	drec(t_board *board, int color, long d, int sen, register unsigned int x, register unsigned int y)
 {
-  if ((get_board(board, x, y) == (OPPOSITE(color))))
-    {
-      ((char*)&d)[sen & 0x0f] |= BLOCKED;
-      return (d);
-    }
   if (x >= 19 || y >= 19)
     {
       ((char*)&d)[sen & 0x0f] |= BLOCKED2;
+      return (d);
+    }
+  if ((get_board(board, x, y) == (OPPOSITE(color))))
+    {
+      ((char*)&d)[sen & 0x0f] |= BLOCKED;
       return (d);
     }
   if (get_board(board, x, y) != color)
@@ -87,7 +87,6 @@ long	prisedrec(t_board *board, int color, long d, int sen, register unsigned int
 {
   if (x >= 19 || y >= 19)
     {
-      /* ((char*)&d)[sen & 0x0f]--; */
       ((char*)&d)[sen & 0x0f] |= BLOCKED2;
       return (d);
     }
