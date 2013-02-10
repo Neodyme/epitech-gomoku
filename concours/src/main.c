@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 17:32:07 2013 Shauny
+** Last update Sun Feb 10 17:42:24 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -59,7 +59,7 @@ int			main(int ac, char **av)
   if (ac == 3)
     {
       init_board(&board);
-      current_color = BLACK;
+      current_color = WHITE;
       pe = getprotobyname("TCP");
       if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
 	{
@@ -116,12 +116,11 @@ int			main(int ac, char **av)
 	      printf("%s\n", buffer);
 	      if (strncmp(buffer, "YOURTURN\n", 9) == 0)
 		{
-		  current_color = WHITE;
-		  printf("C'est mon tour\n");
+		  printf("C'est mon tour en %d\n", current_color);
 		  clock_gettime(CLOCK_MONOTONIC, &start);
 		  // play(s, buffer);
-		  callIA(&board, rules, &move, WHITE);
-		  set_board(&board, move.x, move.y, WHITE);
+		  callIA(&board, rules, &move, current_color);
+		  set_board(&board, move.x, move.y, current_color);
 		  clock_gettime(CLOCK_MONOTONIC, &end);
 		  bzero(&play, 64);
 		  snprintf(play, 16, "PLAY %d %d\n", move.x, move.y);
