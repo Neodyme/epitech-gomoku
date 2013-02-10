@@ -278,10 +278,15 @@ char		game_loop(t_board *board, t_surfaces *surf, char mode)
 	  place_pawns(board, surf);
 	  SDL_Flip(surf->screen);
 	  SDL_WaitEvent(&event);
-	  if ((event.type == SDL_MOUSEBUTTONUP) || 
-	      ((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
-	      (event.type == SDL_QUIT))
+	  if (event.type == SDL_MOUSEBUTTONUP) 
 	    return (current - 10);
+	  if (((event.type == SDL_KEYDOWN) && (event.key.keysym.sym == SDLK_ESCAPE)) ||
+	      (event.type == SDL_QUIT))
+	    {
+	      current -= 10;
+	      current = OPPOSITE(current);
+	      break;
+	    }
 	}
 
       SDL_WaitEvent(&event);
