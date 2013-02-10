@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 19:19:50 2013 Prost P.
+** Last update Sun Feb 10 19:28:35 2013 Prost P.
 */
 
 #include		<sys/types.h>
@@ -61,7 +61,7 @@ char			**message_to_wordtab(char *buffer)
   k = 0;
   while (buffer[0] != '\0')
     {
-      ret[i] = strndup(buffer, strchr(buffer, '\n') - buffer);
+      ret[i++] = strndup(buffer, strchr(buffer, '\n') - buffer);
       buffer = strchr(buffer, '\n') + 1;
     }
   ret[i] = NULL;
