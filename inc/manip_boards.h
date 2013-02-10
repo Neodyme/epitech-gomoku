@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 ** 
 ** Started on  Sun Dec  2 15:13:36 2012 dorian schaegis
-** Last update Sun Feb 10 16:21:22 2013 Prost P.
+** Last update Sun Feb 10 17:28:07 2013 Prost P.
 */
 
 #ifndef		__GOMO_MANIP_H
@@ -30,6 +30,9 @@
 
 # define L_SIZE		0x1F
 # define GETLSIZE(L)	((L) & (L_SIZE))
+
+# define OPPOSITE(COLOR) ((~COLOR) & 0x3)
+
 
 int		isprenable(t_board *board, int color, unsigned int x, unsigned int y);
 long		longgetlines(t_board *board, int color, unsigned int x, unsigned int y);
