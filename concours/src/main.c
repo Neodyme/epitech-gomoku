@@ -165,6 +165,7 @@ int			main(int ac, char **av)
 		      if (((unsigned int)timespecDiff(&end, &start) / 1000000) > timeout)
 			printf("Prout\n");
 		      printf("time: '%d'ms\n", (unsigned int)timespecDiff(&end, &start) / 1000000);
+		      printf(" >> PLAY %d %d", move.x, move.y);
 		    }
 		  else if (strncmp(message[mess], "REM", 3) == 0)
 		    {
