@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 16:54:29 2013 Shauny
+** Last update Sun Feb 10 17:01:00 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -104,6 +104,14 @@ int			main(int ac, char **av)
 	  while (strncmp(buffer, "WIN", 3) != 0 || strncmp(buffer, "LOSE", 4) != 0)
 	    {
 	      printf("Et j'attends\n");
+	      bzero(&buffer, 256);
+	      if (read(s, buffer, 255) < 1)
+		{
+		  close(s);
+		  printf("Connection close\n");
+		  return (EXIT_FAILURE);
+		}
+	      printf("%s\n", buffer);
 	      if (strncmp(buffer, "YOURTURN\n", 9) == 0)
 		{
 		  printf("C'est mon tour\n");
@@ -175,14 +183,6 @@ int			main(int ac, char **av)
 		  y1 = atoi(&buffer[i]);
 		  set_board(&board, x1, y1, BLACK);
 		}
-	      bzero(&buffer, 256);
-	      if (read(s, buffer, 255) < 1)
-		{
-		  close(s);
-		  printf("Connection close\n");
-		  return (EXIT_FAILURE);
-		}
-	      printf("%s\n", buffer);
 	    }
 	  // Envoi du Win ou du Lose
 	}
