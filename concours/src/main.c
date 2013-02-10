@@ -60,7 +60,7 @@ char			**message_to_wordtab(char *buffer)
   k = 0;
   while (buffer[0] != '\0')
     {
-      ret[i] = strndup(buffer, strchr(buffer, '\n') - buffer);
+      ret[i++] = strndup(buffer, strchr(buffer, '\n') - buffer);
       buffer = strchr(buffer, '\n') + 1;
     }
   ret[i] = NULL;
@@ -243,25 +243,27 @@ int			main(int ac, char **av)
 			}
 		      if (strncmp(&message[mess][i], "CAPTURE", 7) == 0)
 			{
-			  printf(" par capture de 10 pierres ou plus.");
+			  printf(" par capture de 10 pierres ou plus.\n");
 			  return (EXIT_SUCCESS);
 			}
 		      if (strncmp(&message[mess][i], "FIVEALIGN", 9) == 0)
 			{
-			  printf(" par alignement de 5 pierres.");
+			  printf(" par alignement de 5 pierres.\n");
 			  return (EXIT_SUCCESS);
 			}
 		      if (strncmp(&message[mess][i], "RULEERR", 7) == 0)
 			{
-			  printf(" pour non-respect des regles.");
+			  printf(" pour non-respect des regles.\n");
 			  return (EXIT_SUCCESS);
 			}
 		      if (strncmp(&message[mess][i], "TIMEOUT", 7) == 0)
 			{
-			  printf(" par timeout.");
+			  printf(" par timeout.\n");
 			  return (EXIT_SUCCESS);
 			}
 		    }
+		  else
+		    printf("Erreur commande bizarre\n");
 		  mess++;
 		}
 	    }
