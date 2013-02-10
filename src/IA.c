@@ -5,7 +5,7 @@
 ** Login   <schaeg_d@epitech.net>
 **
 ** Started on  Tue Jan 15 17:03:24 2013 dorian schaegis
-** Last update Sun Feb 10 17:32:32 2013 Shauny
+** Last update Sun Feb 10 20:15:32 2013 jonathan martins
 */
 
 
@@ -23,6 +23,7 @@
 #define		FOUR_IN_ROW	250
 #define		BROKEN_FOUR	50
 #define		THREE_IN_ROW	33
+#define		IS_CAP		5
 #define		CAPTURE		798
 #define		BROKEN_THREE	5
 #define		TWO_IN_ROW	3
@@ -107,6 +108,8 @@ int		heuristic_eval(t_board *board, char rules)
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, WHITE, rules)))
 		return INFINITY;
 	      eval += ret;
+	      if (!!isprenable(board, WHITE, x, y) != 0)
+		eval -= IS_CAP;
 	    }
 	  else
 	    {
@@ -135,6 +138,8 @@ int		heuristic_eval(t_board *board, char rules)
 	      if (ret >= BROKEN_FIVE && (rule5(board, x, y, BLACK, rules)))
 		return -INFINITY;
 	      eval -= ret;
+	      if (!!isprenable(board, BLACK, x, y) != 0)
+		eval -= IS_CAP;
 	    }
 	}
     }
