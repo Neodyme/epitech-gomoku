@@ -148,7 +148,7 @@ int			main(int ac, char **av)
 	      printf("message[0] = '%s'\n", message[0]);
 	      while (message[mess] != 0)
 		{
-		  if (strncmp(buffer, "YOURTURN", 8) == 0)
+		  if (strncmp(message[mess], "YOURTURN", 8) == 0)
 		    {
 		      printf("C'est mon tour en %d\n", current_color);
 		      clock_gettime(CLOCK_MONOTONIC, &start);
@@ -168,55 +168,55 @@ int			main(int ac, char **av)
 			printf("Prout\n");
 		      printf("time: '%d'ms\n", (unsigned int)timespecDiff(&end, &start) / 1000000);
 		    }
-		  else if (strncmp(buffer, "REM", 3) == 0)
+		  else if (strncmp(message[mess], "REM", 3) == 0)
 		    {
 		      printf("Il y a une prise\n");
 		      i = 4;
-		      x1 = atoi(&buffer[i]);
-		      while (buffer[i] != ' ' && buffer[i] != '\0')
+		      x1 = atoi(&message[mess][i]);
+		      while (message[mess][i] != ' ' && message[mess][i] != '\0')
 			i++;
-		      if (buffer[i] == '\0')
+		      if (message[mess][i] == '\0')
 			{
 			  close(s);
 			  printf("Erreur dans la commande REM\n");
 			  return (EXIT_FAILURE);
 			}
-		      y1 = atoi(&buffer[i]);
-		      while (buffer[i] != ' ' && buffer[i] != '\0')
+		      y1 = atoi(&message[mess][i]);
+		      while (message[mess][i] != ' ' && message[mess][i] != '\0')
 			i++;
-		      if (buffer[i] == '\0')
+		      if (message[mess][i] == '\0')
 			{
 			  close(s);
 			  printf("Erreur dans la commande REM\n");
 			  return (EXIT_FAILURE);
 			}
-		      x2 = atoi(&buffer[i]);
-		      while (buffer[i] != ' ' && buffer[i] != '\0')
+		      x2 = atoi(&message[mess][i]);
+		      while (message[mess][i] != ' ' && message[mess][i] != '\0')
 			i++;
-		      if (buffer[i] == '\0')
+		      if (message[mess][i] == '\0')
 			{
 			  close(s);
 			  printf("Erreur dans la commande REM\n");
 			  return (EXIT_FAILURE);
 			}
-		      y2 = atoi(&buffer[i]);
+		      y2 = atoi(&message[mess][i]);
 		      set_board(&board, x1, y1, EMPTY);
 		      set_board(&board, x2, y2, EMPTY);
 		    }
-		  else if (strncmp(buffer, "ADD", 3) == 0)
+		  else if (strncmp(message[mess], "ADD", 3) == 0)
 		    {
 		      printf("Il y a un ajout par %d\n", current_color);
 		      i = 4;
-		      x1 = atoi(&buffer[i]);
-		      while (buffer[i] != ' ' && buffer[i] != '\0')
+		      x1 = atoi(&message[mess][i]);
+		      while (message[mess][i] != ' ' && message[mess][i] != '\0')
 			i++;
-		      if (buffer[i] == '\0')
+		      if (message[mess][i] == '\0')
 			{
 			  close(s);
 			  printf("Erreur dans la commande ADD\n");
 			  return (EXIT_FAILURE);
 			}
-		      y1 = atoi(&buffer[i]);
+		      y1 = atoi(&message[mess][i]);
 		      set_board(&board, x1, y1, current_color);
 		      current_color = OPPOSITE(current_color);
 		    }
