@@ -60,7 +60,7 @@ char			**message_to_wordtab(char *buffer)
   k = 0;
   while (buffer[0] != '\0')
     {
-      ret[i] = strndup(buffer, strchr(buffer, '\n') - buffer);
+      ret[i++] = strndup(buffer, strchr(buffer, '\n') - buffer);
       buffer = strchr(buffer, '\n') + 1;
     }
   ret[i] = NULL;
