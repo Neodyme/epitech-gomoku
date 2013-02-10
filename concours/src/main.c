@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 16:47:44 2013 Shauny
+** Last update Sun Feb 10 16:54:29 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -106,6 +106,7 @@ int			main(int ac, char **av)
 	      printf("Et j'attends\n");
 	      if (strncmp(buffer, "YOURTURN\n", 9) == 0)
 		{
+		  printf("C'est mon tour\n");
 		  clock_gettime(CLOCK_MONOTONIC, &start);
 		  // play(s, buffer);
 		  callIA(&board, rules, &move, WHITE);
@@ -125,6 +126,7 @@ int			main(int ac, char **av)
 		}
 	      if (strncmp(buffer, "REM", 3) == 0)
 		{
+		  printf("Il y a une prise\n");
 		  i = 4;
 		  x1 = atoi(&buffer[i]);
 		  while (buffer[i] != ' ' && buffer[i] != '\0')
@@ -159,6 +161,7 @@ int			main(int ac, char **av)
 		}
 	      if (strncmp(buffer, "ADD", 3) == 0)
 		{
+		  printf("Il y a un ajout\n");
 		  i = 4;
 		  x1 = atoi(&buffer[i]);
 		  while (buffer[i] != ' ' && buffer[i] != '\0')
