@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 15:21:52 2013 Shauny
+** Last update Sun Feb 10 16:47:44 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -70,20 +70,20 @@ int			main(int ac, char **av)
       if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == -1)
 	{
 	  close(s);
-	  perror("gomoku: ");
+	  perror("gomoku");
 	  return (EXIT_FAILURE);
 	}
       if (write(s, "CONNECT CLIENT\n", 15) == -1)
 	{
 	  close(s);
-	  perror("gomoku: ");
+	  perror("gomoku");
 	  return (EXIT_FAILURE);
 	}
       bzero(&buffer, 256);
       if (read(s, buffer, 255) < 1)
 	{
 	  close(s);
-	  perror("gomoku: ");
+	  printf("Connection close\n");
 	  return (EXIT_FAILURE);
 	}
       if (strncmp(buffer, "RULES", 5) == 0)
@@ -116,12 +116,12 @@ int			main(int ac, char **av)
 		  if (write(s, play, strlen(play)) == -1)
 		    {
 		      close(s);
-		      perror("gomoku: ");
+		      perror("gomoku");
 		      return (EXIT_FAILURE);
 		    }
-		  printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
 		  if (((int)timespecDiff(&end, &start) / 1000000) > timeout)
 		    printf("Prout\n");
+		  printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
 		}
 	      if (strncmp(buffer, "REM", 3) == 0)
 		{
@@ -176,7 +176,7 @@ int			main(int ac, char **av)
 	      if (read(s, buffer, 255) < 1)
 		{
 		  close(s);
-		  perror("gomoku: ");
+		  printf("Connection close\n");
 		  return (EXIT_FAILURE);
 		}
 	      printf("%s\n", buffer);
