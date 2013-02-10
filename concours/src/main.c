@@ -263,7 +263,7 @@ int			main(int ac, char **av)
 			}
 		    }
 		  else
-		      printf("Erreur commande bizarre\n")
+		    printf("Erreur commande bizarre\n");
 		  mess++;
 		}
 	    }
