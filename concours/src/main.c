@@ -122,6 +122,8 @@ int			main(int ac, char **av)
 	  if (strlen(buffer) >= 11)
 	    {
 	      rules = (buffer[6] & 1) | ((buffer[8] & 1) << 1);
+	      rules |= RULE3;
+	      rules |= RULE5;
 	      timeout = atoi(&buffer[10]);
 	    }
 	  else
