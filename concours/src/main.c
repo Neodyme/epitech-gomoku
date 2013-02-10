@@ -5,7 +5,7 @@
 ** Login   <shauny@epitech.net>
 ** 
 ** Started on  Wed Jan 16 16:37:43 2013 Shauny
-** Last update Sun Feb 10 17:31:06 2013 Shauny
+** Last update Sun Feb 10 17:32:07 2013 Shauny
 */
 
 #include		<sys/types.h>
@@ -131,9 +131,9 @@ int			main(int ac, char **av)
 		      perror("gomoku");
 		      return (EXIT_FAILURE);
 		    }
-		  if (((int)timespecDiff(&end, &start) / 1000000) > timeout)
+		  if (((unsigned int)timespecDiff(&end, &start) / 1000000) > timeout)
 		    printf("Prout\n");
-		  printf("time: '%d'ms\n", (int)timespecDiff(&end, &start) / 1000000);
+		  printf("time: '%d'ms\n", (unsigned int)timespecDiff(&end, &start) / 1000000);
 		}
 	      else if (strncmp(buffer, "REM", 3) == 0)
 		{
