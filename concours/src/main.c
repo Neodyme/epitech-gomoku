@@ -30,15 +30,6 @@ int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
     ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
 }
 
-/* void			play(int s, char *buffer) */
-/* { */
-/*   char			str[64]; */
-
-/*   snprintf(str, 64, "PLAY %s %s\n", "42", "42"); */
-/*   if (write(s, str, strlen(str)) == -1) */
-/*     exit(EXIT_FAILURE); */
-/* } */
-
 char			**message_to_wordtab(char *buffer)
 {
   char			**ret;
@@ -122,8 +113,6 @@ int			main(int ac, char **av)
 	  if (strlen(buffer) >= 11)
 	    {
 	      rules = (buffer[6] & 1) | ((buffer[8] & 1) << 1);
-	      rules |= RULE3;
-	      rules |= RULE5;
 	      timeout = atoi(&buffer[10]);
 	    }
 	  else
