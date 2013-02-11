@@ -293,17 +293,17 @@ int	rule5(t_board *board, unsigned int x, unsigned int y, char color, int rules)
   /* gnieh */
   counter3 = (isprenable(board, color, x, y) *
 	      ((((GETLSIZE(((t_chemical_cheddar)res).l[UP_L & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_R & 0x0f]))) >= 4) &&
-		((GETLSIZE(((t_chemical_cheddar)res2).l[UP_L & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_L & 0x0f])) || 
-		 ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_R & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_R & 0x0f])))))
+		((GETLSIZE(((t_chemical_cheddar)res2).l[UP_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_L & 0x0f])) || 
+		 ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_R & 0x0f])))))
 	       + (((GETLSIZE(((t_chemical_cheddar)res).l[UP_C & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_C & 0x0f]))) >= 4) &&
-		  ((GETLSIZE(((t_chemical_cheddar)res2).l[UP_C & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_C & 0x0f])) || 
-		   ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_C & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_C & 0x0f])))))
+		  ((GETLSIZE(((t_chemical_cheddar)res2).l[UP_C & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_C & 0x0f])) || 
+		   ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_C & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_C & 0x0f])))))
 	       + (((GETLSIZE(((t_chemical_cheddar)res).l[MI_L & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[MI_R & 0x0f]))) >= 4) &&
-		  ((GETLSIZE(((t_chemical_cheddar)res2).l[MI_L & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_L & 0x0f])) || 
-		   ((GETLSIZE(((t_chemical_cheddar)res2).l[MI_R & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_R & 0x0f])))))
+		  ((GETLSIZE(((t_chemical_cheddar)res2).l[MI_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_L & 0x0f])) || 
+		   ((GETLSIZE(((t_chemical_cheddar)res2).l[MI_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[MI_R & 0x0f])))))
 	       + (((GETLSIZE(((t_chemical_cheddar)res).l[UP_R & 0x0f]) + (GETLSIZE(((t_chemical_cheddar)res).l[DO_L & 0x0f]))) >= 4) &&
-		  ((GETLSIZE(((t_chemical_cheddar)res2).l[UP_R & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_R & 0x0f])) || 
-		   ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_L & 0x0f]) >= 4 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_L & 0x0f])))))));
+		  ((GETLSIZE(((t_chemical_cheddar)res2).l[UP_R & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[UP_R & 0x0f])) || 
+		   ((GETLSIZE(((t_chemical_cheddar)res2).l[DO_L & 0x0f]) >= 5 && ISPRENABLE(((t_chemical_cheddar)res).l[DO_L & 0x0f])))))));
     }
   return ((counter1 && !counter2) || counter3);
 }
