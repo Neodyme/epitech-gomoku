@@ -1,0 +1,4 @@
+epitech-gomoku
+==============
+
+gomoku
